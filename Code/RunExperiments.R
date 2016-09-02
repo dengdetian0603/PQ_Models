@@ -24,10 +24,11 @@ if (method == 0.1) {
 }
 print(paste0("Model: ", model.file))
 
+registerDoMC(min(detectCores() - 1, 25))
 sim.study.obj = SimStudyNoReg(par.to.save = par.to.save,
                               model.file = model.file,
                               bs.tpr.option = prefix.option,
                               n.iter = 60, n.burnin = 30,
                               n.thin = 2, n.rep = 100)
-
+print(round(apply(sim.study.obj, 2, mean), 3))
 save.image(file = paste0("SimStudy_NoReg_", method, ".Rdata"))
