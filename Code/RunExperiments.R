@@ -27,7 +27,7 @@ print(paste0("Model: ", model.file))
 sim.study.obj = SimStudyNoReg(par.to.save = par.to.save,
                               model.file = model.file,
                               bs.tpr.option = prefix.option,
-                              n.iter = 6000, n.burnin = 3000,
-                              n.thin = 3, n.rep = 100)
+                              n.iter = 60, n.burnin = 30,
+                              n.thin = 2, n.rep = 100)
 
 save.image(file = paste0("SimStudy_NoReg_", method, ".Rdata"))

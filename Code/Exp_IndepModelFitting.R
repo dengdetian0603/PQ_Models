@@ -28,3 +28,8 @@ mc.fit3 = FitJagsNoReg(sim.obj, c("mu", "bs_tpr"),
                        "./jags/Indep_BSandSS_NoReg.txt",
                        direct.fit$bs.tpr.mle, n.chains = 1)
 
+sim.study.obj = SimStudyNoReg(par.to.save = "mu",
+                              model.file =  "./jags/Indep_BSandSSpos_NoReg.txt",
+                              bs.tpr.option = 1,
+                              n.iter = 60, n.burnin = 30,
+                              n.thin = 1, n.rep = 2)
