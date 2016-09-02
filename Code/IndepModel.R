@@ -20,8 +20,10 @@ FitMLEgivenGSNoReg <- function(K, sim.obj) {
   data.frame(mu.mle, bs.tpr.mle, bs.tpr.hat)
 }
 
-SetDefaultHyperParameters <- function() {
-  list(ma = 3, mb = 7, 
+SetDefaultHyperParameters <- function(K = 5) {
+  list(lambda = 1.4,
+       alpha = rep(1, K),
+       ma = 3, mb = 7, 
        aa = 1, bb = 9,
        cc = 4, dd = 2,
        ee = 1, ff = 1)

@@ -9,11 +9,13 @@ model {
     for (j in 1:K) {
       mbs_case[i, j] ~ dbern(bs_tpr_prefix[j]^mgs[i, j] * bs_fpr[j]^(1 - mgs[i, j]))
       mgs[i, j] ~ dbern(mu[j])
+      mu[j] <- A[j] * B 
     }
   }
   # prior
+  B ~ dpois(lambda)
+  A ~ ddirch(alpha)
   for (j in 1:K) {
-    mu[j] ~ dbeta(ma, mb)
     bs_fpr[j] ~ dbeta(ee, ff)
   }
 }
