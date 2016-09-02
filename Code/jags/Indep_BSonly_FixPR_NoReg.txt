@@ -1,0 +1,19 @@
+model {
+  # likelihood
+	for (i in 1:N_ctrl) {
+    for (j in 1:K) {
+      mbs_ctrl[i, j] ~ dbern(bs_fpr[j])
+    }
+	}
+  for (i in 1:N_case) {
+    for (j in 1:K) {
+      mbs_case[i, j] ~ dbern(bs_tpr_prefix[j]^mgs[i, j] * bs_fpr[j]^(1 - mgs[i, j]))
+      mgs[i, j] ~ dbern(mu[j])
+    }
+  }
+  # prior
+  for (j in 1:K) {
+    mu[j] ~ dbeta(ma, mb)
+    bs_fpr[j] ~ dbeta(ee, ff)
+  }
+}
