@@ -1,8 +1,10 @@
+library('coda')
 library('R2jags')
 library('rjags')
 
 # -----------------------------------------------------------------------------
 FitMLEgivenGSNoReg <- function(K, sim.obj) {
+# Get bs.tpr and mu estimtates assuming we know GS data
   bs.tpr.mle = rep(NA, K)
   bs.tpr.hat = rep(NA, K)
   for (j in 1:K) {
@@ -30,6 +32,7 @@ FitJagsNoReg <- function(sim.obj, parameters.to.save,
                          hyper.pars.list = SetDefaultHyperParameters(),
                          n.iter = 6000, n.burnin = 4000,
                          n.thin = 2, n.chains = 2) {
+# Fit JAGS non-regression models
   sim.dat <- c(list(
       # data
       N_ctrl = nrow(sim.obj$MBS.ctrl),
@@ -64,3 +67,40 @@ FitJagsNoReg <- function(sim.obj, parameters.to.save,
   print(mc.fit)
   return(mc.fit)
 }
+
+
+SimStudyNoReg <- function(sim.pars = SetDefaultSimulationParameter(1),
+                          par.to.save = c("mu"),
+                          model.file,
+                          bs.tpr.option = 0,
+                          n.iter, n.burnin, n.thin,
+                          n.rep, max.core = 40) {
+# Simulation study for JAGS non-regression models
+# Example:
+#   SimStudyNoReg(model.file = "./jags/Indep_BSandSSpos_NoReg.txt",
+#                 n.iter = 6000, n.burnin = 3000, n.thin = 3, n.rep = 3)
+#
+  registerDoMC(min(detectCores() - 1, max.core))
+  mc.fit.all = foreach(i = 1:n.rep, .combine = rbind) %dopar% {
+    print(paste0(i, "th rep..."))
+    set.seed(i*123)
+    sim.obj = do.call(SimulatePerchData, sim.pars)
+    direct.fit = FitMLEgivenGSNoReg(sim.pars$K, sim.obj)
+    if (bs.tpr.option == 0) {
+      bs.tpr.prefix = sim.pars$bs.tpr
+    } else {
+      bs.tpr.prefix = direct.fit$bs.tpr.hat
+    }
+    mc.fit = FitJagsNoReg(sim.obj, par.to.save,
+                          model.file,
+                          bs.tpr.prefix,
+                          n.iter = n.iter, n.burnin = n.burnin,
+                          n.thin = n.thin, n.chains = 1)
+    coda.fit = as.mcmc(mc.fit)
+    post.mean = summary(coda.fit)[[1]][,1]
+    c(post.mean, direct.fit$bs.tpr.hat)
+  }
+  mc.fit.all
+}
+
+

@@ -236,14 +236,14 @@ SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed,
 
 SetDefaultSimulationParameter <- function(option = 1) {
   if (option == 1) {
-    par.config = list(ncase = 2000, nctrl = 2000, K = 5, Smax = 3,
+    par.config = list(ncase = 1500, nctrl = 1500, K = 5, Smax = 3,
                       Pi.seed = c(0.1, 0.5, 0.3, 0.1, 0, 0),
                       num.covariates = 0, Betas = NULL,
                       ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
                       bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
                       bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
   } else if (option == 2) {
-    par.config = list(ncase = 2000, nctrl = 2000, K = 5, Smax = 3,
+    par.config = list(ncase = 1500, nctrl = 1500, K = 5, Smax = 3,
                       Pi.seed = c(0.1, 0.5, 0.3, 0.1, 0, 0),
                       num.covariates = 1,
                       Betas = c(0, 0, 0.1, -0.1, 0.2),
@@ -251,7 +251,7 @@ SetDefaultSimulationParameter <- function(option = 1) {
                       bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
                       bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
   } else if (option == 3) {
-    par.config = list(ncase = 2000, nctrl = 2000, K = 10, Smax = 4,
+    par.config = list(ncase = 1500, nctrl = 1500, K = 10, Smax = 4,
                       Pi.seed = c(0.1, 0.4, 0.3, 0.15, 0.05, rep(0, 6)),
                       num.covariates = 0,
                       Betas = NULL,
