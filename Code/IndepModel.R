@@ -87,7 +87,7 @@ SimStudyNoReg <- function(sim.pars = SetDefaultSimulationParameter(1),
   cell.prob.unique  = sim.obj0$cell.prob.unique
   sim.pars$cell.prob.unique = cell.prob.unique
   mc.fit.all = foreach(i = 1:n.rep, .combine = rbind) %dopar% {
-    print(paste0(i, "th rep..."))
+    print(paste0(i, "th rep: start."))
     set.seed(i*123)
     sim.obj = do.call(ReSimulateData, sim.pars)
     direct.fit = FitMLEgivenGSNoReg(sim.pars$K, sim.obj)
@@ -96,6 +96,7 @@ SimStudyNoReg <- function(sim.pars = SetDefaultSimulationParameter(1),
     } else {
       bs.tpr.prefix = direct.fit$bs.tpr.hat
     }
+    print(paste0(i, "th rep: sampling..."))
     mc.fit = FitJagsNoReg(sim.obj, par.to.save,
                           model.file,
                           bs.tpr.prefix,
@@ -103,6 +104,7 @@ SimStudyNoReg <- function(sim.pars = SetDefaultSimulationParameter(1),
                           n.thin = n.thin, n.chains = 1)
     coda.fit = as.mcmc(mc.fit)
     post.mean = summary(coda.fit)[[1]][,1]
+    print(paste0(i, "th rep: end."))
     c(post.mean, direct.fit$bs.tpr.hat)
   }
   mc.fit.all
