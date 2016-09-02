@@ -82,3 +82,31 @@ par.default$Smax = 2
 set.seed(123)
 sim.obj1 = do.call(SimulatePerchData, par.default)
 sim.obj2 = do.call(SimulatePerchData, par.default)
+
+
+
+# ----------------------------------------------------------------------------
+par(mar = c(2,3,2,1))
+layout(matrix(1:5, nrow = 5))
+for (i in 1:5) {
+  dat = rnorm(50, Mu[i], 0.05)
+  plot(density(dat), main = paste0("Mu",i))
+  abline(v = Mu[i], col = "red")
+  abline(v = mean(dat), col = "black")
+}
+layout(matrix(1, nrow = 1))
+
+layout(matrix(1:5, nrow = 5))
+for (i in 1:5) {
+  dat = rnorm(50, Mu[i], 0.05)
+  if (i == 2) {
+    dat = rnorm(50, Mu[i] + 0.03, 0.08)
+  }
+  if (i == 5) {
+    dat = rnorm(50, Mu[i] - 0.05, 0.07)
+  }
+  plot(density(dat), main = paste0("Mu",i))
+  abline(v = Mu[i], col = "red")
+  abline(v = mean(dat), col = "black")
+}
+layout(matrix(1, nrow = 1))

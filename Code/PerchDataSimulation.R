@@ -150,7 +150,7 @@ XBetaToCellProb <- function(K, X.unique, Beta, Theta2, LUmat, MuMat,
 #   XBetaToCellProb(5, X, beta, pars$Thetas[-(1:5)],
 #                   cbind(dmat$Lmat, dmat$Umat), dmat$MuMat)
   X.index = attr(X.unique, "index")
-  Beta = matrix(Beta, ncol=K)
+  Beta = matrix(Beta, ncol = K)
   Mu.unique = InvLogit(X.unique %*% Beta)
   theta1.unique = t(apply(Mu.unique, 1,
                     function(x) {
@@ -192,7 +192,7 @@ SimulateGSdata <- function(ncase, K, Smax, Pi.seed, num.covariates, Betas) {
   Betas = rbind(pars$Beta0, Betas)
   X.unique = uniquecombs(X)
   X.index = attr(X.unique, "index")
-  cell.prob.unique = XBetaToCellProb(K, X, Betas, pars$Thetas[-(1:K)],
+  cell.prob.unique = XBetaToCellProb(K, X.unique, Betas, pars$Thetas[-(1:K)],
                                      cbind(dmat$Lmat, dmat$Umat), dmat$MuMat)
   Lmat.withZero = rbind(rep(0, K), dmat$Lmat)
   dat.GS = t(sapply(X.index,
@@ -206,10 +206,10 @@ SimulateGSdata <- function(ncase, K, Smax, Pi.seed, num.covariates, Betas) {
 
 LtoM <- function(L, TPR, FPR){
   k = ncol(L)
-  notL = 1-L
+  notL = 1 - L
   registerDoMC(detectCores() - 1) 
-  M= foreach(i=1:nrow(L), .combine=rbind) %dopar% {
-    rbinom(k,1,L[i,]*TPR+notL[i,]*FPR)
+  M = foreach(i = 1:nrow(L), .combine = rbind) %dopar% {
+    rbinom(k, 1, L[i, ] * TPR + notL[i, ] * FPR)
   }
   M
 }
@@ -232,6 +232,29 @@ SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed,
        X = GS.obj$X, pars.baseline = GS.obj$pars.baseline,
        cell.prob.unique = GS.obj$cell.prob.unique)
 }
+
+
+ReSimulateData <- function(ncase, nctrl, num.covariates,
+                           cell.prob.unique, K, Smax, 
+                           ss.tpr, bs.tpr, bs.fpr, ...) {
+#
+  X = GenDefaultCovariates(ncase, num.covariates)
+  dmat = DesignMatrixAppxQuadExp(K, Smax)
+  X.unique = uniquecombs(X)
+  X.index = attr(X.unique, "index")
+  Lmat.withZero = rbind(rep(0, K), dmat$Lmat)
+  dat.GS = t(sapply(X.index,
+                    function(x) {
+                      t(rmultinom(1, 1, cell.prob.unique[x, ])) %*%
+                        Lmat.withZero}))
+  L = dat.GS
+  MSS.case = LtoM(L, ss.tpr, 0)
+  MBS.case = LtoM(L, bs.tpr, bs.fpr)
+  MBS.ctrl = t(matrix(rbinom(nctrl * K, 1, bs.fpr), nrow = K))
+  list(L = L, MSS.case = MSS.case, MBS.case = MBS.case, MBS.ctrl = MBS.ctrl,
+       X = X)
+}
+
 
 
 SetDefaultSimulationParameter <- function(option = 1) {

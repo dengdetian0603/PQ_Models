@@ -81,10 +81,13 @@ SimStudyNoReg <- function(sim.pars = SetDefaultSimulationParameter(1),
 #                 n.iter = 6000, n.burnin = 3000, n.thin = 3, n.rep = 3)
 #
   registerDoMC(min(detectCores() - 1, max.core))
+  sim.obj0 = do.call(SimulatePerchData, sim.pars)
+  cell.prob.unique  = sim.obj0$cell.prob.unique
+  sim.pars$cell.prob.unique = cell.prob.unique
   mc.fit.all = foreach(i = 1:n.rep, .combine = rbind) %dopar% {
     print(paste0(i, "th rep..."))
     set.seed(i*123)
-    sim.obj = do.call(SimulatePerchData, sim.pars)
+    sim.obj = do.call(ReSimulateData, sim.pars)
     direct.fit = FitMLEgivenGSNoReg(sim.pars$K, sim.obj)
     if (bs.tpr.option == 0) {
       bs.tpr.prefix = sim.pars$bs.tpr
