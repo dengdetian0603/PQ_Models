@@ -1,0 +1,40 @@
+model {
+  # ctrl likelihood
+	for (i in 1:N_ctrl) {
+    for (j in 1:K) {
+      mbs_ctrl[i, j] ~ dbern(bs_fpr[j])
+    }
+	}
+  # case likelihood
+  for (i in 1:N_case) {
+    gs_index[i] ~ dcat(cell_prob)
+    for (j in 1:K) {
+      mgs[i, j] <- GSmat[gs_index[i], j]
+      mbs_case[i, j] ~ dbern(bs_tpr[j]^mgs[i, j] * bs_fpr[j]^(1 - mgs[i, j]))
+      mss_case[i, j] ~ dbern(ss_tpr[j]^mgs[i, j] * (mgs[i, j] > 0) + 1.0E-8)
+    }
+  }
+  cell_prob[1] <- 1
+  for (k in 1:J1) {
+    for (l in 1:K) {
+      Ltheta1[k, l] <- Lmat[k, l] * theta1[l]
+    }
+    for (l in 1:Umat_ncol) {
+      Utheta2[k, l] <- Umat[k, l] * theta2[l]
+    }
+    cell_prob[k + 1] <- exp(sum(Ltheta1[k, ]) + sum(Utheta2[k, ]))
+  }
+  # var selection prior
+  for (j in 1:Umat_ncol) {
+    ind[j] ~ dcat(pind)
+    theta2[j] <- theta2_cat[ind[j]]
+  }
+  pind ~ ddirch(pind_dirich_par)
+  # other prior
+  for (j in 1:K) {
+    theta1[j] ~ dnorm(mu_logit[j], tau_theta)
+    ss_tpr[j] ~ dbeta(aa, bb)
+    bs_tpr[j] ~ dbeta(cc, dd)
+    bs_fpr[j] ~ dbeta(ee, ff)
+  }
+}

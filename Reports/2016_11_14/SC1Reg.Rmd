@@ -1,0 +1,68 @@
+---
+title: "PQmodel_Nov14_2016"
+author: "Detian Deng"
+date: "November 14, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Posterior Estimate by Pathogen Combinations
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/Code")
+load("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/Gambia_Smax5_SC1.RData")
+
+source("./PerchDataSimulation.R")
+source("./ModelFittingJAGS.R")
+source("./PostProcessJAGS.R")
+
+ListEtiology(coda.chains = coda.fit[[1]], sim.obj, top5.names,
+             num.keep = NULL, threshold = 0) 
+```
+
+## Prior Mean by Pathogen Combination
+```{r echo=FALSE}
+hyper.pars.list = SetDefaultHyperParameters(K = 5)
+hyper.pars.list$pind_a = 3
+hyper.pars.list$pind_b = 2
+hyper.pars.list$theta2_mu = -3
+hyper.pars.list$tau_theta = 0.2
+
+ListEtiologyPriorSC1(K = 5, Smax = 5,
+                     hyper.pars.list,
+                     patho.names = top5.names,
+                     n.sample = 20000,
+                     num.keep = NULL, threshold = 0)
+```
+
+## Individual Prediction
+```{r }
+library(Rcpp)
+setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/Code")
+sourceCpp("./MakePrediction.cpp")
+source("./MakePrediction.R")
+
+pred.list = PredictCellProb(X.new = c(1),
+                            MBS.new = c(0, 1, 0, 0, 1),
+                            MSS.new = c(0, 0, 0, 0, 1),
+                            patho.names = top5.names,
+                            K = 5, Smax = 5,
+                            X.train = sim.obj$X,
+                            coda.chains = coda.fit[[1]])
+pred.list$pred.Mu 
+pred.list$pred.prob[1]
+
+pred.list = PredictCellProb(X.new = c(1),
+                            MBS.new = c(0, 1, 0, 0, 1),
+                            MSS.new = c(0, 0, 0, 0, 0),
+                            patho.names = top5.names,
+                            K = 5, Smax = 5,
+                            X.train = sim.obj$X,
+                            coda.chains = coda.fit[[1]])
+pred.list$pred.Mu 
+pred.list$pred.prob[1]
+```
+
+

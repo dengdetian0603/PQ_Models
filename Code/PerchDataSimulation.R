@@ -55,12 +55,12 @@ GenDefaultCovariates <- function(nsample, num.covariates) {
 
 Logit <- function(x)
 {
-  log(x/(1-x))
+  log(x/(1 - x))
 }
 
 InvLogit <- function(x)
 {
-      1/(1+exp(-x))
+      1/(1 + exp(-x))
 }
 
 BetaToMu <- function(beta.mat, x.mat, K, nsample) {
@@ -74,19 +74,19 @@ BetaToMu <- function(beta.mat, x.mat, K, nsample) {
   InvLogit(x.mat %*% beta.mat)
 }
 
-PiToBetaTheta <- function(K, Smax, Pi.seed) {
+PiToBetaTheta <- function(K, Smax, Pi.seed, phi.iter = 500) {
 # Example:
-#   Pi = c(0.1, 0.5, 0.3, 0.1, 0, 0)
-#   PiToBetaTheta(5, 3, Pi)
+#   Pi = c(0.05, 0.5, 0.35, 0.1-1e-2-1e-3, 1e-2, 1e-3)
+#   PiToBetaTheta(5, 5, Pi)
   Pi = Pi.seed[1:(1 + Smax)]
   design.mat = DesignMatrixAppxQuadExp(K, Smax)
   Phis = suppressWarnings(
       xsample(E = design.mat$PiMat, F = Pi[-1]/Pi[1],
               G = diag(rep(1, design.mat$J1)),
               H = rep(0, design.mat$J1),
-              iter = 500, burnin =50,
-              type = "mirror", test=FALSE)$X)
-  phis = Phis[300, ]
+              iter = phi.iter, burninlength = 5,
+              type = "mirror", test = FALSE)$X)
+  phis = Phis[phi.iter - 10, ]
   Thetas = solve(qr(cbind(design.mat$Lmat, design.mat$Umat),
                     LAPACK = TRUE), log(phis))
   phis.ls = exp(cbind(design.mat$Lmat, design.mat$Umat) %*% Thetas)
@@ -129,7 +129,7 @@ MuToTheta1 <- function(Mu, Theta2, LUmat, MuMat, K, initvalue=NULL) {
         BBsolve(par = initvalue, fn = Eqt, quiet = TRUE,
                 control = list(NM = FALSE))$par, 
         error = function(c) "error solving for theta1 by BBsolve." )
-    if(is.character(result)) {
+    if (is.character(result)) {
       stop(result)
     }
   }
@@ -176,8 +176,34 @@ XBetaToCellProb <- function(K, X.unique, Beta, Theta2, LUmat, MuMat,
   return(cellprobs.unique)
 }
 
+XBetaToCellProb2 <- function(K, X.unique, Beta, theta2,
+                             lumat, normalize = TRUE){
+  X.index = attr(X.unique, "index")
+  Beta = matrix(Beta, ncol = K)
+  theta1.unique = X.unique %*% Beta
+  
+  if (normalize == TRUE) {
+    cellprobs.unique = 
+        t(apply(theta1.unique, 1,
+                function(x) {
+                  c(1, exp(lumat %*% c(x, theta2))) /
+                       (1 + sum(exp(lumat %*% c(x, theta2))))
+                }))
+  } else if (normalize == FALSE) {
+    cellprobs.unique =
+        t(apply(theta1.unique, 1,
+                function(x) {
+                  c(1, exp(lumat %*% c(x, theta2)))
+                }))
+  } else {
+    cellprobs.unique = t(apply(theta1.unique, 1,
+                               function(x) {c(0, lumat %*% c(x, theta2))}))
+  }
+  return(cellprobs.unique)
+}
 
-SimulateGSdata <- function(ncase, K, Smax, Pi.seed, num.covariates, Betas) {
+SimulateGSdata <- function(ncase, K, Smax, Pi.seed,
+                           num.covariates, Betas, phi.iter = 500) {
 #
 # Args:
 #   Betas: matrix, nrow = num.covariates, ncol = K
@@ -187,7 +213,7 @@ SimulateGSdata <- function(ncase, K, Smax, Pi.seed, num.covariates, Betas) {
 #   SimulateGSdata(10, 5, 3, Pi, 1, c(0, 0, 0.1, -0.1, 0.2))
   X = GenDefaultCovariates(ncase, num.covariates)
   dmat = DesignMatrixAppxQuadExp(K, Smax)
-  pars = PiToBetaTheta(K, Smax, Pi.seed)
+  pars = PiToBetaTheta(K, Smax, Pi.seed, phi.iter)
   if (length(Betas) > 0) Betas = matrix(Betas, nrow = num.covariates, ncol = K)
   Betas = rbind(pars$Beta0, Betas)
   X.unique = uniquecombs(X)
@@ -203,6 +229,49 @@ SimulateGSdata <- function(ncase, K, Smax, Pi.seed, num.covariates, Betas) {
        cell.prob.unique = cell.prob.unique, X = X)
 }
 
+SimulateGSdata2 <- function(ncase, K, Smax, Pi.seed,
+                            num.covariates, Betas, theta2.value, theta2.pind,
+                            phi.iter = 500) {
+  # Simulate GS data using conditional parameterization, with Sparse Corr 1
+  #
+  # Args:
+  #   Betas: matrix, nrow = num.covariates, ncol = K
+  #
+  # Example:
+  #   Pi = c(0.1, 0.5, 0.3, 0.1 - 0.0003, 0.0002, 0.0001)
+  #   SimulateGSdata2(10, 5, 3, Pi, 1, c(0.3, 0, 0.1, -0.1, 0.2))
+  X = GenDefaultCovariates(ncase, num.covariates)
+  dmat = DesignMatrixAppxQuadExp(K, Smax)
+  pars = PiToBetaTheta(K, Smax, Pi.seed, phi.iter)
+  
+  theta2 = rep(theta2.value, choose(K, 2)) *
+           rbinom(choose(K, 2), 1, theta2.pind)
+  theta1 = MuToTheta1(pars$Mu, theta2,
+                      cbind(dmat$Lmat, dmat$Umat), dmat$MuMat, K)
+  
+  if (length(Betas) > 0) Betas = matrix(Betas, nrow = num.covariates, ncol = K)
+  Betas = rbind(theta1, Betas)
+  X.unique = uniquecombs(X)
+  X.index = attr(X.unique, "index")
+  cell.prob.unique = XBetaToCellProb2(K, X.unique, Betas, theta2,
+                                      cbind(dmat$Lmat, dmat$Umat))
+  Lmat.withZero = rbind(rep(0, K), dmat$Lmat)
+  dat.GS = t(sapply(X.index,
+                    function(x) {
+                      t(rmultinom(1, 1, cell.prob.unique[x, ])) %*%
+                        Lmat.withZero}))
+  Mu.unique = cell.prob.unique[, -1] %*% t(dmat$MuMat)
+  Pi.unique = cbind(cell.prob.unique[, 1],
+                    cell.prob.unique[, -1] %*% t(dmat$PiMat))
+  list(dat.GS = dat.GS,
+       pars.baseline = list(Mu = Mu.unique,
+                            Pi = Pi.unique,
+                            Betas = Betas,
+                            theta2 = theta2),
+       cell.prob.unique = cell.prob.unique,
+       X = X)
+}
+
 
 LtoM <- function(L, TPR, FPR){
   k = ncol(L)
@@ -215,22 +284,34 @@ LtoM <- function(L, TPR, FPR){
 }
 
 
-SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed,
-                              num.covariates, Betas,
-                              ss.tpr, bs.tpr, bs.fpr) {
+SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed, phi.iter = 500,
+                              num.covariates, Betas, theta2.value, theta2.pind,
+                              ss.tpr, bs.tpr, bs.fpr, type = "sc1") {
 #
 # Example:
 #   par.default = SetDefaultSimulationParameter(1)
 #   do.call(SimulatePerchData, par.default)
 #
-  GS.obj = SimulateGSdata(ncase, K, Smax, Pi.seed, num.covariates, Betas)
+  if (type == "sc1") {
+    GS.obj = SimulateGSdata2(ncase, K, Smax, Pi.seed,
+                             num.covariates, Betas, theta2.value, theta2.pind,
+                             phi.iter)
+  } else {
+    GS.obj = SimulateGSdata(ncase, K, Smax, Pi.seed,
+                            num.covariates, Betas, phi.iter)
+  }
+
   L = GS.obj$dat.GS
   MSS.case = LtoM(L, ss.tpr, 0)
   MBS.case = LtoM(L, bs.tpr, bs.fpr)
   MBS.ctrl = t(matrix(rbinom(nctrl * K, 1, bs.fpr), nrow = K))
+  
+  design.mat = DesignMatrixAppxQuadExp(K, Smax)
+  Mu.unique = GS.obj$cell.prob.unique[, -1] %*% t(design.mat$MuMat)
+   
   list(L = L, MSS.case = MSS.case, MBS.case = MBS.case, MBS.ctrl = MBS.ctrl,
-       X = GS.obj$X, pars.baseline = GS.obj$pars.baseline,
-       cell.prob.unique = GS.obj$cell.prob.unique)
+       X = GS.obj$X, pars.baseline = GS.obj$pars.baseline, Smax = Smax, 
+       cell.prob.unique = GS.obj$cell.prob.unique, Mu.unique = Mu.unique)
 }
 
 
@@ -258,24 +339,29 @@ ReSimulateData <- function(ncase, nctrl, num.covariates,
 
 
 SetDefaultSimulationParameter <- function(option = 1) {
+  set.seed(124)
   if (option == 1) {
-    par.config = list(ncase = 1500, nctrl = 1500, K = 5, Smax = 3,
-                      Pi.seed = c(0.1, 0.5, 0.3, 0.1, 0, 0),
+    par.config = list(ncase = 2500, nctrl = 1500, K = 5, Smax = 3,
+                      Pi.seed = c(0.05, 0.55, 0.3, 0.1, 0, 0),
+                      phi.iter = 500,
                       num.covariates = 0, Betas = NULL,
                       ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
                       bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
                       bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
   } else if (option == 2) {
-    par.config = list(ncase = 1500, nctrl = 1500, K = 5, Smax = 3,
-                      Pi.seed = c(0.1, 0.5, 0.3, 0.1, 0, 0),
+    par.config = list(ncase = 2500, nctrl = 1500, K = 5, Smax = 5,
+                      Pi.seed = c(0.05, 0.5, 0.35, 0.1 - 1e-2 - 1e-3,
+                                  1e-2, 1e-3),
+                      phi.iter = 500,
                       num.covariates = 1,
-                      Betas = c(0, 0, 0.1, -0.1, 0.2),
+                      Betas = c(-0.5, -0.5, 0.5, 0.5, -0.5),
                       ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
                       bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
                       bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
   } else if (option == 3) {
-    par.config = list(ncase = 1500, nctrl = 1500, K = 10, Smax = 4,
+    par.config = list(ncase = 2500, nctrl = 1500, K = 10, Smax = 4,
                       Pi.seed = c(0.1, 0.4, 0.3, 0.15, 0.05, rep(0, 6)),
+                      phi.iter = 500,
                       num.covariates = 0,
                       Betas = NULL,
                       ss.tpr = sample(c(0.11, 0.12, 0.08, 0.15, 0.10),
@@ -283,8 +369,38 @@ SetDefaultSimulationParameter <- function(option = 1) {
                       bs.tpr = sample(c(0.8, 0.6 ,0.7 ,0.7 ,0.5), 10, TRUE),
                       bs.fpr = sample(c(0.5, 0.55, 0.40, 0.35, 0.45),
                                       10, TRUE))
-  }
-  par.config
+  } else if (option == 4) {
+    par.config = list(ncase = 2500, nctrl = 1500, K = 5, Smax = 5,
+                      Pi.seed = c(0.05, 0.5, 0.35, 0.1 - 1e-2 - 1e-3,
+                                  1e-2, 1e-3),
+                      phi.iter = 500,
+                      num.covariates = 0,
+                      Betas = NULL,
+                      ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
+                      bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
+                      bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
+  } else if (option == 5) {
+    par.config = list(ncase = 2500, nctrl = 1500, K = 3, Smax = 3,
+                      Pi.seed = c(0.05, 0.7, 0.2, 0.05),
+                      phi.iter = 500,
+                      num.covariates = 0,
+                      Betas = NULL,
+                      ss.tpr = c(0.11, 0.12, 0.08),
+                      bs.tpr = c(0.8, 0.6 ,0.7),
+                      bs.fpr = c(0.5, 0.55, 0.40))
+  } else if (option == 6) {
+    par.config = list(ncase = 3000, nctrl = 500, K = 5, Smax = 5,
+                      Pi.seed = c(0.05, 0.5, 0.35, 0.1 - 1e-2 - 1e-3,
+                                  1e-2, 1e-3),
+                      phi.iter = 500,
+                      num.covariates = 2,
+                      Betas = c(-0.1, -0.3, 0.4, -0.5, 0.2,
+                                0.3, 0.5, -0.2, -0.4, 0.2),
+                      ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
+                      bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
+                      bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
+  } 
+  c(par.config, list(type = "sc1", theta2.value = -0.4, theta2.pind = 0.7))
 }
 
 
