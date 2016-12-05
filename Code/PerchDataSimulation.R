@@ -39,7 +39,7 @@ DesignMatrixAppxQuadExp <- function(K, Smax = 3) {
               J1 = index[Smax], PiMat = PiMat))
 }
 
-GenDefaultCovariates <- function(nsample, num.covariates) {
+GenDefaultCovariates <- function(nsample, num.covariates, interact = FALSE) {
 # Simulate covariates, assuming all X are categorical.
 # Example:
 #   GenDefaultCovariates(10, 1)
@@ -47,6 +47,9 @@ GenDefaultCovariates <- function(nsample, num.covariates) {
   if (num.covariates > 0) {
     X = rbinom(nsample * num.covariates, 1, 0.5)
     X = matrix(X, nrow = nsample)
+    if (interact && num.covariates == 2) {
+      X = cbind(X, X[, 1] * X[, 2])
+    }
     return(cbind(x0, X))
   } else {
     return(matrix(x0, ncol = 1))
@@ -231,7 +234,7 @@ SimulateGSdata <- function(ncase, K, Smax, Pi.seed,
 
 SimulateGSdata2 <- function(ncase, K, Smax, Pi.seed,
                             num.covariates, Betas, theta2.value, theta2.pind,
-                            phi.iter = 500) {
+                            phi.iter = 500, has.interact = FALSE) {
   # Simulate GS data using conditional parameterization, with Sparse Corr 1
   #
   # Args:
@@ -240,7 +243,7 @@ SimulateGSdata2 <- function(ncase, K, Smax, Pi.seed,
   # Example:
   #   Pi = c(0.1, 0.5, 0.3, 0.1 - 0.0003, 0.0002, 0.0001)
   #   SimulateGSdata2(10, 5, 3, Pi, 1, c(0.3, 0, 0.1, -0.1, 0.2))
-  X = GenDefaultCovariates(ncase, num.covariates)
+  X = GenDefaultCovariates(ncase, num.covariates, has.interact)
   dmat = DesignMatrixAppxQuadExp(K, Smax)
   pars = PiToBetaTheta(K, Smax, Pi.seed, phi.iter)
   
@@ -249,7 +252,11 @@ SimulateGSdata2 <- function(ncase, K, Smax, Pi.seed,
   theta1 = MuToTheta1(pars$Mu, theta2,
                       cbind(dmat$Lmat, dmat$Umat), dmat$MuMat, K)
   
-  if (length(Betas) > 0) Betas = matrix(Betas, nrow = num.covariates, ncol = K)
+  if (length(Betas) > 0) {
+    Betas = matrix(Betas,
+                   nrow = num.covariates + has.interact, 
+                   ncol = K)
+  }
   Betas = rbind(theta1, Betas)
   X.unique = uniquecombs(X)
   X.index = attr(X.unique, "index")
@@ -286,7 +293,8 @@ LtoM <- function(L, TPR, FPR){
 
 SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed, phi.iter = 500,
                               num.covariates, Betas, theta2.value, theta2.pind,
-                              ss.tpr, bs.tpr, bs.fpr, type = "sc1") {
+                              ss.tpr, bs.tpr, bs.fpr, type = "sc1",
+                              has.interact = FALSE) {
 #
 # Example:
 #   par.default = SetDefaultSimulationParameter(1)
@@ -295,7 +303,7 @@ SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed, phi.iter = 500,
   if (type == "sc1") {
     GS.obj = SimulateGSdata2(ncase, K, Smax, Pi.seed,
                              num.covariates, Betas, theta2.value, theta2.pind,
-                             phi.iter)
+                             phi.iter, has.interact)
   } else {
     GS.obj = SimulateGSdata(ncase, K, Smax, Pi.seed,
                             num.covariates, Betas, phi.iter)
@@ -399,7 +407,20 @@ SetDefaultSimulationParameter <- function(option = 1) {
                       ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
                       bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
                       bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
-  } 
+  } else if (option == 7) {
+    par.config = list(ncase = 3000, nctrl = 500, K = 5, Smax = 5,
+                      Pi.seed = c(0.05, 0.5, 0.35, 0.1 - 1e-2 - 1e-3,
+                                  1e-2, 1e-3),
+                      phi.iter = 500,
+                      num.covariates = 2,
+                      has.interact = TRUE,
+                      Betas = c(-0.1, -0.3, 0.4, -0.5, 0.2,
+                                0.3, 0.5, -0.2, -0.4, 0.2,
+                                -0.1, 0.2, 0.1, 0.3, -0.2),
+                      ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
+                      bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
+                      bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
+  }
   c(par.config, list(type = "sc1", theta2.value = -0.4, theta2.pind = 0.7))
 }
 

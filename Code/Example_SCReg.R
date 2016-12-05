@@ -3,7 +3,7 @@ source("./PerchDataSimulation.R")
 source("./ModelFittingJAGS.R")
 source("./PostProcessJAGS.R")
 
-par.default = SetDefaultSimulationParameter(2)
+par.default = SetDefaultSimulationParameter(7)
 par.default$ncase = 3000
 par.default$nctrl = 1000
 
@@ -42,7 +42,7 @@ matrix(post.mean[grepl("Beta", names(post.mean))], nrow = 2)
 plot(as.mcmc(coda.fit[[1]][, grepl("Beta", colnames(coda.fit[[1]]))]))
 
 Mu.fit = ExtractMu(coda.fit[[1]], sim.obj)
-plot(as.mcmc(Mu.fit[[1]]))
+plot(as.mcmc(Mu.fit[[2]]))
 colMeans(Mu.fit[[1]])
 colMeans(Mu.fit[[2]])
 
