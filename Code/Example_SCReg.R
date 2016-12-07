@@ -2,6 +2,7 @@ setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/Code")
 source("./PerchDataSimulation.R")
 source("./ModelFittingJAGS.R")
 source("./PostProcessJAGS.R")
+source("./PerchPlots.R")
 
 par.default = SetDefaultSimulationParameter(7)
 par.default$ncase = 3000
@@ -55,11 +56,14 @@ sim.obj$pars.baseline$Pi
 # ----------------------------------------------------------------------------
 par.all = SweepPosterior(coda.fit[[1]], sim.obj, sweep.on = NULL,
                          model.type = "regression")
-pairs(par.all, pch = ".")
+pairs(par.all[sample(1:1000, 200), ], pch = ".")
 
 par.swept = SweepPosterior(coda.fit[[1]], sim.obj, sweep.on = "ss_tpr",
                            model.type = "regression")
 pairs(par.swept, pch = ".")
+
+C = cor(par.all)
+corrplot.mixed(C, lower = "number", upper = "ellipse")
 # -----------------------------------------------------------------------------
 # result.table = rbind(
 #   sim.obj$pars.baseline$Mu,

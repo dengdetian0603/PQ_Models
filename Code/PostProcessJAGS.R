@@ -18,23 +18,6 @@ TrueParVal <- function(sim.study.obj, par.to.save) {
   true.par
 }
 
-PlotSimStudy <- function(all.fit, true.par) {
-  # Example:
-  #   true.par = TrueParVal(sim.study.2, par.to.save)
-  #   PlotSimStudy(sim.study.2$stan.fit.all, true.par)
-  dt = as.data.table(all.fit)
-  dt = dt[!is.na(par.est)]
-  dt = dt[!grepl("logit", par.name)]
-  g = ggplot()
-  print(
-    g + geom_violin(data = dt, aes(x = method, y = par.est),
-                    draw_quantiles = c(0.025, 0.5, 0.975)) +
-      facet_grid(. ~ par.name) +
-      geom_hline(data = true.par,
-                 aes(yintercept = par.est, color = "red"))
-  )
-}
-
 
 WideToLong <- function(fit, method.name) {
   fit = as.data.frame(fit)
@@ -48,24 +31,6 @@ WideToLong <- function(fit, method.name) {
                       Method = rep(method.name, prod(dim(fit))),
                       Parameter = par.names)
   result
-}
-
-
-PlotCompareResult <- function(fit1, fit2, method.names = c("A", "B")) {
-  # Example:
-  #   PlotCompareResult(Mu.fit, eti_top5, c("SC1", "nlcm"))
-  if (prod(colnames(fit1) == colnames(fit2)) < 1) {
-    message("Variable names must be the same.")
-    return(NULL)
-  }
-  dt = rbind(WideToLong(fit1, method.names[1]),
-             WideToLong(fit2, method.names[2]))
-  g = ggplot()
-  print(
-    g + geom_violin(data = dt, aes(x = Method, y = Estimate),
-                    draw_quantiles = c(0.025, 0.5, 0.975)) +
-      facet_grid(. ~ Parameter) 
-  )
 }
 
 
@@ -102,7 +67,17 @@ ListEtiologyPriorSC1 <- function(K, Smax, hyper.pars.list,
   A = apply(exp.theta, 1, sum)
   cell.prob = exp.theta/A
   cell.prob.mean = apply(cell.prob, 2, mean)
+  cell.prob.upper = apply(cell.prob, 2, quantile, probs = 0.975)
+  cell.prob.lower = apply(cell.prob, 2, quantile, probs = 0.025)
   LMAT = rbind(rep(0, n.theta1), design.mat$Lmat)
+  s.seq = rowSums(LMAT)
+  aggr.upper = aggregate(cell.prob.upper, by = list(s.seq), mean)$x
+  aggr.lower = aggregate(cell.prob.lower, by = list(s.seq), mean)$x
+  for (i in 1:length(s.seq)) {
+    cell.prob.upper[i] = aggr.upper[s.seq[i] + 1]
+    cell.prob.lower[i] = aggr.lower[s.seq[i] + 1]
+  }
+  
   EtioMat = LMAT[order(cell.prob.mean, decreasing = TRUE), ]
   EtioComb = apply(EtioMat, 1, function(x) {
     paste(patho.names[x > 0], collapse = "-")
@@ -114,10 +89,16 @@ ListEtiologyPriorSC1 <- function(K, Smax, hyper.pars.list,
   EtioCombProb = data.frame(
     EtioComb = EtioComb,
     Probability = round(sort(cell.prob.mean,
-                             decreasing = TRUE), 4))[1:num.keep, ]
+                             decreasing = TRUE), 4),
+    Prob.lower = round(cell.prob.lower[order(cell.prob.mean,
+                                             decreasing = TRUE)], 4),
+    Prob.upper = round(cell.prob.upper[order(cell.prob.mean,
+                                             decreasing = TRUE)], 4)    
+    )[1:num.keep, ]
   rownames(EtioCombProb) = NULL
   list(Cell.prob = subset(EtioCombProb, Probability >= threshold),
-       Pr.num.pathogen = rbind(cell.prob.mean[-1]) %*% t(design.mat$PiMat))
+       Pr.num.pathogen = rbind(cell.prob.mean[-1]) %*% t(design.mat$PiMat),
+       EtioMat = EtioMat)
 }
 
 VarLogitPriorSC1 <- function(K, Smax, hyper.pars.list,
@@ -238,25 +219,44 @@ ListEtiology <- function(coda.chains, sim.obj, top5.names,
   K = ncol(sim.obj$L)
   Smax = sim.obj$Smax
   design.mat = DesignMatrixAppxQuadExp(K, Smax)
-  cell_prob = coda.chains[, paste0("cell_prob[", 1:(design.mat$J1 + 1), "]")]
-  A = apply(cell_prob, 1, sum)
-  cell_prob = cell_prob/A
-  cell.prob.mean = apply(cell_prob, 2, mean)
-  LMAT = rbind(rep(0, 5), design.mat$Lmat)
-  EtioMat = LMAT[order(cell.prob.mean, decreasing = TRUE), ]
-  EtioComb = apply(EtioMat, 1, function(x) {
-    paste(top5.names[x > 0], collapse = "-")
-  })
-  EtioComb[EtioComb == ""] = "None_Above"
-  if (length(num.keep) < 1) {
-    num.keep = length(EtioComb)
+  EtioList = list()
+  n.strata = nrow(uniquecombs(sim.obj$X))
+  for (i in 1:n.strata) {
+    if (n.strata == 1) {
+      cell_prob = coda.chains[, paste0("cell_prob[",
+                                       1:(design.mat$J1 + 1), "]")]
+    } else {
+      cell_prob = coda.chains[, paste0("cell_prob[", i, ",",
+                                       1:(design.mat$J1 + 1), "]")]
+    }
+    A = apply(cell_prob, 1, sum)
+    cell_prob = cell_prob/A
+    cell.prob.mean = apply(cell_prob, 2, mean)
+    cell.prob.upper = apply(cell_prob, 2, quantile, probs = 0.975)
+    cell.prob.lower = apply(cell_prob, 2, quantile, probs = 0.025)
+  
+    LMAT = rbind(rep(0, 5), design.mat$Lmat)
+    EtioMat = LMAT[order(cell.prob.mean, decreasing = TRUE), ]
+    EtioComb = apply(EtioMat, 1, function(x) {
+      paste(top5.names[x > 0], collapse = "-")
+    })
+    EtioComb[EtioComb == ""] = "None_Above"
+    if (length(num.keep) < 1) {
+      num.keep = length(EtioComb)
+    }
+    EtioCombProb = data.frame(
+      EtioComb = EtioComb,
+      Probability = round(sort(cell.prob.mean,
+                               decreasing = TRUE), 4),
+      Prob.lower = round(cell.prob.lower[order(cell.prob.mean,
+                                               decreasing = TRUE)], 4),
+      Prob.upper = round(cell.prob.upper[order(cell.prob.mean,
+                                               decreasing = TRUE)], 4)
+      )[1:num.keep, ]
+    rownames(EtioCombProb) = NULL
+    EtioList[[i]] = subset(EtioCombProb, Probability >= threshold)
   }
-  EtioCombProb = data.frame(
-    EtioComb = EtioComb,
-    Probability = round(sort(cell.prob.mean,
-                             decreasing = TRUE), 4))[1:num.keep, ]
-  rownames(EtioCombProb) = NULL
-  subset(EtioCombProb, Probability >= threshold)
+  EtioList
 }
 
 SweepPosterior <- function(coda.chains, sim.obj, sweep.on = "ss_tpr",

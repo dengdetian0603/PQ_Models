@@ -1,0 +1,72 @@
+---
+title: "Reg_age_severity_simulation"
+author: "Detian Deng"
+date: "December 5, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r warning=FALSE, message=FALSE}
+setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/Code")
+source("./PerchDataSimulation.R")
+source("./ModelFittingJAGS.R")
+source("./PostProcessJAGS.R")
+source("./PerchPlots.R")
+
+library(corrplot)
+load("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/SC1-2CovWithInteract-theta2--4-tau-0.2.RData")
+```
+
+## Descriptive Analysis
+```{r }
+X.unique = uniquecombs(sim.obj$X)
+strata.id = attr(X.unique, "index")
+X.unique = matrix(X.unique, nrow(X.unique))
+rownames(X.unique) = paste("strata", 1:nrow(X.unique))
+colnames(X.unique) = c("intercept", "age", "severity", "age*severity")
+X.unique
+table(strata.id)
+```
+
+### SS data: Count by Strata
+```{r}
+mss.tab = aggregate(sim.obj$MSS.case, list(strata.id), sum)
+colnames(mss.tab) = c("strata", "Pathogen_A", "Pathogen_B", "Pathogen_C",
+                      "Pathogen_D", "Pathogen_E")
+mss.tab
+```
+
+### BS data: Count by Strata
+```{r}
+mbs.tab = aggregate(sim.obj$MBS.case, list(strata.id), sum)
+colnames(mbs.tab) = c("strata", "Pathogen_A", "Pathogen_B", "Pathogen_C",
+                      "Pathogen_D", "Pathogen_E")
+mbs.tab
+```
+
+## Marginal Etiology by Strata
+```{r }
+PlotByPathogen(coda.fit[[1]], sim.obj)
+```
+
+## Etiology Cell Probabilities - Posterior vs. Prior
+```{r}
+PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
+```
+
+
+## Chain Correlaiton
+```{r fig.width=25, fig.height=20}
+par.all = SweepPosterior(coda.fit[[1]], sim.obj, sweep.on = NULL,
+                         model.type = "regression")
+
+# par.swept = SweepPosterior(coda.fit[[1]], sim.obj, sweep.on = "ss_tpr",
+#                            model.type = "regression")
+
+C = cor(par.all)
+corrplot.mixed(C, lower = "number", upper = "ellipse")
+```
