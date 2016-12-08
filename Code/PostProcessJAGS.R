@@ -96,8 +96,17 @@ ListEtiologyPriorSC1 <- function(K, Smax, hyper.pars.list,
                                              decreasing = TRUE)], 4)    
     )[1:num.keep, ]
   rownames(EtioCombProb) = NULL
+  
+  Pr.num = cbind(cell.prob[, 1] ,
+                 cell.prob[, -1] %*% t(design.mat$PiMat))
+  Pr.num.mean = colMeans(Pr.num)
+  Pr.num.pathogen = cbind(Pr.num.mean, t(apply(Pr.num, 2, quantile,
+                                               c(0.025, 0.975))))
+  rownames(Pr.num.pathogen) = paste0("S=", 0:Smax)
+  colnames(Pr.num.pathogen) = c("mean", "lower", "upper")
+  
   list(Cell.prob = subset(EtioCombProb, Probability >= threshold),
-       Pr.num.pathogen = rbind(cell.prob.mean[-1]) %*% t(design.mat$PiMat),
+       Pr.num.pathogen = round(Pr.num.pathogen, 4),
        EtioMat = EtioMat)
 }
 
@@ -212,7 +221,7 @@ ExtractPrNumPath <- function(coda.chains, sim.obj, print.summary = FALSE) {
   }
 }
 
-ListEtiology <- function(coda.chains, sim.obj, top5.names,
+ListEtiology <- function(coda.chains, sim.obj, etio.names, reorder = TRUE,
                          num.keep = NULL, threshold = 0) {
   # This function uses the posterior samples of theta1 and theta2 in __non-reg__
   # version to compute the probability of each combination of pathogens.
@@ -236,23 +245,37 @@ ListEtiology <- function(coda.chains, sim.obj, top5.names,
     cell.prob.lower = apply(cell_prob, 2, quantile, probs = 0.025)
   
     LMAT = rbind(rep(0, 5), design.mat$Lmat)
-    EtioMat = LMAT[order(cell.prob.mean, decreasing = TRUE), ]
+    if (reorder) {
+      EtioMat = LMAT[order(cell.prob.mean, decreasing = TRUE), ]
+    } else {
+      EtioMat = LMAT  
+    }
     EtioComb = apply(EtioMat, 1, function(x) {
-      paste(top5.names[x > 0], collapse = "-")
+      paste(etio.names[x > 0], collapse = "-")
     })
     EtioComb[EtioComb == ""] = "None_Above"
     if (length(num.keep) < 1) {
       num.keep = length(EtioComb)
     }
-    EtioCombProb = data.frame(
-      EtioComb = EtioComb,
-      Probability = round(sort(cell.prob.mean,
-                               decreasing = TRUE), 4),
-      Prob.lower = round(cell.prob.lower[order(cell.prob.mean,
-                                               decreasing = TRUE)], 4),
-      Prob.upper = round(cell.prob.upper[order(cell.prob.mean,
-                                               decreasing = TRUE)], 4)
-      )[1:num.keep, ]
+    if (reorder) {
+      EtioCombProb = data.frame(
+        EtioComb = EtioComb,
+        Probability = round(sort(cell.prob.mean,
+                                 decreasing = TRUE), 4),
+        Prob.lower = round(cell.prob.lower[order(cell.prob.mean,
+                                                 decreasing = TRUE)], 4),
+        Prob.upper = round(cell.prob.upper[order(cell.prob.mean,
+                                                 decreasing = TRUE)], 4)
+      )[1:num.keep, ]      
+    } else {
+      EtioCombProb = data.frame(
+        EtioComb = EtioComb,
+        Probability = round(cell.prob.mean, 4),
+        Prob.lower = round(cell.prob.lower, 4),
+        Prob.upper = round(cell.prob.upper, 4)
+      )[1:num.keep, ]      
+    }
+
     rownames(EtioCombProb) = NULL
     EtioList[[i]] = subset(EtioCombProb, Probability >= threshold)
   }

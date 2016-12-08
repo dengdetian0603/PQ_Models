@@ -16,6 +16,26 @@ hyper.pars.list$pind_b = 2
 hyper.pars.list$theta2_mu = -3
 hyper.pars.list$tau_theta = 0.16
 
+# ---------------------------------------------------------
+tuning.grid = expand.grid(mu.theta1 = c(-1, -0.75, -0.5),
+                          mu.theta2 = c(-0.5, -2, -4),
+                          pind.a = c(5, 10, 15))
+tuning.grid$pind.b = 20 - tuning.grid$pind.a
+
+gp = list()
+for (i in 1:nrow(tuning.grid)) {
+  hyper.pars.list$tau_theta = 0.2
+  hyper.pars.list$mu_logit = rep(tuning.grid$mu.theta1[i], 5)
+  hyper.pars.list$theta2_mu = tuning.grid$mu.theta2[i]
+  hyper.pars.list$pind_a = tuning.grid$pind.a[i]
+  hyper.pars.list$pind_b = tuning.grid$pind.b[i]
+  gp[[i]] = PlotPriorPrNum(5, 5, hyper.pars.list, FALSE)
+}
+do.call(grid.arrange, gp[1:9])
+do.call(grid.arrange, gp[10:18])
+do.call(grid.arrange, gp[19:27])
+# ---------------------------------------------------------
+
 sim.obj = do.call(SimulatePerchData, par.default)
 sim.obj$pars.baseline$Mu
 sim.obj$pars.baseline$Pi

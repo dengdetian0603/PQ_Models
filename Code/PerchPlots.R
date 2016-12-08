@@ -8,6 +8,37 @@ library('R2jags')
 library('rjags')
 
 
+PlotPriorPrNum <- function(K, Smax, hyper.pars.list, printout = TRUE) {
+# Example:
+#  PlotPriorPrNum(5, 5, hyper.pars.list)
+  a = hyper.pars.list$pind_a
+  b = hyper.pars.list$pind_b
+  legend = paste0(c("E(theta1) = ", "E(theta2) = ", "SD(theta) = ",
+                    "Pr1.alpha = ", "Pr1.beta = ",
+                    "E(Pr.1) = ", "SD(Pr.1) = "),
+                  c(hyper.pars.list$mu_logit[1], hyper.pars.list$theta2_mu,
+                    round(sqrt(1/hyper.pars.list$tau_theta), 3),
+                    a, b, a/(a + b), round(a * b/(a + b + 1)/(a + b) ^ 2, 3)))
+  EtioPrior = ListEtiologyPriorSC1(K, Smax, hyper.pars.list,
+                                   as.character(1:K), 20000)
+  PrNum = as.data.frame(EtioPrior$Pr.num.pathogen)
+  g = ggplot(data = PrNum) + xlab("Number of Pathogens") +
+      ylab("Probability") + theme_bw() +
+      geom_point(aes(x = 0:Smax, y = mean)) +
+      geom_ribbon(aes(x = 0:Smax, ymin = 0, ymax = mean), alpha = 0.3) +
+      geom_linerange(aes(x = 0:Smax, ymax = upper, ymin = lower),
+                     alpha = 0.6) +
+      geom_text(aes(x = (0:Smax) - 0.1, y = mean + 0.05,
+                    label = as.character(mean)),
+                angle = 90, vjust = 0) +
+      annotate("text", x = Smax - 1.5, y = 0.85 - (1:length(legend)) * 0.05,
+               hjust = 0, label = legend)
+  if (printout) {
+    print(g)
+  }
+  return(g)
+}
+
 PlotSimStudy <- function(all.fit, true.par) {
   # Example:
   #   true.par = TrueParVal(sim.study.2, par.to.save)
@@ -61,12 +92,12 @@ MakeXLabel <- function(EtioMat, EtioComb) {
 PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                               etio.names = c("Patho_A", "Patho_B",
                                              "Patho_C", "Patho_D", "Patho_E"),
-                              contrast = "prior") {
+                              contrast = "prior", reorder = FALSE) {
 # Example:
 # PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
   K = ncol(sim.obj$L)
   Smax = sim.obj$Smax
-  EtioList = ListEtiology(coda.chains, sim.obj, etio.names)
+  EtioList = ListEtiology(coda.chains, sim.obj, etio.names, reorder)
   EtioPrior = ListEtiologyPriorSC1(K, Smax, hyper.pars.list,
                                    etio.names, 20000)
 
