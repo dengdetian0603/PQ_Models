@@ -70,6 +70,7 @@ PlotCompareResult <- function(fit1, fit2, method.names = c("A", "B")) {
   print(
     g + geom_violin(data = dt, aes(x = Method, y = Estimate),
                     draw_quantiles = c(0.025, 0.5, 0.975)) +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
       facet_grid(. ~ Parameter) 
   )
 }
