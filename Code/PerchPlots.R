@@ -75,7 +75,7 @@ PlotCompareResult <- function(fit1, fit2, method.names = c("A", "B")) {
   )
 }
 
-MakeXLabel <- function(EtioMat, EtioComb) {
+MakeXLabel <- function(EtioMat, EtioComb, num.keep = NULL) {
   Label = apply(EtioMat, 1, function(x) {
     label = ""
     for (xi in x) {
@@ -87,25 +87,31 @@ MakeXLabel <- function(EtioMat, EtioComb) {
     }
     label
   })
-  data.frame(EtioComb = EtioComb, Label = Label)
+  result  = data.frame(EtioComb = EtioComb, Label = Label)
+  if (length(num.keep) > 0) {
+    result = result[1:num.keep, ]
+  }
+  result
 }
 
 PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                               etio.names = c("Patho_A", "Patho_B",
                                              "Patho_C", "Patho_D", "Patho_E"),
-                              contrast = "prior", reorder = FALSE) {
+                              contrast = "prior", reorder = FALSE,
+                              num.keep = NULL) {
 # Example:
 # PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
   K = ncol(sim.obj$L)
   Smax = sim.obj$Smax
-  EtioList = ListEtiology(coda.chains, sim.obj, etio.names, reorder)
+  EtioList = ListEtiology(coda.chains, sim.obj, etio.names, reorder, num.keep)
   EtioPrior = ListEtiologyPriorSC1(K, Smax, hyper.pars.list,
-                                   etio.names, 20000)
+                                   etio.names, 20000, num.keep)
 
   for (i in 1:length(EtioList)) {
     Prior = merge(data.frame(EtioComb = EtioList[[i]]$EtioComb),
                   EtioPrior$Cell.prob, sort = FALSE)
-    Label = MakeXLabel(EtioPrior$EtioMat, EtioPrior$Cell.prob$EtioComb)
+    Label = MakeXLabel(EtioPrior$EtioMat, EtioPrior$Cell.prob$EtioComb,
+                       num.keep)
     XLabel = merge(data.frame(EtioComb = EtioList[[i]]$EtioComb),
                    Label, sort = FALSE)
     g = ggplot() + xlab("") +
@@ -114,7 +120,7 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
         geom_linerange(data = EtioList[[i]], aes(x = 1:nrow(EtioList[[i]]),
                                                  ymax = Prob.upper,
                                                  ymin = Prob.lower)) +
-        scale_x_continuous(breaks = 1:32,
+        scale_x_continuous(breaks = 1:nrow(XLabel),
                            labels = as.character(XLabel$Label)) +
         theme_bw() +
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
