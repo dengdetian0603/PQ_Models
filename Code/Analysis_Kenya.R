@@ -62,6 +62,8 @@ jags.result = FitJags(sim.obj,
 
 # collect results
 coda.fit = as.mcmc(jags.result)
+save(coda.fit, hyper.pars.list, sim.obj, top5.names,
+     file = "../WorkSpace/Kenya_sc1.RData")
 
 post.mean = round(summary(coda.fit)[[1]][,1], 3)
 post.mean[grepl("bs_tpr", names(post.mean))]
@@ -79,7 +81,7 @@ Pr.Num.Path.fit = ExtractPrNumPath(coda.fit[[1]], sim.obj)
 round(colMeans(Pr.Num.Path.fit[[1]]), 3)
 round(colMeans(Pr.Num.Path.fit[[2]]), 3)
 
-ListEtiology(coda.fit[[1]], sim.obj, top5.names)
+ListEtiology(coda.fit[[1]], sim.obj, top5.names, FALSE)
 
 # ----------------------------------------------------------------------------
 # Compare with nplcm model

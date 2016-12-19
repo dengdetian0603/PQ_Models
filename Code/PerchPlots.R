@@ -98,15 +98,17 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                               etio.names = c("Patho_A", "Patho_B",
                                              "Patho_C", "Patho_D", "Patho_E"),
                               contrast = "prior", reorder = FALSE,
-                              num.keep = NULL) {
+                              num.keep = NULL, baker.result = NULL) {
 # Example:
-# PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
+# plog.obj = PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
+#  
   K = ncol(sim.obj$L)
   Smax = sim.obj$Smax
   EtioList = ListEtiology(coda.chains, sim.obj, etio.names, reorder, num.keep)
   EtioPrior = ListEtiologyPriorSC1(K, Smax, hyper.pars.list,
                                    etio.names, 20000, num.keep)
-
+  X.unique = uniquecombs(sim.obj$X)
+  gplot.obj = list()
   for (i in 1:length(EtioList)) {
     Prior = merge(data.frame(EtioComb = EtioList[[i]]$EtioComb),
                   EtioPrior$Cell.prob, sort = FALSE)
@@ -114,6 +116,8 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                        num.keep)
     XLabel = merge(data.frame(EtioComb = EtioList[[i]]$EtioComb),
                    Label, sort = FALSE)
+    legend  = paste0(c("Age = ", "Severity = "),
+                     c(X.unique$AGE[i], X.unique$SEVERITY[i]))
     g = ggplot() + xlab("") +
         geom_point(data = EtioList[[i]], aes(x = 1:nrow(EtioList[[i]]),
                                              y = Probability)) +
@@ -123,7 +127,10 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
         scale_x_continuous(breaks = 1:nrow(XLabel),
                            labels = as.character(XLabel$Label)) +
         theme_bw() +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        annotate("text", x = nrow(EtioList[[i]]) - 4,
+                 y = 0.7 - (1:length(legend)) * 0.1,
+                 hjust = 0, label = legend)
         
     
     if (contrast == "prior") {
@@ -135,14 +142,25 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                                                ymin = Prob.lower),
                              alpha = 0.5)
     }
-    footnote <- paste(etio.names, collapse = "\n")
+    if (contrast == "baker" && length(baker.result) > 0) {
+      g = g + geom_point(data = baker.result[[i]],
+                         aes(x = (1:nrow(baker.result[[i]])) + 0.2,
+                             y = Probability),
+                         alpha = 0.5) +
+        geom_linerange(data = baker.result[[i]],
+                       aes(x = (1:nrow(baker.result[[i]])) + 0.2,
+                           ymax = Prob.upper, ymin = Prob.lower),
+                       alpha = 0.5)      
+    }
+    footnote <- paste(rev(etio.names), collapse = "\n")
     grid.newpage()
     gg = arrangeGrob(g, bottom = textGrob(
       footnote, x = 0.05, hjust = 0, vjust = -1.4,
       gp = gpar(fontface = "italic", fontsize = 7, lineheight = 0.95)))
+    gplot.obj[[i]] = gg
     grid.draw(gg)
-
   }
+  return(gplot.obj)
 }
 
 PlotByPathogen <- function(coda.chains, sim.obj,
