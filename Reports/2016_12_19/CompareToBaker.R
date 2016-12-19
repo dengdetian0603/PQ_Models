@@ -1,4 +1,3 @@
-rm(list = ls())
 setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/Code")
 source("./PerchDataSimulation.R")
 source("./ModelFittingJAGS.R")
@@ -7,10 +6,10 @@ source("./PerchPlots.R")
 library(coda)
 
 ws.dir = "~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/"
+
+# ------------------- No regression ------------------------------------------
 load(paste0(ws.dir, "2016_12_18_Top5_Singleton_NonReg.RData"))
 load(paste0(ws.dir, "2016_12_18_Top5_SingletonAndPair_NonReg.RData"))
-load(paste0(ws.dir, "2016_12_18_Top5_Singleton_Reg.RData"))
-load(paste0(ws.dir, "2016_12_18_Top5_SingletonAndPair_Reg.RData"))
 
 par.fit = as.mcmc(gs)
 pEti.est = data.frame(Eti.Name = cause_list,
@@ -36,3 +35,11 @@ colnames(pEti.byPathogen.matrix) = c(singleton.Eti, "Other")
 fit2 = pEti.byPathogen.matrix
 
 PlotCompareResult(fit1, fit2, c("Singletons", "Singletons&Pairs"))
+
+# ----------------------- Regression ------------------------------------------
+load(paste0(ws.dir, "2016_12_18_Top5_Singleton_Reg.RData"))
+load(paste0(ws.dir, "2016_12_18_Top5_SingletonAndPair_Reg.RData"))
+
+par.fit = as.mcmc(gs)
+
+
