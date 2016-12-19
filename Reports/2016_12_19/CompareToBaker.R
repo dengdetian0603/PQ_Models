@@ -61,8 +61,7 @@ for (i in 1:nrow(Z.unique)) {
                                  Prob.lower = apply(pEti.list[[i]], 2,
                                                     quantile, 0.025),
                                  Prob.upper = apply(pEti.list[[i]], 2,
-                                                    quantile, 0.975)
-                                 )
+                                                    quantile, 0.975))
 }
 baker.result[[1]]
 save(pEti.list, baker.result, Z.unique,
