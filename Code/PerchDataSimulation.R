@@ -56,7 +56,7 @@ GenDefaultCovariates <- function(nsample, num.covariates, interact = FALSE) {
   }
   nx.unique = nrow(x.unique)
   x.index = sample(1:nx.unique, nsample - nx.unique, replace = TRUE)
-  X = rbind(x.unique, x.unique[x.index, ])
+  X = as.matrix(rbind(x.unique, x.unique[x.index, ]))
   X
 }
 
