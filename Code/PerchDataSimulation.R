@@ -43,17 +43,21 @@ GenDefaultCovariates <- function(nsample, num.covariates, interact = FALSE) {
 # Simulate covariates, assuming all X are categorical.
 # Example:
 #   GenDefaultCovariates(10, 1)
-  x0 = rep(1, nsample)
-  if (num.covariates > 0) {
-    X = rbinom(nsample * num.covariates, 1, 0.5)
-    X = matrix(X, nrow = nsample)
-    if (interact && num.covariates == 2) {
-      X = cbind(X, X[, 1] * X[, 2])
-    }
-    return(cbind(x0, X))
-  } else {
-    return(matrix(x0, ncol = 1))
+  x.cat = list()
+  for (i in 1:num.covariates) {
+    x.cat[[i]] = c(0,1)
   }
+  x.comb = do.call(expand.grid, x.cat)
+  x.interact = apply(x.comb, 1, prod)
+  if (num.covariates == 2 && interact) {
+    x.unique = cbind(1, x.comb, x.interact)
+  } else {
+    x.unique = cbind(1, x.comb)
+  }
+  nx.unique = nrow(x.unique)
+  x.index = sample(1:nx.unique, nsample - nx.unique, replace = TRUE)
+  X = rbind(x.unique, x.unique[x.index, ])
+  X
 }
 
 Logit <- function(x)

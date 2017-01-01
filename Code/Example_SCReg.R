@@ -39,6 +39,8 @@ do.call(grid.arrange, gp[19:27])
 sim.obj = do.call(SimulatePerchData, par.default)
 sim.obj$pars.baseline$Mu
 sim.obj$pars.baseline$Pi
+sim.obj$pars.baseline$Betas
+sim.obj$pars.baseline$theta2
 
 colSums(sim.obj$MSS.case)
 colMeans(sim.obj$MSS.case)
