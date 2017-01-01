@@ -327,11 +327,11 @@ SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed, phi.iter = 500,
 }
 
 
-ReSimulateData <- function(ncase, nctrl, num.covariates,
+ReSimulateData <- function(ncase, nctrl, num.covariates, has.interact,
                            cell.prob.unique, K, Smax, 
                            ss.tpr, bs.tpr, bs.fpr, ...) {
 #
-  X = GenDefaultCovariates(ncase, num.covariates)
+  X = GenDefaultCovariates(ncase, num.covariates, has.interact)
   dmat = DesignMatrixAppxQuadExp(K, Smax)
   X.unique = uniquecombs(X)
   X.index = attr(X.unique, "index")
