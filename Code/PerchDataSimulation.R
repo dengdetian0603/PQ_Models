@@ -345,7 +345,7 @@ ReSimulateData <- function(ncase, nctrl, num.covariates, has.interact,
   MBS.case = LtoM(L, bs.tpr, bs.fpr)
   MBS.ctrl = t(matrix(rbinom(nctrl * K, 1, bs.fpr), nrow = K))
   list(L = L, MSS.case = MSS.case, MBS.case = MBS.case, MBS.ctrl = MBS.ctrl,
-       X = X)
+       X = X, K = K, Smax = Smax, cell.prob.unique = cell.prob.unique)
 }
 
 
