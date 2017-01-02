@@ -51,6 +51,7 @@ GenDefaultCovariates <- function(nsample, num.covariates, interact = FALSE) {
   x.interact = apply(x.comb, 1, prod)
   if (num.covariates == 2 && interact) {
     x.unique = cbind(1, x.comb, x.interact)
+    colnames(x.unique) = c("intercept", "AGE", "SEVERITY", "AGE:SEVERITY")
   } else {
     x.unique = cbind(1, x.comb)
   }

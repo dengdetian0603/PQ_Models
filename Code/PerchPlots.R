@@ -98,7 +98,8 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                               etio.names = c("Patho_A", "Patho_B",
                                              "Patho_C", "Patho_D", "Patho_E"),
                               contrast = "prior", reorder = FALSE,
-                              num.keep = NULL, baker.result = NULL) {
+                              num.keep = NULL, baker.result = NULL,
+                              has.true.value = FALSE) {
 # Example:
 # plog.obj = PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
 #  
@@ -107,7 +108,7 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
   EtioList = ListEtiology(coda.chains, sim.obj, etio.names, reorder, num.keep)
   EtioPrior = ListEtiologyPriorSC1(K, Smax, hyper.pars.list,
                                    etio.names, 20000, num.keep)
-  X.unique = uniquecombs(sim.obj$X)
+  X.unique = data.frame(uniquecombs(sim.obj$X))
   gplot.obj = list()
   for (i in 1:length(EtioList)) {
     Prior = merge(data.frame(EtioComb = EtioList[[i]]$EtioComb),
@@ -152,6 +153,13 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                            ymax = Prob.upper, ymin = Prob.lower),
                        alpha = 0.5)      
     }
+    if (has.true.value) {
+      par0 = data.frame(Prob = sim.obj$cell.prob.unique[i, 1:num.keep])
+      g = g + geom_point(data = par0, aes(x = 1:num.keep,
+                                          y = Prob),
+                         col = "red")
+    }
+    
     footnote <- paste(rev(etio.names), collapse = "\n")
     grid.newpage()
     gg = arrangeGrob(g, bottom = textGrob(
@@ -165,7 +173,8 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
 
 PlotByPathogen <- function(coda.chains, sim.obj,
                            etio.names = c("Patho_A", "Patho_B",
-                                          "Patho_C", "Patho_D", "Patho_E")) {
+                                          "Patho_C", "Patho_D", "Patho_E"),
+                           mu.fit = NULL) {
 # Example:
 # PlotByPathogen(coda.fit[[1]], sim.obj)
   Mu0 = sim.obj$pars.baseline$Mu
@@ -173,7 +182,11 @@ PlotByPathogen <- function(coda.chains, sim.obj,
                        Parameter = rep(etio.names, times = nrow(Mu0)),
                        Strata = rep(paste("strata", 1:nrow(Mu0)),
                                     each = ncol(Mu0)))
-  Mu.fit = ExtractMu(coda.chains, sim.obj)
+  if (length(mu.fit) > 0) {
+    Mu.fit = mu.fit
+  } else {
+    Mu.fit = ExtractMu(coda.chains, sim.obj)
+  }
   mu.samples = NULL
   for (i in 1:length(Mu.fit)) {
     mu.sample = Mu.fit[[i]]
