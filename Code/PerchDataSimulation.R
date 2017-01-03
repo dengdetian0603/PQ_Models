@@ -430,7 +430,20 @@ SetDefaultSimulationParameter <- function(option = 1) {
 }
 
 
-
+ReorgToNplcmData <- function(sim.obj,
+                             etio.names = c("A", "B", "C", "D", "E")) {
+  NPPCR = rbind(sim.obj$MBS.case, sim.obj$MBS.ctrl)
+  colnames(NPPCR) = etio.names
+  BCX = rbind(sim.obj$MSS.case,
+              matrix(NA, nrow = nrow(sim.obj$MBS.ctrl),
+                     ncol = length(etio.names)))
+  colnames(BCX) = etio.names
+  Mobs = list(MBS = list(NPPCR = NPPCR), MSS = list(BCX = BCX))
+  Y = c(rep(1, nrow(sim.obj$MSS.case)), rep(0, nrow(sim.obj$MBS.ctrl)))
+  X = rbind(sim.obj$X, matrix(NA, nrow = nrow(sim.obj$MBS.ctrl),
+                              ncol = ncol(sim.obj$X)))
+  list(Mobs = Mobs, X = X, Y = Y)
+}
 
 
 
