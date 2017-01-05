@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.8.29)  2 DEC 2016 18:55
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.8.29)  5 JAN 2017 00:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -871,76 +871,76 @@ Underfull \hbox (badness 10000) in paragraph at lines 57--58
 
 
 Package natbib Warning: Citation `shann1986etiology' on page 1 undefined on inp
-ut line 60.
+ut line 61.
 
 
 Package natbib Warning: Citation `world1990programme' on page 1 undefined on in
-put line 60.
+put line 61.
 
 
 Package natbib Warning: Citation `levine2012pneumonia' on page 1 undefined on i
-nput line 60.
+nput line 61.
 
 
 Package natbib Warning: Citation `calder2009evidence' on page 1 undefined on in
-put line 60.
+put line 61.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--61
+Underfull \hbox (badness 10000) in paragraph at lines 61--62
 
  []
 
 [1
 
 {/usr/local/texlive/2011/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 62--63
+Underfull \hbox (badness 10000) in paragraph at lines 63--64
 
  []
 
 
 Package natbib Warning: Citation `levine2012pneumonia' on page 2 undefined on i
-nput line 67.
+nput line 68.
 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 69.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 70.
 (/usr/local/texlive/2011/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 69.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 70.
 
 
 Package natbib Warning: Citation `deloria2012identification' on page 2 undefine
-d on input line 74.
+d on input line 75.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 74--75
+Underfull \hbox (badness 10000) in paragraph at lines 75--76
 
  []
 
 
 Package natbib Warning: Citation `adegbola2011rationale' on page 2 undefined on
- input line 76.
+ input line 77.
 
 
 Package natbib Warning: Citation `hammitt2012specimen' on page 2 undefined on i
-nput line 79.
+nput line 80.
 
 
 Package natbib Warning: Citation `murdoch2012laboratory' on page 2 undefined on
- input line 79.
+ input line 80.
 
 
-Overfull \hbox (34.49232pt too wide) in paragraph at lines 84--89
+Overfull \hbox (34.49232pt too wide) in paragraph at lines 85--90
  [][] 
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 91--92
+Underfull \hbox (badness 10000) in paragraph at lines 92--93
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 93--94
+Underfull \hbox (badness 10000) in paragraph at lines 94--95
 
  []
 
@@ -948,389 +948,389 @@ Underfull \hbox (badness 10000) in paragraph at lines 93--94
 File: DataDescription.png Graphic file (type png)
 
 <use DataDescription.png>
-Package pdftex.def Info: DataDescription.png used on input line 96.
+Package pdftex.def Info: DataDescription.png used on input line 97.
 (pdftex.def)             Requested size: 424.58232pt x 252.49098pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 97.
+(caption)                particular \caption on input line 98.
 See the caption package documentation for explanation.
 
 
-Overfull \hbox (0.52199pt too wide) in paragraph at lines 96--97
+Overfull \hbox (0.52199pt too wide) in paragraph at lines 97--98
  [] 
  []
 
 [3]
 
 Package natbib Warning: Citation `levine2012pneumonia' on page 4 undefined on i
-nput line 102.
+nput line 103.
 
 
 Package natbib Warning: Citation `hammitt2012specimen' on page 4 undefined on i
-nput line 102.
+nput line 103.
 
 
 Package natbib Warning: Citation `friedman2001elements' on page 4 undefined on 
-input line 102.
+input line 103.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 102--103
+Underfull \hbox (badness 10000) in paragraph at lines 103--104
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--105
+Underfull \hbox (badness 10000) in paragraph at lines 105--106
 
  []
 
 [4 <./DataDescription.png>]
 
 Package natbib Warning: Citation `gustafson2002bayesian' on page 5 undefined on
- input line 106.
+ input line 107.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 106--107
+Underfull \hbox (badness 10000) in paragraph at lines 107--108
 
  []
 
 
 Package natbib Warning: Citation `wu2015partially' on page 5 undefined on input
- line 108.
+ line 109.
 
 
 Package natbib Warning: Citation `wu2015nested' on page 5 undefined on input li
-ne 108.
+ne 109.
 
 
 Package natbib Warning: Citation `goodman1974exploratory' on page 5 undefined o
-n input line 108.
+n input line 109.
 
 
 Package natbib Warning: Citation `rothman2008modern' on page 5 undefined on inp
-ut line 108.
+ut line 109.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--109
+Underfull \hbox (badness 10000) in paragraph at lines 109--110
 
  []
 
 [5]
-Overfull \hbox (0.82765pt too wide) in paragraph at lines 114--115
+Overfull \hbox (0.82765pt too wide) in paragraph at lines 115--116
 \OT1/ptm/m/n/10.95 In the pre-vi-ous sec-tion, we have iden-ti-fied the chal-le
 ng-ing sta-tis-ti-cal prob-lem posed by the PERCH
  []
 
 
 Package natbib Warning: Citation `goodman1974exploratory' on page 6 undefined o
-n input line 117.
+n input line 118.
 
 
 Package natbib Warning: Citation `rindskopf2002use' on page 6 undefined on inpu
-t line 117.
+t line 118.
 
 
 Package natbib Warning: Citation `albert2001latent' on page 6 undefined on inpu
-t line 117.
+t line 118.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--118
+Underfull \hbox (badness 10000) in paragraph at lines 118--119
 
  []
 
 
 Package natbib Warning: Citation `goodman1974exploratory' on page 6 undefined o
-n input line 119.
+n input line 120.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 119--120
+Underfull \hbox (badness 10000) in paragraph at lines 120--121
 
  []
 
 
 Package natbib Warning: Citation `wu2015partially' on page 6 undefined on input
- line 121.
+ line 122.
 
 
 Package natbib Warning: Citation `jones2010identifiability' on page 6 undefined
- on input line 121.
+ on input line 122.
 
 
 Package natbib Warning: Citation `wu2015nested' on page 6 undefined on input li
-ne 121.
+ne 122.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 121--122
+Underfull \hbox (badness 10000) in paragraph at lines 122--123
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 123--124
+Underfull \hbox (badness 10000) in paragraph at lines 124--125
 
  []
 
 [6]
 
 Package natbib Warning: Citation `cilla2008viruses' on page 7 undefined on inpu
-t line 125.
+t line 126.
 
 
 Package natbib Warning: Citation `toikka2000streptococcus' on page 7 undefined 
-on input line 125.
+on input line 126.
 
 
 Package natbib Warning: Citation `louie2009bacterial' on page 7 undefined on in
-put line 125.
+put line 126.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 125--126
+Underfull \hbox (badness 10000) in paragraph at lines 126--127
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 127--128
+Underfull \hbox (badness 10000) in paragraph at lines 128--129
 
  []
 
 
 Package natbib Warning: Citation `haberman1973log' on page 7 undefined on input
- line 131.
+ line 132.
 
 
 Package natbib Warning: Citation `fitzmaurice1993likelihood' on page 7 undefine
-d on input line 131.
+d on input line 132.
 
 
 Package natbib Warning: Citation `ekholm1995marginal' on page 7 undefined on in
-put line 131.
+put line 132.
 
 
 Package natbib Warning: Citation `zhao1990correlated' on page 7 undefined on in
-put line 131.
+put line 132.
 
 
 Package natbib Warning: Citation `liang1986longitudinal' on page 7 undefined on
- input line 131.
+ input line 132.
 
 
 Package natbib Warning: Citation `zeger1988models' on page 7 undefined on input
- line 131.
+ line 132.
 
 
 Package natbib Warning: Citation `lipsitz1991generalized' on page 7 undefined o
-n input line 131.
+n input line 132.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 131--132
+Underfull \hbox (badness 10000) in paragraph at lines 132--133
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 133--134
+Underfull \hbox (badness 10000) in paragraph at lines 134--135
 
  []
 
 
 Package natbib Warning: Citation `cox1972analysis' on page 7 undefined on input
- line 137.
+ line 138.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 136--138
+Underfull \hbox (badness 10000) in paragraph at lines 137--139
 
  []
 
 [7]
 
 Package natbib Warning: Citation `bahadur1961representation' on page 8 undefine
-d on input line 141.
+d on input line 142.
 
 
 Package natbib Warning: Citation `cox1972analysis' on page 8 undefined on input
- line 141.
+ line 142.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
+Underfull \hbox (badness 10000) in paragraph at lines 146--147
 
  []
 
 
 Package natbib Warning: Citation `lipsitz1995estimation' on page 8 undefined on
- input line 147.
+ input line 148.
 
 
 Package natbib Warning: Citation `lipsitz1995estimation' on page 8 undefined on
- input line 147.
+ input line 148.
 
 
 Package natbib Warning: Citation `liang1986longitudinal' on page 8 undefined on
- input line 147.
+ input line 148.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 147--148
+Underfull \hbox (badness 10000) in paragraph at lines 148--149
 
  []
 
 
 Package natbib Warning: Citation `cox1972analysis' on page 8 undefined on input
- line 150.
+ line 151.
 
 
 Package natbib Warning: Citation `haberman1973log' on page 8 undefined on input
- line 150.
+ line 151.
 
 
 Package amsmath Warning: Foreign command \atopwithdelims;
 (amsmath)                \frac or \genfrac should be used instead
-(amsmath)                 on input line 155.
+(amsmath)                 on input line 156.
 
 [8]
-Underfull \hbox (badness 10000) in paragraph at lines 160--161
+Underfull \hbox (badness 10000) in paragraph at lines 161--162
 
  []
 
 
 Package natbib Warning: Citation `zhao1990correlated' on page 9 undefined on in
-put line 162.
+put line 163.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 162--163
+Underfull \hbox (badness 10000) in paragraph at lines 163--164
 
  []
 
 
 Package natbib Warning: Citation `fitzmaurice1993likelihood' on page 9 undefine
-d on input line 164.
+d on input line 165.
 
 
 Package natbib Warning: Citation `deming1940least' on page 9 undefined on input
- line 164.
+ line 165.
 
 
-Overfull \hbox (10.85863pt too wide) in paragraph at lines 164--165
+Overfull \hbox (10.85863pt too wide) in paragraph at lines 165--166
 []\OT1/ptm/m/n/10.95 As a method to cir-cum-vent the draw-back of the above mod
 el, an im-por-tant re-parameterization
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 164--165
+Underfull \hbox (badness 10000) in paragraph at lines 165--166
 
  []
 
 
 Package natbib Warning: Citation `ekholm1995marginal' on page 9 undefined on in
-put line 167.
+put line 168.
 
 
 Package natbib Warning: Citation `ekholm2000association' on page 9 undefined on
- input line 167.
+ input line 168.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 166--168
+Underfull \hbox (badness 10000) in paragraph at lines 167--169
 
  []
 
 [9]
 
 Package natbib Warning: Citation `ising1925beitrag' on page 10 undefined on inp
-ut line 174.
+ut line 175.
 
 
 Package natbib Warning: Citation `banerjee2014hierarchical' on page 10 undefine
-d on input line 174.
+d on input line 175.
 
 
 Package natbib Warning: Citation `besag1974spatial' on page 10 undefined on inp
-ut line 174.
+ut line 175.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 173--175
+Underfull \hbox (badness 10000) in paragraph at lines 174--176
 
  []
 
 [10]
-Overfull \hbox (5.14194pt too wide) in paragraph at lines 192--192
+Overfull \hbox (5.14194pt too wide) in paragraph at lines 193--193
 []\OT1/ptm/b/n/14.4 Representation of the Mul-ti-vari-ate Bi-nary La-tent Vari-
 able for Mul-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 193--194
+Underfull \hbox (badness 10000) in paragraph at lines 194--195
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 195--196
+Underfull \hbox (badness 10000) in paragraph at lines 196--197
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 205--207
+Underfull \hbox (badness 10000) in paragraph at lines 206--208
 
  []
 
 [11]
-Underfull \hbox (badness 10000) in paragraph at lines 214--218
+Underfull \hbox (badness 10000) in paragraph at lines 215--219
 
  []
 
 [12]
 
 Package natbib Warning: Citation `zhao1990correlated' on page 13 undefined on i
-nput line 240.
+nput line 241.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 240--241
+Underfull \hbox (badness 10000) in paragraph at lines 241--242
 
  []
 
 [13]
-Underfull \hbox (badness 10000) in paragraph at lines 271--272
+Underfull \hbox (badness 10000) in paragraph at lines 272--273
 
  []
 
 [14]
-Underfull \hbox (badness 10000) in paragraph at lines 299--302
+Underfull \hbox (badness 10000) in paragraph at lines 300--303
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 307--309
+Underfull \hbox (badness 10000) in paragraph at lines 308--310
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 311--312
+Underfull \hbox (badness 10000) in paragraph at lines 312--313
 
  []
 
 [15]
-Underfull \hbox (badness 10000) in paragraph at lines 313--316
+Underfull \hbox (badness 10000) in paragraph at lines 314--317
 
  []
 
 
-Overfull \hbox (20.45532pt too wide) in paragraph at lines 335--335
+Overfull \hbox (20.45532pt too wide) in paragraph at lines 336--336
 [] 
  []
 
 [16] [17]
-Underfull \hbox (badness 10000) in paragraph at lines 343--344
+Underfull \hbox (badness 10000) in paragraph at lines 344--345
 
  []
 
 
-LaTeX Warning: Reference `simu' on page 18 undefined on input line 345.
+LaTeX Warning: Reference `simu' on page 18 undefined on input line 346.
 
 
-LaTeX Warning: Reference `betaprior' on page 18 undefined on input line 345.
+LaTeX Warning: Reference `betaprior' on page 18 undefined on input line 346.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 345--346
+Underfull \hbox (badness 10000) in paragraph at lines 346--347
 
  []
 
 
-Overfull \hbox (271.79921pt too wide) in paragraph at lines 363--363
+Overfull \hbox (271.79921pt too wide) in paragraph at lines 364--364
 [][] 
  []
 
@@ -1338,24 +1338,24 @@ No file draft_latentquadexp.bbl.
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 373.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 374.
 [18]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 373.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 374.
  (./draft_latentquadexp.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 373.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 373.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 374.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 374.
 Package rerunfilecheck Info: File `draft_latentquadexp.out' has not changed.
 (rerunfilecheck)             Checksum: CDB6886A11F89D5629CAA073CB3B8712;1514.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 373.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 374.
  ) 
 Here is how much of TeX's memory you used:
  15454 strings out of 493633
  258925 string characters out of 3143377
- 365260 words of memory out of 3000000
+ 365257 words of memory out of 3000000
  18378 multiletter control sequences out of 15000+200000
  29471 words of font info for 81 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
@@ -1375,7 +1375,7 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2011/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2011/
 texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2011/texmf-dist
 /fonts/type1/urw/times/utmr8a.pfb>
-Output written on draft_latentquadexp.pdf (18 pages, 230935 bytes).
+Output written on draft_latentquadexp.pdf (18 pages, 230933 bytes).
 PDF statistics:
  256 PDF objects out of 1000 (max. 8388607)
  217 compressed objects within 3 object streams
