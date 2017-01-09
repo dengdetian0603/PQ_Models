@@ -3,6 +3,8 @@ suppressMessages(source("../../Code/PerchDataSimulation.R"))
 suppressMessages(source("../../Code/PostProcessJAGS.R"))
 suppressMessages(source("../../Code/PerchPlots.R"))
 
+library(ICC)
+
 file.names = system("ls ./SC1-2*.csv", intern = TRUE)
 # -----------------------------------------------------------------------------
 f = 14
@@ -71,13 +73,49 @@ g + geom_point(data = err.tab.sc1, aes(x = theta2.mu, y = expKL,
              col = "red")
 
 # ----------------------------------------------------------------------------
-f = 4
-file = file.names[f]
-sim.fit = read.csv(file)
+n.strata = 4
+prior.cat = 1
+pooled.sim.fit = NULL
+for (f in 1:length(file.names)) {
+  file = file.names[f]
+  sim.fit = read.csv(file)
+  if (!"tid" %in% colnames(sim.fit)) {
+    next
+  }
+  sim.fit$prior.cat = prior.cat
+  prior.cat = prior.cat + 1
+  
+  pooled.sim.fit  = rbind(pooled.sim.fit, sim.fit)
+}
+prior.cat.0 = pooled.sim.fit$prior.cat 
 
-sim.fit2 = sim.fit
+# pooled.sim.fit$prior.cat = prior.cat.0
+# o111 = order(pooled.sim.fit[pooled.sim.fit$tid == 50, "Mu.1.1."])
+# prior.cat.new = o111[pooled.sim.fit$prior.cat]
+# pooled.sim.fit$prior.cat = prior.cat.new
 
+gp = list()
+gp[[1]] = ggplot(data = pooled.sim.fit,
+                 aes(x = prior.cat, y = Mu.1.1., group = tid)) +
+          geom_jitter(alpha = 0.5, width = 0.1) + 
+          geom_line(aes(col = tid), alpha = 0.3)
+gp[[2]] = ggplot(data = pooled.sim.fit,
+                 aes(x = prior.cat, y = Mu.1.2., group = tid)) +
+  geom_jitter(alpha = 0.5, width = 0.1) + 
+  geom_line(aes(col = tid), alpha = 0.3)
+gp[[3]] = ggplot(data = pooled.sim.fit,
+                 aes(x = prior.cat, y = Mu.1.3., group = tid)) +
+  geom_jitter(alpha = 0.5, width = 0.1) + 
+  geom_line(aes(col = tid), alpha = 0.3)
+gp[[4]] = ggplot(data = pooled.sim.fit,
+                 aes(x = prior.cat, y = Mu.1.4., group = tid)) +
+  geom_jitter(alpha = 0.5, width = 0.1) + 
+  geom_line(aes(col = tid), alpha = 0.3)
+gp[[5]] = ggplot(data = pooled.sim.fit,
+                 aes(x = prior.cat, y = Mu.1.5., group = tid)) +
+  geom_jitter(alpha = 0.5, width = 0.1) + 
+  geom_line(aes(col = tid), alpha = 0.3)
 
+do.call(grid.arrange, gp)
 
-
-
+# ICCest(x = tid, y = Mu.2.1., data = pooled.sim.fit)$ICC
