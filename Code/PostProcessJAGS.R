@@ -36,7 +36,7 @@ WideToLong <- function(fit, method.name) {
 
 ListEtiologyPriorSC1 <- function(K, Smax, hyper.pars.list,
                                  patho.names,
-                                 n.sample = 5000,
+                                 n.sample = 5000, round.digit = 4,
                                  num.keep = NULL, threshold = 0) {
   # This function list the Etiology prior of each pathogen combination in the
   # Sparse Corr 1 model.
@@ -89,7 +89,7 @@ ListEtiologyPriorSC1 <- function(K, Smax, hyper.pars.list,
   EtioCombProb = data.frame(
     EtioComb = EtioComb,
     Probability = round(sort(cell.prob.mean,
-                             decreasing = TRUE), 4),
+                             decreasing = TRUE), round.digit),
     Prob.lower = round(cell.prob.lower[order(cell.prob.mean,
                                              decreasing = TRUE)], 4),
     Prob.upper = round(cell.prob.upper[order(cell.prob.mean,
@@ -106,7 +106,7 @@ ListEtiologyPriorSC1 <- function(K, Smax, hyper.pars.list,
   colnames(Pr.num.pathogen) = c("mean", "lower", "upper")
   
   list(Cell.prob = subset(EtioCombProb, Probability >= threshold),
-       Pr.num.pathogen = round(Pr.num.pathogen, 4),
+       Pr.num.pathogen = round(Pr.num.pathogen, round.digit),
        EtioMat = EtioMat)
 }
 
