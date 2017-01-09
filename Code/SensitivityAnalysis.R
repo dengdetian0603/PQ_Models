@@ -4,7 +4,6 @@ suppressMessages(source("../../Code/PostProcessJAGS.R"))
 suppressMessages(source("../../Code/PerchPlots.R"))
 
 file.names = system("ls ./SC1-2*.csv", intern = TRUE)
-
 # -----------------------------------------------------------------------------
 f = 14
 file = file.names[f]
@@ -54,12 +53,15 @@ pr.nonindep.sd = round(with(err.tab,
 err.tab = cbind(err.tab, pr.nonindep.mean, pr.nonindep.sd)[, -c(1, 4:11)]
 err.tab.sc1 = err.tab[!is.na(err.tab$theta1.mu), ]
 err.tab.baker =  err.tab[is.na(err.tab$theta1.mu), ]
+err.tab.baker$spec = c("Singletons+Pairs", "Singletons")
+
 
 g = ggplot()
 g + geom_point(data = err.tab.sc1, aes(x = theta2.mu, y = Bhattacharyya,
                                        col = pr.nonindep.mean,
                                        size = pr.nonindep.sd)) +
-  geom_hline(data = err.tab.baker, aes(yintercept = Bhattacharyya),
+  geom_hline(data = err.tab.baker, aes(yintercept = Bhattacharyya,
+                                       linetype = spec),
              col = "red")
 
 g + geom_point(data = err.tab.sc1, aes(x = theta2.mu, y = expKL,
@@ -67,3 +69,15 @@ g + geom_point(data = err.tab.sc1, aes(x = theta2.mu, y = expKL,
                                        size = pr.nonindep.sd)) +
   geom_hline(data = err.tab.baker, aes(yintercept = expKL),
              col = "red")
+
+# ----------------------------------------------------------------------------
+f = 4
+file = file.names[f]
+sim.fit = read.csv(file)
+
+sim.fit2 = sim.fit
+
+
+
+
+

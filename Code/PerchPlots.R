@@ -208,3 +208,11 @@ PlotByPathogen <- function(coda.chains, sim.obj,
   )
 }
 
+PlotPriorEffect <- function(sim.fit1, sim.fit2) {
+  # TODO:
+  Mu.fit1 = ExtractMuCellProb(sim.fit1)$Mu.fit
+  Mu.fit2 = ExtractMuCellProb(sim.fit2)$Mu.fit
+  
+  K = ncol(Mu.fit1[[1]])
+  
+}
