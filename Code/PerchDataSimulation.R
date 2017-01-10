@@ -425,7 +425,33 @@ SetDefaultSimulationParameter <- function(option = 1) {
                       ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
                       bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
                       bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
+  } else if (option == 8) {
+    par.config = list(ncase = 500, nctrl = 1000, K = 5, Smax = 1,
+                      Pi.seed = c(0.1, 0.9),
+                      phi.iter = 500,
+                      num.covariates = 2,
+                      has.interact = TRUE,
+                      Betas = c(-0.1, -0.3, 0.4, -0.5, 0.2,
+                                0.3, 0.5, -0.2, -0.4, 0.2,
+                                -0.1, 0.2, 0.1, 0.3, -0.2),
+                      ss.tpr = c(0.11, 0.12, 0.08, 0.15, 0.10),
+                      bs.tpr = c(0.8, 0.6 ,0.7 ,0.7 ,0.5),
+                      bs.fpr = c(0.5, 0.55, 0.40, 0.35, 0.45))
+  } else if (option == 9) {
+    par.config = list(ncase = 500, nctrl = 1000, K = 5, Smax = 5,
+                      Pi.seed = c(0.05, 0.5, 0.35, 0.1 - 1e-2 - 1e-3,
+                                  1e-2, 1e-3),
+                      phi.iter = 500,
+                      num.covariates = 2,
+                      has.interact = TRUE,
+                      Betas = c(-0.1, -0.3, 0.4, -0.5, 0.2,
+                                0.3, 0.5, -0.2, -0.4, 0.2,
+                                -0.1, 0.2, 0.1, 0.3, -0.2),
+                      ss.tpr = c(0.81, 0.82, 0.88, 0.85, 0.80),
+                      bs.tpr = c(0.98, 0.96 ,0.97 ,0.97 ,0.95),
+                      bs.fpr = c(0.05, 0.055, 0.040, 0.035, 0.045))
   }
+
   c(par.config, list(type = "sc1", theta2.value = -0.4, theta2.pind = 0.7))
 }
 
