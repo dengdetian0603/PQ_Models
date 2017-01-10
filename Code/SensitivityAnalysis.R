@@ -66,15 +66,10 @@ g + geom_point(data = err.tab.sc1, aes(x = theta2.mu, y = Bhattacharyya,
                                        linetype = spec),
              col = "red")
 
-g + geom_point(data = err.tab.sc1, aes(x = theta2.mu, y = expKL,
-                                       col = pr.nonindep.mean,
-                                       size = pr.nonindep.sd)) +
-  geom_hline(data = err.tab.baker, aes(yintercept = expKL),
-             col = "red")
-
 # ----------------------------------------------------------------------------
 n.strata = 4
 prior.cat = 1
+prior.name = NULL
 pooled.sim.fit = NULL
 for (f in 1:length(file.names)) {
   file = file.names[f]
@@ -83,6 +78,7 @@ for (f in 1:length(file.names)) {
     next
   }
   sim.fit$prior.cat = prior.cat
+  prior.name = c(prior.name, file)
   prior.cat = prior.cat + 1
   
   pooled.sim.fit  = rbind(pooled.sim.fit, sim.fit)
@@ -96,26 +92,40 @@ prior.cat.0 = pooled.sim.fit$prior.cat
 
 gp = list()
 gp[[1]] = ggplot(data = pooled.sim.fit,
-                 aes(x = prior.cat, y = Mu.1.1., group = tid)) +
+                 aes(x = prior.cat, y = Mu.2.1., group = tid)) +
           geom_jitter(alpha = 0.5, width = 0.1) + 
           geom_line(aes(col = tid), alpha = 0.3)
 gp[[2]] = ggplot(data = pooled.sim.fit,
-                 aes(x = prior.cat, y = Mu.1.2., group = tid)) +
+                 aes(x = prior.cat, y = Mu.2.2., group = tid)) +
   geom_jitter(alpha = 0.5, width = 0.1) + 
   geom_line(aes(col = tid), alpha = 0.3)
 gp[[3]] = ggplot(data = pooled.sim.fit,
-                 aes(x = prior.cat, y = Mu.1.3., group = tid)) +
+                 aes(x = prior.cat, y = Mu.2.3., group = tid)) +
   geom_jitter(alpha = 0.5, width = 0.1) + 
   geom_line(aes(col = tid), alpha = 0.3)
 gp[[4]] = ggplot(data = pooled.sim.fit,
-                 aes(x = prior.cat, y = Mu.1.4., group = tid)) +
+                 aes(x = prior.cat, y = Mu.2.4., group = tid)) +
   geom_jitter(alpha = 0.5, width = 0.1) + 
   geom_line(aes(col = tid), alpha = 0.3)
 gp[[5]] = ggplot(data = pooled.sim.fit,
-                 aes(x = prior.cat, y = Mu.1.5., group = tid)) +
+                 aes(x = prior.cat, y = Mu.2.5., group = tid)) +
   geom_jitter(alpha = 0.5, width = 0.1) + 
   geom_line(aes(col = tid), alpha = 0.3)
 
 do.call(grid.arrange, gp)
-
 # ICCest(x = tid, y = Mu.2.1., data = pooled.sim.fit)$ICC
+
+# ---------------------------------------------------------------------------
+d1 = pooled.sim.fit[pooled.sim.fit$prior.cat == 2, c("tid", "Mu.1.1.")]
+d2 = pooled.sim.fit[pooled.sim.fit$prior.cat == 4, c("tid", "Mu.1.1.")]
+
+d1 = d1[order(d1$tid), ]
+d2 = d2[order(d2$tid), ]
+i.set = intersect(d1$tid, d2$tid)
+plot(d1$Mu.1.1.[d1$tid %in% i.set], d2$Mu.1.1.[d2$tid %in% i.set],
+     xlab = "Prior Category 1", ylab = "Prior Category 2",
+     xlim = c(0, 0.6), ylim = c(0, 0.6))
+abline(a = 0, b = 1, col = "red")
+
+prior.name
+
