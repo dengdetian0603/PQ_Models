@@ -4,7 +4,8 @@ library(lubridate)
 library(rjags)
 # ----------------------------------------------------------------------------
 
-BakerSimulation <- function(with.pair = TRUE, is.regression = TRUE, sim.obj,
+BakerSimulation <- function(with.pair = TRUE, is.regression = TRUE,
+                            sim.obj, tid = 0,
                             n.itermcmc = 8000,
                             n.burnin   = 5000,
                             n.thin     = 3, save.img = FALSE) {
@@ -90,7 +91,7 @@ BakerSimulation <- function(with.pair = TRUE, is.regression = TRUE, sim.obj,
   # date stamp for analysis:
   Date <- gsub("-", "_", Sys.Date())
 
-  dated_name <- paste0(working_dir, Date, "_Top5", add.name1, add.name2)
+  dated_name <- paste0(working_dir, Date, "_Top5", add.name1, add.name2, "_t-", tid)
   if (!dir.exists(dated_name)) {
     dir.create(dated_name)
   }
