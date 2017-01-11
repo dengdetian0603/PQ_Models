@@ -13,9 +13,9 @@ SetDefaultHyperParameters <- function(K = 5, logit.mu.rho = -0.22) {
        alpha = rep(1, K),
        mu_logit = rep(-0.5, K), V = V,
        ma = 2, mb = 2, 
-       aa = 2, bb = 18,
-       cc = 5, dd = 3,
-       ee = 1, ff = 1,
+       aa = 2, bb = 18, # ss.tpr
+       cc = 5, dd = 3,  # bs.tpr
+       ee = 1, ff = 1,  # bs.fpr
        tau_theta = 0.2,
        pind_a = 3, pind_b = 2,
        pind_dirich_par = c(5, 1, 5),

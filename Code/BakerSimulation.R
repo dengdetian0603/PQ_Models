@@ -116,7 +116,7 @@ BakerSimulation <- function(with.pair = TRUE, is.regression = TRUE,
   rjags::load.module("glm")
   gs <- nplcm(data_nplcm.sim, model_options, mcmc_options)
   if (save.img) {
-    save.image(file = paste0(fullname, ".RData"))
+    save.image(file = paste0(fullname, "/workspace.RData"))
   }
 
   return(list(gs = gs, cause_list = cause_list))
