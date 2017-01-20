@@ -9,11 +9,14 @@
 \BOOKMARK [2][-]{subsection.2.2}{Models for Multivariate Binary Data}{section.2}% 9
 \BOOKMARK [1][-]{section.3}{Representation of the Multivariate Binary Latent Variable for Multiple Cause Etiology}{}% 10
 \BOOKMARK [2][-]{subsection.3.1}{Log-Linear Model}{section.3}% 11
-\BOOKMARK [2][-]{subsection.3.2}{Quadratic Exponential Model}{section.3}% 12
-\BOOKMARK [2][-]{subsection.3.3}{Pseudo-Quadratic Exponential Model}{section.3}% 13
-\BOOKMARK [1][-]{section.4}{Full Model Specification}{}% 14
-\BOOKMARK [2][-]{subsection.4.1}{The Likelihood for Cases}{section.4}% 15
-\BOOKMARK [2][-]{subsection.4.2}{The Likelihood for Controls}{section.4}% 16
-\BOOKMARK [2][-]{subsection.4.3}{The Hierarchical Prior Distribution}{section.4}% 17
-\BOOKMARK [2][-]{subsection.4.4}{The Joint Density}{section.4}% 18
-\BOOKMARK [1][-]{section.5}{Simulation Study}{}% 19
+\BOOKMARK [2][-]{subsection.3.2}{Quadratic Exponential Model with Sparse Correlation}{section.3}% 12
+\BOOKMARK [1][-]{section.4}{Full Model Specification}{}% 13
+\BOOKMARK [2][-]{subsection.4.1}{The Likelihood for Cases}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.2}{The Likelihood for Controls}{section.4}% 15
+\BOOKMARK [2][-]{subsection.4.3}{The Hierarchical Prior Distribution}{section.4}% 16
+\BOOKMARK [2][-]{subsection.4.4}{The Joint Density}{section.4}% 17
+\BOOKMARK [1][-]{section.5}{Simulation Studies}{}% 18
+\BOOKMARK [2][-]{subsection.5.1}{Study I}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.2}{Study II}{section.5}% 20
+\BOOKMARK [2][-]{subsection.5.3}{Study III}{section.5}% 21
+\BOOKMARK [1][-]{section.6}{References}{}% 22

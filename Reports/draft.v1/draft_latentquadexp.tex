@@ -183,7 +183,7 @@ where $\beta_j$ is the conditional log odds, $\{\alpha_{jk}\}$ are the dependenc
 P(L|\beta,\alpha) = \frac{\exp \big ( L^T\beta + \frac{\alpha}{2} L^T D L \big )}
 {\sum_{Y\in \{0,1\}^K } \exp \big ( Y^T\beta + \frac{\alpha}{2} Y^T D Y \big )}
 \end{align*} 
-
+Thus this model can be also viewed as a special case of the log-linear model.
 \end{itemize}
 
 
@@ -191,11 +191,12 @@ P(L|\beta,\alpha) = \frac{\exp \big ( L^T\beta + \frac{\alpha}{2} L^T D L \big )
 
 \newpage
 \section{Representation of the Multivariate Binary Latent Variable for Multiple Cause Etiology}
-In order to allow the possibility of multiple pathogens infecting the lung, we propose to use a multivariate binary vector $L\in \{0,1 \}^K$ as the latent variable describing the true status of the lung. Furthermore, a parsimonious quadratic exponential representation is developed to better incorporate prior knowledge. In the PERCH study, the prior knowledge scientists would like to incorporate in the model is the existence of strong competition among the majority of pathogens when they infect the lung while other few pathogens might infect independently. \\
+In order to allow the possibility of multiple pathogens infecting the lung, a multivariate binary vector $L\in \{0,1 \}^K$ is used as the latent variable that describes the true status of the lung. Among all methods reviewed in the previous section, the log-linear model has the following advantages that are important to the etiology estimation problem. (1) It has all the properties of an exponential family distribution; (2) its association parameters are orthogonal to the first order parameters, thus it is more convenient to do stratified estimation and conditional regression modeling on the etiology parameter $\mu=\mathbb{E}(L|M,Y=1)$ (3) association parameters have intuitive interpretations that reflect the complex interactions among various pathogens. \\
 
-In this section, we will define a novel representation of $L$ that (1) supports stratified estimation and conditional regression modeling on the etiology parameter $\mu=\mathbb{E}(L|M,Y=1)$, (2) reflects the competing nature among various pathogens, and (3) has good scalability, i.e. the number of parameters grows at most polynomially with $K$.\\
+Moreover, what the etiology estimation problem also requires but the classic log-linear model does not have, are good scalability in terms of the sample size as well as the number of candidate pathogens, and of course, good identifiability with low quality measurement data. In addition, in the PERCH study, scientists would like to incorporate their prior knowledge in the model that there exists strong competition among the majority of pathogens when they infect the lung, while other few pathogens might infect independently.\\
 
-The method we propose is derived from the log-linear model representation, thus we will start with re-introducing the log-linear model in the context of the above four requirements and form the connections to our method.
+Thus, we propose a parsimonious quadratic exponential representation for the latent vector $L$, and extend the Bayesian partially-Latent Class Model (pLCM) accordingly, for more accurate etiology estimation. In the rest of this section, we will re-introduce the log-linear model in the context of PERCH study and derive our method from it.\\
+
 
 \subsection{Log-Linear Model}
 Recall that $L$ is a K-dimensional binary random variable denoting the true state of the lung. With the same notations used in last section, the general form of the log-linear model is:
@@ -205,8 +206,7 @@ P(L=l; \Theta) = & \exp \{\Theta_1^T l + \Theta_2^{T} u_2 + \ldots + \Theta_K^T 
 A(\Theta) = & \sum_{l^* \in \{0,1\}^K}\exp \{ \Theta^T l^*\}
 \end{align*}
 \\
-
-Furthermore, let $S_i \in \{0,1,\ldots, K\}$ be the total number of pathogens infecting the lung of the $i$th patient, i.e. $S_k=\sum_{k=0}^K L_ik$, and define $\pi_s=P(S_i=s)$, thus $\pi=(\pi_0,\ldots,\pi_K)$ are the parameters that reflects the knowledge on how many pathogens there can be in the lung. Let $\mu = (\mu_1, \ldots,\mu_K) = \mathbb{E}(L|M,Y=1)$ denote the parameter of our primary interests, where $\mu_k$ is the fraction of disease potentially caused by the $k$th pathogen\footnote{ It is not possible from observational data to determine whether an infection in the lung is part of the sufficient cause or not. That can only be determined by experimentation. Therefore, we are estimating the pathogens infecting the lung whether they constitute the cause or not.}. Since we allow multiple pathogen infection, the sum of all these fractions may be greater than $1$. By plugging in the above joint probability function, we have
+Furthermore, let $S_i \in \{0,1,\ldots, K\}$ be the total number of pathogens infecting the lung of the $i$th patient, i.e. $S_k=\sum_{k=0}^K L_{ik}$, and define $\pi_s=P(S_i=s)$, thus $\pi=(\pi_0,\ldots,\pi_K)$ are the parameters that reflects the knowledge on how many pathogens there can be in the lung. Let $\mu = (\mu_1, \ldots,\mu_K) = \mathbb{E}(L|M,Y=1)$ denote the parameter of our primary interests, where $\mu_k$ is the fraction of disease potentially caused by the $k$th pathogen\footnote{ It is not possible from observational data to determine whether an infection in the lung is part of the sufficient cause or not. That can only be determined by experimentation. Therefore, we are estimating the pathogens infecting the lung whether they constitute the cause or not.}. Since we allow multiple pathogen infection, the sum of all these fractions may be greater than $1$. By plugging in the above joint probability function, we have
 \begin{align}
 \pi_s := & P(S=s)\nonumber \\ 
 = & \frac{1}{A(\Theta)} \sum_{l^*:S=s}\exp \{ \Theta^T l^*\}  \text{ , } s = 1,\ldots, K \\
@@ -237,44 +237,45 @@ where B and C are not independent constraints and should be compatible so that $
 Note that for any $\mathbf{\phi}$ in the feasible region defined by the above linear constraints, there is a one-to-one mapping between such $\phi$ and $\Theta$. In fact, $\Theta$ is the solutions to the following linear system ($J$ equations with $J$ unknowns):
 \[L^*\Theta = \log \phi\]
 
-\subsection{Quadratic Exponential Model}
-An important special case of the log-linear model is the ``quadratic expoential family'' (QE) described by Zhao and Prentice (1990) \cite{zhao1990correlated}, where the three- and higher-way association parameters were fixed at zero, which shrinks the model complexity from O($2^K$) to O($K^2$). However, in the case where GS data are completely absent, such QE representation still over-parameterizes the latent variable, thus the parameter of interests are hardly identifiable. Therefore, further parsimonious parameterization need to be imposed.\\
+\subsection{Quadratic Exponential Model with Sparse Correlation}
+An important special case of the log-linear model is the ``quadratic expoential family'' (QE) described by Zhao and Prentice (1990) \cite{zhao1990correlated}, where the three- and higher-way association parameters were fixed at zero, which shrinks the model complexity from O($2^K$) to O($K^2$). This parameterization is widely used in multivariate binary data analysis and performs well with fully observed GS data. However, in the case where GS data are completely absent, the parameter of interests are hardly identifiable with such limited information from data. Therefore, a more parsimonious and also flexible parameterization is needed.\\
 
-We propose to use an exchangeable association structure with shrinkage estimation to incorporate prior knowledge as well as to improve the model identifiability.
+We propose to use an exchangeable association structure with shrinkage estimation to incorporate prior knowledge as well as to improve the model scalability and identifiability.
 \begin{align}
 P(L=l; \Theta) = & \exp \{\Theta_1^T l + \Theta_2^{T} u_2 \}/ A(\Theta) \\ 
 \text{with }\                                                   \nonumber
 A(\Theta) = & \sum_{l^* \in \{0,1\}^K}\exp \{ \Theta^T l^*\} \\ \nonumber
 \Theta_2 = & \theta_2 \cdot (I_1, \ldots, I_{{K \choose 2}}) \\ \nonumber
 \end{align}
-where we use a single parameter $\theta_2$ to represent the extent of negative correlation between pathogens and $I_k$ is an indicator for whether a pair of pathogens can independently infect the lung. In the Bayesian framework, it is straightforward to use the stochastic search method to estimate the probability of $I_k = 1$.
+where we use a single parameter $\theta_2$ to represent the extent of negative association between pathogens and $I_{k'}$, $k' = 1, 2, \ldots, {K \choose 2}$, is an indicator for whether a pair of pathogens can independently infect the lung. In the Bayesian framework, it is straightforward to use the stochastic search variable selection \cite{george1993variable, george1996stochastic} method to sample the indicators as latent variables and estimate the posterior distribution.\\
 
+%\subsection{Pseudo-Quadratic Exponential Model}
+%Given the above definition, we can decompose the $A(\Theta)$ into two components: 
+%\begin{align*}
+%A(\Theta) = & \sum_{l^* \in \{0,1\}^K : \sum_{l^*} \leq s}\exp \{ \Theta^T l^*\} +
+%\sum_{l^* \in \{0,1\}^K : \sum{l^*} > s}\exp \{ \Theta^T l^*\} \\
+%= & A_1(\Theta, s) + A_2(\Theta, s)
+%\end{align*}
+%Then the probability mass function can be written as:
+%\begin{align*}
+%P(L=l; \Theta) = & P(L=l | S \leq s; \Theta) P(S \leq s) + P(L=l | S > s; \Theta) P(S > s)\\
+%= & \frac{\exp \{\Theta_1^T l + \Theta_2^{T} u_2 \} \cdot 1(\sum l \leq s)}{A_1(\Theta, s)} \cdot \frac{A_1(\Theta, s)}{A(\Theta)} +\\
+%& \frac{\exp \{\Theta_1^T l + \Theta_2^{T} u_2 \} \cdot 1(\sum l > s)}{A_2(\Theta, s )} \cdot \frac{A_2(\Theta, s)}{A(\Theta)}
+%\end{align*}
+%\\
+%If we allow $P(S > s) = \frac{A_2(\Theta, s)}{A(\Theta)}$ to be exactly 0, then the model violates the log linear model framework, but gains useful model sparsity for our interests, because in the etiology study, scientists have strong beliefs that there cannot be too many pathogens that jointly cause the disease. In other words, for some fixed integer $S_{max}$ s.t. $1\leq S_{max} \leq K$, set P($S > S_{max}$) = 0. Therefore, the probability mass function of the latent variable can be simplified to: 
+%\begin{align}
+%P(L=l; \Theta) = \frac{\exp \{\Theta_1^T l + \Theta_2^{T} u_2 \} \cdot 1(\sum l \leq S_{max})}{A_1(\Theta, S_{max})} 
+%\end{align}
+%
+%We call this representation as the Pseudo-Quadratic Exponential (PQE) Model since it adopts the same set of parameters as QE symbolically but it deviates from the log-linear family and the interpretation to the parameters are all conditioned on the assumption that $S \leq S_{max}$. This representation is useful since it imposes stronger competition among pathogens and it shrinks the size of the parameter expansion from $O(2^K)$ to $O(K^{S_{max}})$ comparing to regular QE model.\\
 
-\subsection{Pseudo-Quadratic Exponential Model}
-Given the above definition, we can decompose the $A(\Theta)$ into two components: 
-\begin{align*}
-A(\Theta) = & \sum_{l^* \in \{0,1\}^K : \sum_{l^*} \leq s}\exp \{ \Theta^T l^*\} +
-\sum_{l^* \in \{0,1\}^K : \sum{l^*} > s}\exp \{ \Theta^T l^*\} \\
-= & A_1(\Theta, s) + A_2(\Theta, s)
-\end{align*}
-Then the probability mass function can be written as:
-\begin{align*}
-P(L=l; \Theta) = & P(L=l | S \leq s; \Theta) P(S \leq s) + P(L=l | S > s; \Theta) P(S > s)\\
-= & \frac{\exp \{\Theta_1^T l + \Theta_2^{T} u_2 \} \cdot 1(\sum l \leq s)}{A_1(\Theta, s)} \cdot \frac{A_1(\Theta, s)}{A(\Theta)} +\\
-& \frac{\exp \{\Theta_1^T l + \Theta_2^{T} u_2 \} \cdot 1(\sum l > s)}{A_2(\Theta, s )} \cdot \frac{A_2(\Theta, s)}{A(\Theta)}
-\end{align*}
-\\
-If we allow $P(S > s) = \frac{A_2(\Theta, s)}{A(\Theta)}$ to be exactly 0, then the model violates the log linear model framework, but gains useful model sparsity for our interests, because in the etiology study, scientists have strong beliefs that there cannot be too many pathogens that jointly cause the disease. In other words, for some fixed integer $S_{max}$ s.t. $1\leq S_{max} \leq K$, set P($S > S_{max}$) = 0. Therefore, the probability mass function of the latent variable can be simplified to: 
-\begin{align}
-P(L=l; \Theta) = \frac{\exp \{\Theta_1^T l + \Theta_2^{T} u_2 \} \cdot 1(\sum l \leq S_{max})}{A_1(\Theta, S_{max})} 
-\end{align}
+% In both QE and PQE models,
 
-We call this representation as the Pseudo-Quadratic Exponential (PQE) Model since it adopts the same set of parameters as QE symbolically but it deviates from the log-linear family and the interpretation to the parameters are all conditioned on the assumption that $S \leq S_{max}$. This representation is useful since it imposes stronger competition among pathogens and it shrinks the size of the parameter expansion from $O(2^K)$ to $O(K^{S_{max}})$ comparing to regular QE model.\\
-
-In both QE and PQE models, the parameter of interests $\mu$ can be recovered from the posterior samples of $\Theta$ using (2). And it is straightforward to extend them with conditional regression functionality by reparameterizing $\theta^{(1)}_{ik}$ as $X_i^T\beta_k$, where $X_i$ is the vector of covariates.
+The parameter of interests $\mu$ can be recovered from the posterior samples of $\Theta$ using equation (2). When covariates are available, stratified/individual estimation for $\mu$ can be achieved by parameterizing the first order canonical parameters for subject $i$ and pathogen $k$, $\theta^{(1)}_{ik}$, as $X_i^T\beta_k$, where $X_i$ is the vector of covariates.
 
 \section{Full Model Specification}
-By using a Metropolis-Hastings algorithm, we can sample from the posterior distribution as long as we have a well-defined joint distribution of the data and parameters. Throughout this section, let $M_i^{GS} \in \{0,1\}^K$ be the observed GS measurement, $M_i^{SS} \in \{0,1\}^K$ be the observed SS measurement, $M_i^{BS} \in \{0,1\}^K$ be the observed BS measurement and $L_i \in \{0,1\}^K$ be the latent status for subject $i$. Let $\gamma \in [0,1]^K$ and $\delta \in [0,1]^K$ represent the True Positive Rate (TPR) and False Positive Rate (FPR) for BS measurements respectively, and let $\eta \in [0,1]^K$ be the TPR for SS measurements. Also, let $\mathbb{L}$ be the set of all allowed values of L, such that $|\mathbb{L}| = J^*$ and $l_j$ be the $j$th element in $\mathbb{L}$.
+By using a Metropolis-Hastings (within Gibbs) algorithm, we can sample from the posterior distribution as long as we have a well-defined joint distribution of the data and parameters. Throughout this section, let $M_i^{GS} \in \{0,1\}^K$ be the observed GS measurement, $M_i^{SS} \in \{0,1\}^K$ be the observed SS measurement, $M_i^{BS} \in \{0,1\}^K$ be the observed BS measurement and $L_i \in \{0,1\}^K$ be the latent status for subject $i$. Let $\gamma \in [0,1]^K$ and $\delta \in [0,1]^K$ represent the True Positive Rate (TPR) and False Positive Rate (FPR) for BS measurements respectively, and let $\eta \in [0,1]^K$ be the TPR for SS measurements. Also, let $\mathbb{L}$ be the set of all allowed values of L, such that $|\mathbb{L}| = J^*$ and $l_j$ be the $j$th element in $\mathbb{L}$.
 
 \subsection{The Likelihood for Cases}
 For cases without GS measurements, and under the conditional independence assumption for measurement given the latent variables, the likelihood function is
@@ -284,7 +285,7 @@ For cases without GS measurements, and under the conditional independence assump
 = & \sum_{j = 1}^{J^*} \big[ P(M_i^{SS} | l_j, \eta) P(M_i^{BS} | l_j, \gamma, \delta) P(l_j |\Theta) \big ] 
 \end{align*}
 \\
-where $P(l_j |\Theta)$ can be either the QE model (7) or PQE model (8) at the user's choice, and
+where $P(l_j |\Theta)$ is the QE likelihood in (7) and
 \begin{align}
 P(M_i^{SS} | l_j, \eta) = & \prod_{k=1}^K P(M_{ik} | l_{jk}, \eta_k) \nonumber \\
  = & \prod_{k=1}^K (\eta_k^{l_{jk}}l_{jk})^{M_{ik}} (1-\eta_k)^{l_{jk}(1-M_{ik})}\\
@@ -299,26 +300,30 @@ For cases with GS measurements, we have $L_i = M_i^{GS}$, then the likelihood is
 = & P(M_i^{SS}| M_i^{GS}, \eta) P(M_i^{BS} | M_i^{GS}, \gamma, \delta) P(M_i^{GS} | \Theta)
 \end{align*}
 \\
-where $P(M_i^{SS}| M_i^{GS}, \eta)$ is defined using (9), $P(M_i^{BS} | M_i^{GS}, \gamma, \delta)$ is defined using (10), and $P(M_i^{GS} | \Theta)$ is defined using $P(l_j |\Theta)$.\\
+where $P(M_i^{SS}| M_i^{GS}, \eta)$ is defined using (8), $P(M_i^{BS} | M_i^{GS}, \gamma, \delta)$ is defined using (9), and $P(M_i^{GS} | \Theta)$ is defined using $P(l_j |\Theta)$.\\
 
 \subsection{The Likelihood for Controls}
 For controls, we only have BS measurements and we know that their lungs were not infected. Since $\Theta$ are defined for case only, they are not involved in the likelihood for controls, thus the likelihood function is:
-\begin{align*}
+\begin{align}
  P(M_i^{BS} |\gamma, \delta) = & \prod_{k=1}^K \delta_k^{M_{ik}}(1-\delta_k)^{(1-M_{ik})}
-\end{align*}
+\end{align}
 \\
 
 \subsection{The Hierarchical Prior Distribution}
 For the case likelihood, the parameters are $(\Theta, \eta, \gamma, \delta)$, and for control likelihood, the parameters are $(\gamma, \delta)$. Our goal is to put informative prior on $\Theta_2, \eta, \gamma, \delta$ in order to facilitate the estimation of $\mu$. In our study, the TPR's and FPR's of the model are assumed to be mutually independent and independent from $\Theta$, therefore we can put independent Beta priors on them. \\
 
-Let $(a_k,b_k)$ be the hyper-parameter that defines the prior of $\eta_k$, let $(c_k,d_k)$ be the hyper-parameter for $\gamma_k$ and let $(e_k,f_k)$ be the hyper-parameter for $\delta_k$, and  $a_k,b_k,c_k,d_k,e_k,f_k$ are tuned so that the priors reflect the best knowledge of scientists on the sensitivities and specificities of each test/specimen combination.\\
-\\
-The prior distribution for the parameters in the likelihood of case data is:
-\[P(\mu, \pi, \eta, \gamma, \delta) = P(\mu, \pi) \prod_{k=1}^K \Big [Beta(\eta_k; a_k,b_k) Beta(\gamma_k;c_k,d_k) Beta(\delta_k;e_k,f_k) \Big ]\]
-The prior distribution for the parameters in the likelihood of control data is:
+Let $(a_k,b_k)$ be the hyper-parameter that defines the prior of $\eta_k$, let $(c_k,d_k)$ be the hyper-parameter for $\gamma_k$ and let $(e_k,f_k)$ be the hyper-parameter for $\delta_k$, and  $a_k,b_k,c_k,d_k,e_k,f_k$ are tuned so that the priors reflect the best knowledge of scientists on the sensitivities and specificities of each test/specimen combination. For example, scientists may believe there is 95 $\%$ of chance that the TPR of a SS measurement is between $0.01$ and $0.2$, then the value of $(a_k,b_k)$ is determined by setting the $2.5$th and $97.5$th percentile of Beta$(a_k,b_k)$ to $0.01$ and $0.2$ respectively and solving the equation.\\
+
+For $\Theta_1$, or {\boldmath$\beta$} if covariates are used, independent Gaussian priors with shared hyper-parameters $N(0, \sigma_1^2)$, are used. For $\Theta_2$, a hierarchical prior is used as suggested by the stochastic search variable selection algorithm, that is, for $\Theta_2 = \theta_2 \cdot (I_1, \ldots, I_{{K \choose 2}})$,
+\begin{align*}
+\theta_2 \sim & \text{ N}(\alpha_2, \sigma_2^2) \\
+I_{k'} \sim & \text{ Bernoulli}(p_{k'}), \ k' = 1, 2, \ldots, {K \choose 2} \\
+p_{k'} \sim & \text{ Beta}(\lambda_a, \lambda_b) \\
+\end{align*}
+Denote the independent Gaussian prior for $\Theta_1$ as $P(\Theta_1; \sigma_1^2)$ and let $P(\Theta_2; \alpha_2, \sigma_2^2, \lambda_a, \lambda_b)$ represent the hierarchical prior for $\Theta_2$, then the joint prior distribution for the parameters in the likelihood of case data is:
+\[P(\Theta, \eta, \gamma, \delta) = P(\Theta_1; \sigma_1^2) P(\Theta_2; \alpha_2, \sigma_2^2, \lambda_a, \lambda_b) \prod_{k=1}^K \Big [Beta(\eta_k; a_k,b_k) Beta(\gamma_k;c_k,d_k) Beta(\delta_k;e_k,f_k) \Big ]\]
+And the prior distribution for the parameters in the likelihood of control data is:
 \[P( \gamma, \delta) = \prod_{k=1}^K \Big [Beta(\gamma_k; c_k,d_k ) Beta(\delta_k; e_k,f_k) \Big] \]
-\\
-The prior on $\Theta$ is defined as
 
 \subsection{The Joint Density}
 With the specification of likelihood and prior, we can construct the joint density needed for building the MCMC algorithm. Let $G_i$ be an indicator of whether subject $i$ has GS measurements, and define the following three index sets.
@@ -332,15 +337,35 @@ then we can define the joint density of data and parameters as follow by combini
 & P(M,\Theta, \eta, \gamma, \delta) \\
 = & \prod_{i\in I_1} P(M_i^{GS},M_i^{SS},M_i^{BS} | \Theta, \eta, \gamma, \delta) 
 \prod_{i\in I_2} P(M_i^{SS},M_i^{BS} |\Theta, \eta, \gamma, \delta)
-\prod_{i\in I_3} P(M_i^{BS} |\gamma, \delta) P(\Theta, \eta, \gamma, \delta)
+\prod_{i\in I_3} P(M_i^{BS} |\gamma, \delta) P(\gamma, \delta)
 \end{align*}
 \\
-From the form of this model, we can see that the model we proposed incorporates data from all the sources with measurements of varying quality. With the joint density fully specified, we can build up a MCMC algorithm to simulate from the posterior distribution. The details fo the algorithm can be found in the appendix.
-
+From the form of this model, we can see that the model we proposed incorporates data from all the sources with measurements of varying quality. With the joint density fully specified, we can build up a Metropolis-Hastings (within Gibbs) algorithm to simulate from the posterior distribution. The details of the algorithm can be found in the appendix.
 
 
 \newpage
-\section{Simulation Study}
+\section{Simulation Studies}
+Three set of simulation studies are carried out to empirically evaluate the effectiveness of our proposed method. For all three sets of studies, we assume there are five candidate pathogens and two binary covariates. And in each simulated data set, there are $500$ case subjects and $1000$ control subjects.
+
+\subsection{Study I}
+In the first set of studies, the true lung infection status $L$ of case patients are generated by a Quadratic Exponential Model, where the first order canonical parameters are dependent on both covariates with an interaction effect, and the second order parameters are independent of the covariates.
+\begin{align*}
+\theta^{(1)}_{ik} = \beta_{k0} + \beta_{k1} x_{i1} + \beta_{k2} x_{i2} + \beta_{k3} x_{i1} x_{i2}
+\end{align*} 
+
+Also, for $K = 5$, there are $10$ second order parameters, we assume that two of them are zero, which represents that two particular pairs of pathogens infect lungs independently from each other; and the rest eight association parameters share the same negative value: $-1.5$, which stands for the competition among pathogens. Then, the BS and SS measurements for case subjects are simulated based on formula (8) and (9) respectively, and the SS measurements for control subjects are simulated based on formula (10) assuming that there is no infection at all in control patients' lungs. The actual parameter values used in the simulation process are summarized in table \ref{•} in the Appendix. \\
+
+The above data generation procedure is repeated $200$ times, so that we have $200$ independent data sets generated using the same mechanism. Our proposed model is applied to each of these data sets with a sequence of different prior specifications. These specifications share the same values for hyper-parameters $a_k, b_k, c_k, d_k, e_k$ and $f_k$, $k = 1, 2, \ldots, 5$,  because in practice they should be determined by the same interval matching procedure. They also share the same values for $\sigma_1$, and $\sigma_2$, which are set relatively large to represent non-informativeness. And these shared hyper-parameter values are shown in table \ref{tab: }. The difference between these specifications lies in the values of $\alpha_2, \lambda_a$ and $\lambda_b$, which represent the prior belief on the magnitude of pairwise competitions.\\
+
+For each unique prior specification, the posterior means are collected to construct an approximate sampling distribution of our estimator. The mean of these approximate sampling distributions implies empirically the values that our parameter estimates converge to. Thus the overall accuracy of our method is evaluated based on these sampling distributions means. Note that a five-dimensional multivariate binary distribution can be represented by a multinomial distribution with $32$ cells. Let $q_{j}$, $j = 1, \ldots, 32$ be the true multinomial cell probabilities, and let $\hat{q}_j$ be our cell probability estimations based on the sampling distribution means, then the Bhattachayya coefficient \cite{bhattachayya1943measure}, $\sum_{j=1}^{32}\sqrt{q_j \hat{q}_j}$, indicates the general accuracy of our method. \\
+
+In this study, our method is compared against the Bayesian partially-Latent Class Model (pLCM) \cite{wu2015partially}. 
+
+Table \ref{tab: } contains the estimation accuracy of our method under different prior specifications, as well as the accuracy of 
+
+\subsection{Study II}
+
+\subsection{Study III}
 A simulation study is done to explore the effectiveness of our proposed method. Based on the parameter values shown in table \ref{tab: truepar}, a set of 3-dimensional multivariate binary measurement data are simulated. In total, 1000 controls and 1000 cases are simulated.  For each control, only BS measurements are sampled. For cases, they all have SS and BS measurements and $3\%$ of them have additional GS measurements simulated. \\
 
 A sequence of experiments are carried out based on the simulated data set. First, with fixed $3\%$ of GS measurements and $1000$ controls, we sample the posterior distribution with case sample size $200$, $400$, $600$, and $1000$ respectively. Then, following the same sequence of sample sizes, we sample the posterior distribution without using GS measurements. Figure \ref{simu} summarizes the prior and posterior distributions of $(\mu, \pi)$ from these experiments. Prior distributions used for other parameters are plotted in figure \ref{betaprior}, as we can see, aach prior is tuned to be weakly informative, that is, to have relatively large variance and to center at wrong values that are not too far away from the truth.\\
@@ -348,6 +373,10 @@ A sequence of experiments are carried out based on the simulated data set. First
 The results of this simulation study suggest that only with a small amount of direct (GS) measurements, the posterior distribution is converging to the true value as the number of observation grows. Also, the posterior credible region has a high coverage probability over the true value even when direct measurements are completely absent. Since the priors for sensitivities and specificities were set to be weakly informative, the robustness of this model is empirically testified.
 
 
+\bibliographystyle{plain}
+\bibliography{draft_latentquadexp.bib}
+
+\section*{Appendix}
 
 \begin{table}[htbp]
 \begin{adjustwidth}{-0.5in}{-1in}
@@ -365,11 +394,6 @@ $0.584$ & $0.289$ & $0.378$ & $0.10$ & $0.60$ & $0.25$ & $0.05$ & $0.05$ & $0.10
 \end{adjustwidth}
 \end{table}
 
-
-
-
-\bibliographystyle{plain}
-\bibliography{draft_latentquadexp}
 
 \end{document}
 

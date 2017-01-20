@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2011)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: draft_latentquadexp.aux
+The style file: plain.bst
+Database file #1: draft_latentquadexp.bib.bib
+Warning--to sort, need author or key in WHO
+Warning--empty journal in world2009global
+Warning--empty journal in wu2015nested
+You've used 45 entries,
+            2118 wiz_defined-function locations,
+            768 strings with 13193 characters,
+and the built_in function-call counts, 17646 in all, are:
+= -- 1742
+> -- 964
+< -- 13
++ -- 388
+- -- 336
+* -- 1354
+:= -- 2923
+add.period$ -- 137
+call.type$ -- 45
+change.case$ -- 288
+chr.to.int$ -- 0
+cite$ -- 48
+duplicate$ -- 594
+empty$ -- 1226
+format.name$ -- 336
+if$ -- 3622
+int.to.chr$ -- 0
+int.to.str$ -- 45
+missing$ -- 47
+newline$ -- 228
+num.names$ -- 88
+pop$ -- 266
+preamble$ -- 1
+purify$ -- 246
+quote$ -- 0
+skip$ -- 460
+stack$ -- 0
+substring$ -- 1210
+swap$ -- 143
+text.length$ -- 13
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 174
+warning$ -- 3
+while$ -- 169
+width$ -- 47
+write$ -- 490
+(There were 3 warnings)

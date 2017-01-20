@@ -177,7 +177,7 @@ PlotByPathogen <- function(coda.chains, sim.obj,
                            mu.fit = NULL) {
 # Example:
 # PlotByPathogen(coda.fit[[1]], sim.obj)
-  Mu0 = sim.obj$pars.baseline$Mu
+  Mu0 = sim.obj$Mu.unique
   Mu.true = data.frame(Value = as.vector(t(Mu0)),
                        Parameter = rep(etio.names, times = nrow(Mu0)),
                        Strata = rep(paste("strata", 1:nrow(Mu0)),

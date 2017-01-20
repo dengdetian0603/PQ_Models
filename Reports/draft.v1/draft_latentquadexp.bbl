@@ -1,0 +1,275 @@
+\begin{thebibliography}{10}
+
+\bibitem{WHO}
+Who pneumonia fact sheets.
+\newblock \url{http://www.who.int/mediacentre/factsheets/fs331/en/}.
+\newblock Accessed: 2015-09-30.
+
+\bibitem{adegbola2011rationale}
+Richard~A Adegbola and Orin~S Levine.
+\newblock Rationale and expectations of the pneumonia etiology research for
+  child health (perch) study.
+\newblock {\em Expert review of respiratory medicine}, 5(6):731, 2011.
+
+\bibitem{albert2001latent}
+Paul~S Albert, Lisa~M McShane, Joanna~H Shih, US~National Cancer Institute
+  Bladder Tumor~Marker Network, et~al.
+\newblock Latent class modeling approaches for assessing diagnostic error
+  without a gold standard: with applications to p53 immunohistochemical assays
+  in bladder tumors.
+\newblock {\em Biometrics}, pages 610--619, 2001.
+
+\bibitem{bahadur1961representation}
+Raghu~Raj Bahadur.
+\newblock A representation of the joint distribution of responses to n
+  dichotomous items.
+\newblock {\em Studies in item analysis and prediction}, 6:158--168, 1961.
+
+\bibitem{banerjee2014hierarchical}
+Sudipto Banerjee, Bradley~P Carlin, and Alan~E Gelfand.
+\newblock {\em Hierarchical modeling and analysis for spatial data}.
+\newblock Crc Press, 2014.
+
+\bibitem{besag1974spatial}
+Julian Besag.
+\newblock Spatial interaction and the statistical analysis of lattice systems.
+\newblock {\em Journal of the Royal Statistical Society. Series B
+  (Methodological)}, pages 192--236, 1974.
+
+\bibitem{bhattachayya1943measure}
+A~Bhattachayya.
+\newblock On a measure of divergence between two statistical population defined
+  by their population distributions.
+\newblock {\em Bulletin Calcutta Mathematical Society}, 35(99-109):28, 1943.
+
+\bibitem{black2010global}
+Robert~E Black, Simon Cousens, Hope~L Johnson, Joy~E Lawn, Igor Rudan, Diego~G
+  Bassani, Prabhat Jha, Harry Campbell, Christa~Fischer Walker, Richard
+  Cibulskis, et~al.
+\newblock Global, regional, and national causes of child mortality in 2008: a
+  systematic analysis.
+\newblock {\em The lancet}, 375(9730):1969--1987, 2010.
+
+\bibitem{calder2009evidence}
+Daniel Calder and Shamim Qazi.
+\newblock Evidence behind the who guidelines: hospital care for children: what
+  is the aetiology of pneumonia in hiv-infected children in developing
+  countries?
+\newblock {\em Journal of tropical pediatrics}, 55(4):219--224, 2009.
+
+\bibitem{cilla2008viruses}
+Gustavo Cilla, Eider Onate, Eduardo~G Perez-Yarza, Milagrosa Montes, Diego
+  Vicente, and Emilio Perez-Trallero.
+\newblock Viruses in community-acquired pneumonia in children aged less than 3
+  years old: High rate of viral coinfection.
+\newblock {\em Journal of medical virology}, 80(10):1843--1849, 2008.
+
+\bibitem{cox1972analysis}
+David~R Cox.
+\newblock The analysis of multivariate binary data.
+\newblock {\em Applied statistics}, pages 113--120, 1972.
+
+\bibitem{deloria2012identification}
+Maria Deloria-Knoll, Daniel~R Feikin, J~Anthony~G Scott, Katherine~L O’Brien,
+  Andrea~N DeLuca, Amanda~J Driscoll, Orin~S Levine, et~al.
+\newblock Identification and selection of cases and controls in the pneumonia
+  etiology research for child health project.
+\newblock {\em Clinical infectious diseases}, 54(suppl 2):S117--S123, 2012.
+
+\bibitem{deming1940least}
+W~Edwards Deming and Frederick~F Stephan.
+\newblock On a least squares adjustment of a sampled frequency table when the
+  expected marginal totals are known.
+\newblock {\em The Annals of Mathematical Statistics}, 11(4):427--444, 1940.
+
+\bibitem{ekholm2000association}
+Anders Ekholm, John~W McDonald, and Peter~WF Smith.
+\newblock Association models for a multivariate binary response.
+\newblock {\em Biometrics}, pages 712--718, 2000.
+
+\bibitem{ekholm1995marginal}
+Anders Ekholm, Peter~WF Smith, and John~W McDonald.
+\newblock Marginal regression analysis of a multivariate binary response.
+\newblock {\em Biometrika}, 82(4):847--854, 1995.
+
+\bibitem{fitzmaurice1993likelihood}
+Garrett~M Fitzmaurice and Nan~M Laird.
+\newblock A likelihood-based method for analysing longitudinal binary
+  responses.
+\newblock {\em Biometrika}, 80(1):141--151, 1993.
+
+\bibitem{friedman2001elements}
+Jerome Friedman, Trevor Hastie, and Robert Tibshirani.
+\newblock {\em The elements of statistical learning}, volume~1.
+\newblock Springer series in statistics Springer, Berlin, 2001.
+
+\bibitem{george1993variable}
+Edward~I George and Robert~E McCulloch.
+\newblock Variable selection via gibbs sampling.
+\newblock {\em Journal of the American Statistical Association},
+  88(423):881--889, 1993.
+
+\bibitem{george1996stochastic}
+Edward~I George and Robert~E McCulloch.
+\newblock Stochastic search variable selection.
+\newblock In {\em Markov chain Monte Carlo in practice}, pages 203--214.
+  Springer, 1996.
+
+\bibitem{goodman1974exploratory}
+Leo~A Goodman.
+\newblock Exploratory latent structure analysis using both identifiable and
+  unidentifiable models.
+\newblock {\em Biometrika}, 61(2):215--231, 1974.
+
+\bibitem{gustafson2002bayesian}
+Paul Gustafson, Nhu~D Le, and Marc Vall{\'e}e.
+\newblock A bayesian approach to case--control studies with errors in
+  covariables.
+\newblock {\em Biostatistics}, 3(2):229--243, 2002.
+
+\bibitem{haberman1973log}
+Shelby~J Haberman.
+\newblock Log-linear models for frequency data: Sufficient statistics and
+  likelihood equations.
+\newblock {\em The Annals of Statistics}, pages 617--632, 1973.
+
+\bibitem{hammitt2012specimen}
+Laura~L Hammitt, David~R Murdoch, J~Anthony~G Scott, Amanda Driscoll, Ruth~A
+  Karron, Orin~S Levine, Katherine~L O’Brien, et~al.
+\newblock Specimen collection for the diagnosis of pediatric pneumonia.
+\newblock {\em Clinical infectious diseases}, 54(suppl 2):S132--S139, 2012.
+
+\bibitem{hirama2011prediction}
+Takashi Hirama, Takefumi Yamaguchi, Hitoshi Miyazawa, Tomoaki Tanaka, Giichi
+  Hashikita, Etsuko Kishi, Yoshimi Tachi, Shun Takahashi, Keiji Kodama, Hiroshi
+  Egashira, et~al.
+\newblock Prediction of the pathogens that are the cause of pneumonia by the
+  battlefield hypothesis.
+\newblock {\em PloS one}, 6(9):e24474, 2011.
+
+\bibitem{ising1925beitrag}
+Ernst Ising.
+\newblock Beitrag zur theorie des ferromagnetismus.
+\newblock {\em Zeitschrift f{\"u}r Physik A Hadrons and Nuclei},
+  31(1):253--258, 1925.
+
+\bibitem{jones2010identifiability}
+Geoffrey Jones, Wesley~O Johnson, Timothy~E Hanson, and Ronald Christensen.
+\newblock Identifiability of models for multiple diagnostic testing in the
+  absence of a gold standard.
+\newblock {\em Biometrics}, 66(3):855--863, 2010.
+
+\bibitem{levine2012pneumonia}
+Orin~S Levine, Katherine~L O’Brien, Maria Deloria-Knoll, David~R Murdoch,
+  Daniel~R Feikin, Andrea~N DeLuca, Amanda~J Driscoll, Henry~C Baggett,
+  W~Abdullah Brooks, Stephen~RC Howie, et~al.
+\newblock The pneumonia etiology research for child health project: a 21st
+  century childhood pneumonia etiology study.
+\newblock {\em Clinical infectious diseases}, 54(suppl 2):S93--S101, 2012.
+
+\bibitem{liang1986longitudinal}
+Kung-Yee Liang and Scott~L Zeger.
+\newblock Longitudinal data analysis using generalized linear models.
+\newblock {\em Biometrika}, pages 13--22, 1986.
+
+\bibitem{lipsitz1995estimation}
+Stuart~R Lipsitz, Garret~M Fitzmaurice, Lynn Sleeper, and LP~Zhao.
+\newblock Estimation methods for the joint distribution of repeated binary
+  observations.
+\newblock {\em Biometrics}, pages 562--570, 1995.
+
+\bibitem{lipsitz1991generalized}
+Stuart~R Lipsitz, Nan~M Laird, and David~P Harrington.
+\newblock Generalized estimating equations for correlated binary data: using
+  the odds ratio as a measure of association.
+\newblock {\em Biometrika}, 78(1):153--160, 1991.
+
+\bibitem{liu2012global}
+Li~Liu, Hope~L Johnson, Simon Cousens, Jamie Perin, Susana Scott, Joy~E Lawn,
+  Igor Rudan, Harry Campbell, Richard Cibulskis, Mengying Li, et~al.
+\newblock Global, regional, and national causes of child mortality: an updated
+  systematic analysis for 2010 with time trends since 2000.
+\newblock {\em The Lancet}, 379(9832):2151--2161, 2012.
+
+\bibitem{louie2009bacterial}
+J~Louie, C~Jean, TH~Chen, S~Park, R~Ueki, T~Harper, E~Chmara, J~Myers,
+  R~Stoppacher, C~Catanese, et~al.
+\newblock Bacterial coinfections in lung tissue specimens from fatal cases of
+  2009 pandemic influenza a (h1n1)-united states, may-august 2009.
+\newblock {\em Morbidity and Mortality Weekly Report}, 58(38):1071--1074, 2009.
+
+\bibitem{murdoch2012laboratory}
+David~R Murdoch, Katherine~L O’Brien, Amanda~J Driscoll, Ruth~A Karron,
+  Niranjan Bhat, et~al.
+\newblock Laboratory methods for determining pneumonia etiology in children.
+\newblock {\em Clinical infectious diseases}, 54(suppl 2):S146--S152, 2012.
+
+\bibitem{world1990programme}
+World~Health Organization et~al.
+\newblock Programme for the control of acute respiratory infections.
+\newblock {\em Acute respiratory infections in children: case management in
+  small hospitals in developing countries. A manual for doctors and other
+  senior health workers. Geneva, Switzerland: World Health Organization}, 1990.
+
+\bibitem{world2009global}
+World~Health Organization, UNICEF, et~al.
+\newblock Global action plan for prevention and control of pneumonia (gapp).
+\newblock 2009.
+
+\bibitem{rindskopf2002use}
+David Rindskopf.
+\newblock The use of latent class analysis in medical diagnosis.
+\newblock In {\em Papers presented}, volume~26, pages 2912--2916. World
+  Scientific, 2002.
+
+\bibitem{rothman2008modern}
+Kenneth~J Rothman, Sander Greenland, and Timothy~L Lash.
+\newblock {\em Modern epidemiology}.
+\newblock Lippincott Williams \& Wilkins, 2008.
+
+\bibitem{shann1986etiology}
+FRANK SHANN.
+\newblock Etiology of severe pneumonia in children in developing countries.
+\newblock {\em The Pediatric Infectious Disease Journal}, 5(2):247--252, 1986.
+
+\bibitem{singh2011pneumonia}
+Varinder Singh and Satinder Aneja.
+\newblock Pneumonia--management in the developing world.
+\newblock {\em Paediatric respiratory reviews}, 12(1):52--59, 2011.
+
+\bibitem{toikka2000streptococcus}
+P~Toikka, T~Juven, R~Virkki, M~Leinonen, J~Mertsola, and O~Ruuskanen.
+\newblock Streptococcus pneumoniae and mycoplasma pneumoniae coinfection in
+  community acquired pneumonia.
+\newblock {\em Archives of disease in childhood}, 83(5):413, 2000.
+
+\bibitem{unicef2006pneumonia}
+WHO UNICEF, WHO UNICEF, et~al.
+\newblock Pneumonia: the forgotten killer of children.
+\newblock {\em UNICEF/WHO}, pages 1--40, 2006.
+
+\bibitem{wu2015partially}
+Zhenke Wu, Maria Deloria-Knoll, Laura~L Hammitt, and Scott~L Zeger.
+\newblock Partially latent class models for case--control studies of childhood
+  pneumonia aetiology.
+\newblock {\em Journal of the Royal Statistical Society: Series C (Applied
+  Statistics)}, 2015.
+
+\bibitem{wu2015nested}
+Zhenke Wu, Maria Deloria-Knoll, and Scott~L Zeger.
+\newblock Nested partially-latent class models for dependent binary data;
+  estimating disease etiology.
+\newblock 2015.
+
+\bibitem{zeger1988models}
+Scott~L Zeger, Kung-Yee Liang, and Paul~S Albert.
+\newblock Models for longitudinal data: a generalized estimating equation
+  approach.
+\newblock {\em Biometrics}, pages 1049--1060, 1988.
+
+\bibitem{zhao1990correlated}
+Lue~Ping Zhao and Ross~L Prentice.
+\newblock Correlated binary regression using a quadratic exponential model.
+\newblock {\em Biometrika}, 77(3):642--648, 1990.
+
+\end{thebibliography}
