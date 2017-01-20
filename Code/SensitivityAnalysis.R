@@ -1,5 +1,7 @@
 setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/AD.SensitivityAnalysis")
-setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/MultinomCaseAnalysis//")
+setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/MultinomCaseAnalysis/")
+setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/SensitivityAnalysis/")
+setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/SS_NA/")
 
 suppressMessages(source("../../Code/PerchDataSimulation.R"))
 suppressMessages(source("../../Code/PostProcessJAGS.R"))
@@ -9,7 +11,7 @@ library(ICC)
 
 file.names = system("ls ./*.csv", intern = TRUE)
 # -----------------------------------------------------------------------------
-f = 12
+f = 1
 file = file.names[f]
 sim.fit = read.csv(file)
 load(gsub(".csv", ".RData", file))
@@ -47,7 +49,7 @@ PlotByPathogen(NULL, sim.obj, mu.fit = Mu.fit)
 plot.obj = PlotByCombination(cell.prob.fit0, sim.obj,
                              hyper.pars.list, num.keep = 16,
                              has.true.value = TRUE,
-                             contrast = "", baker.result = baker.fit)
+                             contrast = "baker", baker.result = baker.fit)
 do.call(grid.arrange, plot.obj)
 # -----------------------------------------------------------------------------
 err.tab = read.csv("../AccurateData_Reg_SensAnalysis.csv")
