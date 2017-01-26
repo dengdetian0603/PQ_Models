@@ -6,7 +6,7 @@ source("./PerchPlots.R")
 source("../../BAKER/utils.R")
 library(ggplot2)
 # -----------------------------------------------------------------------------
-top5.names = c("RSV", "RHINO", "HMPV_A_B", "PNEU", "PV_EV")
+top5.names = c("RSV", "RHINO", "HMPV_A_B", "PNEU", "HINF")
 
 load("../WorkSpace/KenyaData_NPPCR_BCX.RData")
 
@@ -45,9 +45,9 @@ hyper.pars.list$bb = ss.tpr.hyperpar$b
 hyper.pars.list$cc = bs.tpr.hyperpar$a
 hyper.pars.list$dd = bs.tpr.hyperpar$b
 hyper.pars.list$tau_theta = 0.2
-hyper.pars.list$pind_a = 25
-hyper.pars.list$pind_b = 15
-hyper.pars.list$theta2_mu = -1.5
+hyper.pars.list$pind_a = 6
+hyper.pars.list$pind_b = 2
+hyper.pars.list$theta2_mu = -5
 
 # specify model
 model.file1 = "./jags/SparseCorr1_BSandSS_NoReg.jags"
@@ -58,12 +58,12 @@ jags.result = FitJags(sim.obj,
                       c("cell_prob", "Beta", "theta2", "theta2_value",
                         "bs_tpr", "ss_tpr", "bs_fpr"),
                       model.file2, NULL, hyper.pars.list,
-                      7000, 4000, 3, 1)
+                      8000, 5000, 3, 1)
 
 # collect results
 coda.fit = as.mcmc(jags.result)
 save(coda.fit, hyper.pars.list, sim.obj, top5.names,
-     file = "../WorkSpace/Kenya_sc1.RData")
+     file = "../WorkSpace/Kenya_sc1_20170126.RData")
 
 post.mean = round(summary(coda.fit)[[1]][,1], 3)
 post.mean[grepl("bs_tpr", names(post.mean))]
