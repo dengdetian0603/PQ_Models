@@ -1,17 +1,14 @@
-setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/AD.SensitivityAnalysis")
-setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/MultinomCaseAnalysis/")
-setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/SensitivityAnalysis/")
-setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/SS_NA/")
+setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/WorkSpace/")
 
-suppressMessages(source("../../Code/PerchDataSimulation.R"))
-suppressMessages(source("../../Code/PostProcessJAGS.R"))
-suppressMessages(source("../../Code/PerchPlots.R"))
+suppressMessages(source("../Code/PerchDataSimulation.R"))
+suppressMessages(source("../Code/PostProcessJAGS.R"))
+suppressMessages(source("../Code/PerchPlots.R"))
 
 library(ICC)
 
-file.names = system("ls ./*.csv", intern = TRUE)
+file.names = system("ls ./AD.SensitivityAnalysis/*.csv", intern = TRUE)
 # -----------------------------------------------------------------------------
-f = 1
+f = 3
 file = file.names[f]
 sim.fit = read.csv(file)
 load(gsub(".csv", ".RData", file))
@@ -52,7 +49,9 @@ plot.obj = PlotByCombination(cell.prob.fit0, sim.obj,
                              contrast = "baker", baker.result = baker.fit)
 do.call(grid.arrange, plot.obj)
 # -----------------------------------------------------------------------------
-err.tab = read.csv("../AccurateData_Reg_SensAnalysis.csv")
+err.tab = read.csv("./SC1_Reg_SensAnalysis.csv")
+write.csv(round(err.tab[,c(3:5, 14)], 4), file = "temp.csv")
+
 pr.nonindep.mean = with(err.tab, pind.a/(pind.a + pind.b))
 pr.nonindep.sd = round(with(err.tab,
                             sqrt(pind.a * pind.b / (pind.a + pind.b) ^ 2
@@ -60,15 +59,18 @@ pr.nonindep.sd = round(with(err.tab,
 err.tab = cbind(err.tab, pr.nonindep.mean, pr.nonindep.sd)[, -c(1, 4:11)]
 err.tab.sc1 = err.tab[!is.na(err.tab$theta1.mu), ]
 err.tab.baker =  err.tab[is.na(err.tab$theta1.mu), ]
-err.tab.baker$spec = c("Singletons", "Singletons+Pairs")
+err.tab.baker$Specification = c("Singletons", "Singletons+Pairs")
 
 
 g = ggplot()
 g + geom_point(data = err.tab.sc1, aes(x = theta2.mu, y = Bhattacharyya,
                                        col = pr.nonindep.mean,
                                        size = pr.nonindep.sd)) +
+  labs(x = "Prior Mean of theta2") + ylim(0.75, 1) +
+  scale_color_continuous(name = "Prior Mean of p") +
+  scale_size_continuous(name = "Prior SD of p") +
   geom_hline(data = err.tab.baker, aes(yintercept = Bhattacharyya,
-                                       linetype = spec),
+                                       linetype = Specification),
              col = "red")
 
 # ----------------------------------------------------------------------------

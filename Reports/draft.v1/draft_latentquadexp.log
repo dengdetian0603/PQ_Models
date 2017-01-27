@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.8.29)  25 JAN 2017 13:26
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.8.29)  26 JAN 2017 16:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -689,7 +689,7 @@ Document Style - pseudocode environments for use with the `algorithmicx' style
 \c@theorem=\count193
  (./draft_latentquadexp.aux
 
-LaTeX Warning: Label `data' multiply defined.
+LaTeX Warning: Label `tab:study3' multiply defined.
 
 )
 \openout1 = `draft_latentquadexp.aux'.
@@ -1091,91 +1091,95 @@ t/10.95 c[]; d[]\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 Beta\OT1/cmr/m/n/10.95
 /cmr/m/n/10.95 )[]
  []
 
-[15] [16]
+[15]
+Overfull \hbox (6.26724pt too wide) in paragraph at lines 341--341
+[] 
+ []
+
+[16]
 Underfull \hbox (badness 10000) in paragraph at lines 349--350
 
  []
 
 
-LaTeX Warning: Reference `â€¢' on page 17 undefined on input line 360.
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-LaTeX Warning: Reference `â€¢' on page 17 undefined on input line 366.
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 366--367
+Underfull \hbox (badness 10000) in paragraph at lines 397--398
 
  []
 
 [17]
 
-LaTeX Warning: Reference `tab: ' on page 18 undefined on input line 370.
+LaTeX Warning: Reference `tab:hyper' on page 18 undefined on input line 415.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 370--371
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 372--373
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 374--375
+Underfull \hbox (badness 10000) in paragraph at lines 415--416
 
  []
 
 [18]
-
-LaTeX Warning: Reference `tab: ' on page 19 undefined on input line 377.
-
-
-LaTeX Warning: Reference `' on page 19 undefined on input line 377.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 377--378
+Underfull \hbox (badness 10000) in paragraph at lines 432--433
 
  []
 
 
-LaTeX Warning: Reference `tab: ' on page 19 undefined on input line 379.
-
-
-LaTeX Warning: Reference `' on page 19 undefined on input line 379.
-
-
-LaTeX Warning: Reference `' on page 19 undefined on input line 379.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 379--380
+Underfull \hbox (badness 10000) in paragraph at lines 434--435
 
  []
 
 
-LaTeX Warning: Reference `' on page 19 undefined on input line 381.
+LaTeX Warning: Reference `fig:study1' on page 19 undefined on input line 437.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 381--382
+Underfull \hbox (badness 10000) in paragraph at lines 437--438
+
+ []
+
+[19] <StudyI.png, id=338, 702.625pt x 451.6875pt>
+File: StudyI.png Graphic file (type png)
+ <use StudyI.png>
+Package pdftex.def Info: StudyI.png used on input line 471.
+(pdftex.def)             Requested size: 421.57825pt x 271.01459pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 472.
+See the caption package documentation for explanation.
+
+[20]
+
+LaTeX Warning: Reference `tab: ' on page 21 undefined on input line 479.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 479--480
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 481--482
 
  []
 
 File: DataDescription.png Graphic file (type png)
 <use DataDescription.png>
-Package pdftex.def Info: DataDescription.png used on input line 385.
+Package pdftex.def Info: DataDescription.png used on input line 485.
 (pdftex.def)             Requested size: 424.58232pt x 252.49098pt.
 
 
 Package caption Warning: The option `hypcap=true' will be ignored for this
-(caption)                particular \caption on input line 386.
+(caption)                particular \caption on input line 486.
 See the caption package documentation for explanation.
 
 
-Overfull \hbox (0.52199pt too wide) in paragraph at lines 385--386
+Overfull \hbox (0.52199pt too wide) in paragraph at lines 485--486
  [] 
  []
 
-[19] (./draft_latentquadexp.bbl
+[21 <./StudyI.png>] (./draft_latentquadexp.bbl
 LaTeX Font Info:    Try loading font information for OT1+pcr on input line 5.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/psnfss/ot1pcr.fd
@@ -1186,11 +1190,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 4--7
  / / www . who . int / mediacentre /
  []
 
-[20]
+[22]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [21]
+ [23]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
@@ -1203,21 +1207,17 @@ Underfull \hbox (badness 1314) in paragraph at lines 143--149
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
-[22]
+[24]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [23])
-Overfull \hbox (271.79921pt too wide) in paragraph at lines 420--420
-[][] 
- []
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 425.
-[24]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 425.
+ [25])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 519.
+ [26]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 519.
  (./draft_latentquadexp.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 425.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 425.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 519.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 519.
 Package rerunfilecheck Info: File `draft_latentquadexp.out' has not changed.
 (rerunfilecheck)             Checksum: 486880BD53BBD692FE338F3730D745F8;1795.
 
@@ -1227,16 +1227,16 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 425.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 519.
  ) 
 Here is how much of TeX's memory you used:
- 15669 strings out of 493633
- 263656 string characters out of 3143377
- 365372 words of memory out of 3000000
- 18519 multiletter control sequences out of 15000+200000
+ 15685 strings out of 493633
+ 263860 string characters out of 3143377
+ 367391 words of memory out of 3000000
+ 18527 multiletter control sequences out of 15000+200000
  33617 words of font info for 92 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
- 49i,13n,53p,1480b,608s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 49i,13n,53p,1480b,600s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
@@ -1254,10 +1254,10 @@ mf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2011/texmf-dist/
 fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type
 1/urw/times/utmr8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on draft_latentquadexp.pdf (24 pages, 277988 bytes).
+Output written on draft_latentquadexp.pdf (26 pages, 313632 bytes).
 PDF statistics:
- 436 PDF objects out of 1000 (max. 8388607)
- 388 compressed objects within 4 object streams
- 111 named destinations out of 1000 (max. 500000)
- 210 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 461 PDF objects out of 1000 (max. 8388607)
+ 408 compressed objects within 5 object streams
+ 118 named destinations out of 1000 (max. 500000)
+ 215 words of extra memory for PDF output out of 10000 (max. 10000000)
 
