@@ -49,7 +49,7 @@ plot.obj = PlotByCombination(cell.prob.fit0, sim.obj,
                              contrast = "baker", baker.result = baker.fit)
 do.call(grid.arrange, plot.obj)
 # -----------------------------------------------------------------------------
-err.tab = read.csv("./SC1_Reg_SensAnalysis.csv")
+err.tab = read.csv("./Multinom_Reg_SensAnalysis.csv")
 write.csv(round(err.tab[,c(3:5, 14)], 4), file = "temp.csv")
 
 pr.nonindep.mean = with(err.tab, pind.a/(pind.a + pind.b))
