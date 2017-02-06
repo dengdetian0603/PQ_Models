@@ -222,7 +222,7 @@ ExtractPrNumPath <- function(coda.chains, sim.obj, print.summary = FALSE) {
 }
 
 ListEtiology <- function(coda.chains, sim.obj, etio.names, reorder = TRUE,
-                         num.keep = NULL, threshold = 0) {
+                         num.keep = NULL) {
   # This function uses the posterior samples of theta1 and theta2 in __non-reg__
   # version to compute the probability of each combination of pathogens.
   K = ncol(sim.obj$L)
@@ -243,6 +243,14 @@ ListEtiology <- function(coda.chains, sim.obj, etio.names, reorder = TRUE,
     cell.prob.mean = apply(cell_prob, 2, mean)
     cell.prob.upper = apply(cell_prob, 2, quantile, probs = 0.975)
     cell.prob.lower = apply(cell_prob, 2, quantile, probs = 0.025)
+    
+    prob.therest = NULL
+    if (length(num.keep) > 0 & num.keep < ncol(cell_prob)) {
+      prob.therest = rowSums(cell_prob[, -(1:num.keep)])
+      prob.therest.mean = mean(prob.therest)
+      prob.therest.upper = quantile(prob.therest, probs = 0.975)
+      prob.therest.lower = quantile(prob.therest, probs = 0.025)
+    }
   
     LMAT = rbind(rep(0, 5), design.mat$Lmat)
     if (reorder) {
@@ -275,9 +283,15 @@ ListEtiology <- function(coda.chains, sim.obj, etio.names, reorder = TRUE,
         Prob.upper = round(cell.prob.upper, 4)
       )[1:num.keep, ]      
     }
-
+    if (length(prob.therest) > 0) {
+      EtioCombProb = rbind(EtioCombProb,
+                           data.frame(EtioComb = "The_Rest",
+                                      Probability = prob.therest.mean,
+                                      Prob.lower = prob.therest.lower,
+                                      Prob.upper = prob.therest.upper))
+    }
     rownames(EtioCombProb) = NULL
-    EtioList[[i]] = subset(EtioCombProb, Probability >= threshold)
+    EtioList[[i]] = EtioCombProb
   }
   EtioList
 }

@@ -75,6 +75,29 @@ PlotCompareResult <- function(fit1, fit2, method.names = c("A", "B")) {
   )
 }
 
+PlotCompareByPathogen <- function(mu.fit.list, etio.names, method.names) {
+  mu.fit.long = numeric()
+  for (i in 1:length(mu.fit.list)) {
+    mu.fit.i = mu.fit.list[[i]]
+    mu.fit.ii = numeric()
+    for (j in 1:length(mu.fit.i)) {
+      colnames(mu.fit.i[[j]]) = etio.names
+      mu.fit.ii = rbind(mu.fit.ii,
+                        WideToLong(mu.fit.i[[j]], paste("strata", j)))
+    }
+    colnames(mu.fit.ii)[2] = "Strata"
+    mu.fit.ii$Method = method.names[i]
+    mu.fit.long = rbind(mu.fit.long, mu.fit.ii)
+  }
+  g = ggplot()
+  print(
+    g + geom_violin(data = mu.fit.long, aes(x = Method, y = Estimate),
+                    draw_quantiles = c(0.035, 0.5, 0.975)) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        facet_grid(Strata ~ Parameter) 
+  )
+}
+
 MakeXLabel <- function(EtioMat, EtioComb, num.keep = NULL) {
   Label = apply(EtioMat, 1, function(x) {
     label = ""
@@ -90,6 +113,10 @@ MakeXLabel <- function(EtioMat, EtioComb, num.keep = NULL) {
   result  = data.frame(EtioComb = EtioComb, Label = Label)
   if (length(num.keep) > 0) {
     result = result[1:num.keep, ]
+    if (num.keep < length(Label)) {
+      result = rbind(result, data.frame(EtioComb = "The_Rest",
+                                        Label = "The_Rest"))
+    }
   }
   result
 }
@@ -98,7 +125,10 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                               etio.names = c("Patho_A", "Patho_B",
                                              "Patho_C", "Patho_D", "Patho_E"),
                               contrast = "prior", reorder = FALSE,
-                              num.keep = NULL, baker.result = NULL,
+                              num.keep = NULL,
+                              baker.result = NULL,
+                              baker.result2 = NULL,
+                              text.adjust = -1.2,
                               has.true.value = FALSE) {
 # Example:
 # plog.obj = PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
@@ -142,8 +172,7 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                                                ymax = Prob.upper,
                                                ymin = Prob.lower),
                              alpha = 0.5)
-    }
-    if (contrast == "baker" && length(baker.result) > 0) {
+    } else if (contrast == "baker" && length(baker.result) > 0) {
       g = g + geom_point(data = baker.result[[i]],
                          aes(x = (1:nrow(baker.result[[i]])) + 0.2,
                              y = Probability),
@@ -151,8 +180,19 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
         geom_linerange(data = baker.result[[i]],
                        aes(x = (1:nrow(baker.result[[i]])) + 0.2,
                            ymax = Prob.upper, ymin = Prob.lower),
-                       alpha = 0.5)      
+                       alpha = 0.5)
+      if (length(baker.result2) > 0) {
+        g = g + geom_point(data = baker.result2[[i]],
+                           aes(x = (1:nrow(baker.result2[[i]])) + 0.4,
+                               y = Probability),
+                           alpha = 0.75) +
+          geom_linerange(data = baker.result2[[i]],
+                         aes(x = (1:nrow(baker.result2[[i]])) + 0.4,
+                             ymax = Prob.upper, ymin = Prob.lower),
+                         alpha = 0.75)  
+      }
     }
+    
     if (has.true.value) {
       par0 = data.frame(Prob = sim.obj$cell.prob.unique[i, 1:num.keep])
       g = g + geom_point(data = par0, aes(x = 1:num.keep,
@@ -163,7 +203,7 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
     footnote <- paste(rev(etio.names), collapse = "\n")
     grid.newpage()
     gg = arrangeGrob(g, bottom = textGrob(
-      footnote, x = 0.05, hjust = 0, vjust = -1.4,
+      footnote, x = 0.05, hjust = 0, vjust = text.adjust,
       gp = gpar(fontface = "italic", fontsize = 7, lineheight = 0.95)))
     gplot.obj[[i]] = gg
     grid.draw(gg)
@@ -174,7 +214,7 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
 PlotByPathogen <- function(coda.chains, sim.obj,
                            etio.names = c("Patho_A", "Patho_B",
                                           "Patho_C", "Patho_D", "Patho_E"),
-                           mu.fit = NULL) {
+                           mu.fit = NULL, has.true.value = TRUE) {
 # Example:
 # PlotByPathogen(coda.fit[[1]], sim.obj)
   Mu0 = sim.obj$Mu.unique
@@ -195,24 +235,15 @@ PlotByPathogen <- function(coda.chains, sim.obj,
                        WideToLong(mu.sample, paste("strata", i)))
   }
   colnames(mu.samples)[2] = "Strata"
-  g = ggplot()
-  print(
-    g + geom_violin(data = mu.samples, aes(x = Strata, y = Estimate),
-                    draw_quantiles = c(0.025, 0.5, 0.975)) +
+  g = ggplot() + geom_violin(data = mu.samples, aes(x = Strata, y = Estimate),
+                             draw_quantiles = c(0.025, 0.5, 0.975)) +
       facet_grid(. ~ Parameter) +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1)) + xlab("") +
-      geom_point(data = Mu.true,
-                aes(x = Strata, y = Value),
-                shape = 10,
-                colour = "red")
-  )
-}
-
-PlotPriorEffect <- function(sim.fit1, sim.fit2) {
-  # TODO:
-  Mu.fit1 = ExtractMuCellProb(sim.fit1)$Mu.fit
-  Mu.fit2 = ExtractMuCellProb(sim.fit2)$Mu.fit
-  
-  K = ncol(Mu.fit1[[1]])
-  
+      theme(axis.text.x = element_text(angle = 90, hjust = 1)) + xlab("")
+  if (has.true.value) {
+    g = g + geom_point(data = Mu.true,
+                       aes(x = Strata, y = Value),
+                       shape = 10,
+                       colour = "red")
+  }
+  print(g)
 }
