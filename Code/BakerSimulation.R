@@ -8,7 +8,8 @@ BakerSimulation <- function(with.pair = TRUE, is.regression = TRUE,
                             sim.obj, tid = 0,
                             n.itermcmc = 8000,
                             n.burnin   = 5000,
-                            n.thin     = 3, save.img = FALSE) {
+                            n.thin     = 3, save.img = FALSE,
+                            has.MSS = c("A", "B", "C", "D", "E")) {
   #
   # 1.Clean Data:
   # specify cause list: top 5 and other
@@ -24,7 +25,7 @@ BakerSimulation <- function(with.pair = TRUE, is.regression = TRUE,
   patho_BrS_NPPCR = c("A", "B", "C", "D", "E")
   patho_BrS_NPPCR = intersect(patho_BrS_NPPCR, cause_list)
 
-  patho_SS_BCX = c("A", "B", "C", "D", "E")
+  patho_SS_BCX = has.MSS
   patho_SS_BCX = intersect(patho_SS_BCX, cause_list)
 
   ## parent directory for testing code (JHPCE):
