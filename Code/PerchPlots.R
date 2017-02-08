@@ -194,8 +194,10 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
     }
     
     if (has.true.value) {
-      par0 = data.frame(Prob = sim.obj$cell.prob.unique[i, 1:num.keep])
-      g = g + geom_point(data = par0, aes(x = 1:num.keep,
+      par0 = data.frame(
+        Prob = c(sim.obj$cell.prob.unique[i, 1:num.keep],
+                 1 - sum(sim.obj$cell.prob.unique[i, 1:num.keep])))
+      g = g + geom_point(data = par0, aes(x = 1:(num.keep + 1),
                                           y = Prob),
                          col = "red")
     }

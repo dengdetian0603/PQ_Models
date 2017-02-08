@@ -6,9 +6,9 @@ suppressMessages(source("../Code/PerchPlots.R"))
 
 library(ICC)
 
-file.names = system("ls ./AD.SensitivityAnalysis/*.csv", intern = TRUE)
+file.names = system("ls ./SS_NA/*.csv", intern = TRUE)
 # -----------------------------------------------------------------------------
-f = 3
+f = 1
 file = file.names[f]
 sim.fit = read.csv(file)
 load(gsub(".csv", ".RData", file))
@@ -45,8 +45,8 @@ PlotByPathogen(NULL, sim.obj, mu.fit = Mu.fit)
 
 plot.obj = PlotByCombination(cell.prob.fit0, sim.obj,
                              hyper.pars.list, num.keep = 16,
-                             has.true.value = TRUE,
-                             contrast = "baker", baker.result = baker.fit)
+                             has.true.value = TRUE, text.adjust = -1.2,
+                             contrast = "", baker.result = baker.fit)
 do.call(grid.arrange, plot.obj)
 # -----------------------------------------------------------------------------
 err.tab = read.csv("./Multinom_Reg_SensAnalysis.csv")
