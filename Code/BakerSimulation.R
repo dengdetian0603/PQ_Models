@@ -33,7 +33,7 @@ BakerSimulation <- function(with.pair = TRUE, is.regression = TRUE,
 
   ### Set Sensitivity Bound
   sens_NPPCR_low_noabx = rep(0.5, 5)
-  sens_NPPCR_up_noabx = rep(0.99, 5)
+  sens_NPPCR_up_noabx = rep(0.9, 5)
   sens_BCX_low_noabx = rep(0.05, 5)
   sens_BCX_up_noabx = rep(0.2, 5)
 
