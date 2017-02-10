@@ -197,9 +197,10 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
       par0 = data.frame(
         Prob = c(sim.obj$cell.prob.unique[i, 1:num.keep],
                  1 - sum(sim.obj$cell.prob.unique[i, 1:num.keep])))
-      g = g + geom_point(data = par0, aes(x = 1:(num.keep + 1),
-                                          y = Prob),
-                         col = "red")
+      g = g + geom_segment(data = par0, aes(x = (1:(num.keep + 1)) - 0.2,
+                                            xend = (1:(num.keep + 1)) + 0.6,
+                                            y = Prob, yend = Prob),
+                         col = "red", size = 1.1)
     }
     
     footnote <- paste(rev(etio.names), collapse = "\n")

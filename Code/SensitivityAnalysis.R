@@ -8,10 +8,10 @@ library(ICC)
 
 file.names = system("ls ./SS_NA/*.csv", intern = TRUE)
 # -----------------------------------------------------------------------------
-f = 2
+f = 4
 file = file.names[f]
 sim.fit = read.csv(file)
-load(gsub(".csv", ".RData", file))
+# load(gsub(".csv", ".RData", file))
 
 EtioPrior = ListEtiologyPriorSC1(5, 5, hyper.pars.list,
                                  as.character(1:5), 20000)
@@ -37,17 +37,22 @@ if (grepl("Baker", file)) {
   baker.fit = ListEtiology(cell.prob.fit, sim.obj,
                            etio.names = c("A", "B", "C", "D", "E"),
                            reorder = FALSE, num.keep = 16)
+} else if (grepl("Accurate", file)) {
+  ad.fit = ListEtiology(cell.prob.fit, sim.obj,
+                           etio.names = c("A", "B", "C", "D", "E"),
+                           reorder = FALSE, num.keep = 16)
 } else {
   cell.prob.fit0 = cell.prob.fit
 }
 
-PlotByPathogen(NULL, sim.obj, mu.fit = Mu.fit)
-
 plot.obj = PlotByCombination(cell.prob.fit0, sim.obj,
                              hyper.pars.list, num.keep = 16,
                              has.true.value = TRUE, text.adjust = -1.2,
-                             contrast = "baker", baker.result = baker.fit)
+                             contrast = "baker", baker.result = baker.fit,
+                             baker.result2 = ad.fit)
 do.call(grid.arrange, plot.obj)
+
+PlotByPathogen(NULL, sim.obj, mu.fit = Mu.fit)
 # -----------------------------------------------------------------------------
 err.tab = read.csv("./Multinom_Reg_SensAnalysis.csv")
 write.csv(round(err.tab[,c(3:5, 14)], 4), file = "temp.csv")
