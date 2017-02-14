@@ -6,45 +6,45 @@ Database file #1: draft_latentquadexp.bib.bib
 Warning--to sort, need author or key in WHO
 Warning--empty journal in world2009global
 Warning--empty journal in wu2015nested
-You've used 45 entries,
+You've used 47 entries,
             2118 wiz_defined-function locations,
-            768 strings with 13193 characters,
-and the built_in function-call counts, 17646 in all, are:
-= -- 1742
-> -- 964
+            781 strings with 13730 characters,
+and the built_in function-call counts, 18606 in all, are:
+= -- 1832
+> -- 1035
 < -- 13
-+ -- 388
-- -- 336
-* -- 1354
-:= -- 2923
-add.period$ -- 137
-call.type$ -- 45
-change.case$ -- 288
++ -- 416
+- -- 362
+* -- 1444
+:= -- 3089
+add.period$ -- 143
+call.type$ -- 47
+change.case$ -- 306
 chr.to.int$ -- 0
-cite$ -- 48
-duplicate$ -- 594
-empty$ -- 1226
-format.name$ -- 336
-if$ -- 3622
+cite$ -- 50
+duplicate$ -- 616
+empty$ -- 1282
+format.name$ -- 362
+if$ -- 3807
 int.to.chr$ -- 0
-int.to.str$ -- 45
-missing$ -- 47
-newline$ -- 228
-num.names$ -- 88
-pop$ -- 266
+int.to.str$ -- 47
+missing$ -- 49
+newline$ -- 238
+num.names$ -- 92
+pop$ -- 280
 preamble$ -- 1
-purify$ -- 246
+purify$ -- 262
 quote$ -- 0
-skip$ -- 460
+skip$ -- 476
 stack$ -- 0
-substring$ -- 1210
-swap$ -- 143
+substring$ -- 1276
+swap$ -- 145
 text.length$ -- 13
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 174
+type$ -- 182
 warning$ -- 3
-while$ -- 169
-width$ -- 47
-write$ -- 490
+while$ -- 177
+width$ -- 49
+write$ -- 512
 (There were 3 warnings)

@@ -81,7 +81,8 @@ Pr.Num.Path.fit = ExtractPrNumPath(coda.fit[[1]], sim.obj)
 round(colMeans(Pr.Num.Path.fit[[1]]), 3)
 round(colMeans(Pr.Num.Path.fit[[2]]), 3)
 
-ListEtiology(coda.fit[[1]], sim.obj, top5.names, FALSE)
+ListEtiology(coda.fit[[1]], sim.obj, top5.names,
+             reorder = FALSE, num.keep = 16)
 
 # ----------------------------------------------------------------------------
 # Compare with nplcm model

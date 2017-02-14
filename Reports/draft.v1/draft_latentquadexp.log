@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.8.29)  27 JAN 2017 17:45
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (TeX Live 2011) (format=pdflatex 2011.8.29)  13 FEB 2017 18:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1185,11 +1185,51 @@ Package caption Warning: The option `hypcap=true' will be ignored for this
 See the caption package documentation for explanation.
 
 [23 <./StudyII.png>] [24 <./DataQualityImpact.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 527--528
+<Simulation_By_Combination.png, id=376, 853.1875pt x 602.25pt>
+File: Simulation_By_Combination.png Graphic file (type png)
+
+<use Simulation_By_Combination.png>
+Package pdftex.def Info: Simulation_By_Combination.png used on input line 530.
+(pdftex.def)             Requested size: 469.25458pt x 331.23851pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 531.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (45.19424pt too wide) in paragraph at lines 530--531
+ [] 
+ []
+
+[25 <./Simulation_By_Combination.png>] [26]
+Underfull \hbox (badness 10000) in paragraph at lines 539--540
 
  []
 
-(./draft_latentquadexp.bbl
+
+Underfull \hbox (badness 10000) in paragraph at lines 541--542
+
+ []
+
+[27] <Kenya_By_Combination.png, id=403, 803.0pt x 501.875pt>
+File: Kenya_By_Combination.png Graphic file (type png)
+
+<use Kenya_By_Combination.png>
+Package pdftex.def Info: Kenya_By_Combination.png used on input line 560.
+(pdftex.def)             Requested size: 441.65137pt x 276.03209pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 561.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (17.59103pt too wide) in paragraph at lines 560--561
+ [] 
+ []
+
+[28 <./Kenya_By_Combination.png>] [29] [30] [31] (./draft_latentquadexp.bbl
 LaTeX Font Info:    Try loading font information for OT1+pcr on input line 5.
 
 (/usr/local/texlive/2011/texmf-dist/tex/latex/psnfss/ot1pcr.fd
@@ -1200,11 +1240,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 4--7
  / / www . who . int / mediacentre /
  []
 
-[25]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [26]
+[32]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
@@ -1214,20 +1253,20 @@ Underfull \hbox (badness 1314) in paragraph at lines 143--149
  To-moaki Tanaka, Gi-ichi
  []
 
+[33]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
-[27]
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [28])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 570.
- [29]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 570.
+ [34])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 655.
+ [35]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 655.
  (./draft_latentquadexp.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 570.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 570.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 655.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 655.
 Package rerunfilecheck Info: File `draft_latentquadexp.out' has not changed.
 (rerunfilecheck)             Checksum: 486880BD53BBD692FE338F3730D745F8;1795.
 
@@ -1237,16 +1276,16 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 570.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 655.
  ) 
 Here is how much of TeX's memory you used:
- 15704 strings out of 493633
- 264185 string characters out of 3143377
- 369904 words of memory out of 3000000
- 18538 multiletter control sequences out of 15000+200000
+ 15736 strings out of 493633
+ 264866 string characters out of 3143377
+ 374838 words of memory out of 3000000
+ 18556 multiletter control sequences out of 15000+200000
  33617 words of font info for 92 fonts, out of 3000000 for 9000
  831 hyphenation exceptions out of 8191
- 49i,13n,53p,1480b,600s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 49i,13n,53p,1822b,584s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2011/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2011/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
@@ -1264,10 +1303,10 @@ mf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2011/texmf-dist/
 fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type
 1/urw/times/utmr8a.pfb></usr/local/texlive/2011/texmf-dist/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on draft_latentquadexp.pdf (29 pages, 686144 bytes).
+Output written on draft_latentquadexp.pdf (35 pages, 797924 bytes).
 PDF statistics:
- 486 PDF objects out of 1000 (max. 8388607)
- 426 compressed objects within 5 object streams
- 124 named destinations out of 1000 (max. 500000)
- 225 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 531 PDF objects out of 1000 (max. 8388607)
+ 460 compressed objects within 5 object streams
+ 136 named destinations out of 1000 (max. 500000)
+ 235 words of extra memory for PDF output out of 10000 (max. 10000000)
 

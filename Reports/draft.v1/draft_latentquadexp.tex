@@ -191,9 +191,9 @@ Thus this model can be also viewed as a special case of the log-linear model.
 
 \newpage
 \section{Representation of the Multivariate Binary Latent Variable for Multiple Cause Etiology}
-In order to allow the possibility of multiple pathogens infecting the lung, a multivariate binary vector $L\in \{0,1 \}^K$ is used as the latent variable that describes the true status of the lung. Among all methods reviewed in the previous section, the log-linear model has the following advantages that are important to the etiology estimation problem. (1) It has all the properties of an exponential family distribution; (2) its association parameters are orthogonal to the first order parameters, thus it is more convenient to do stratified estimation and conditional regression modeling on the etiology parameter $\mu=\mathbb{E}(L|M,Y=1)$ (3) association parameters have intuitive interpretations that reflect the complex interactions among various pathogens. \\
+To allow the possibility of multiple pathogens infecting the lung, a multivariate binary vector $L\in \{0,1 \}^K$ is used as the latent variable that describes the actual status of the lung. Among all methods reviewed in the previous section, the log-linear model has the following advantages that are crucial to the etiology estimation problem. (1) It has all the properties of an exponential family distribution. (2) Its association parameters are orthogonal to the first order parameters, which makes it more convenient to do stratified estimation and conditional regression modeling on the etiology parameter $\mu=\mathbb{E}(L|M, Y=1)$. (3) The association parameters have intuitive interpretations that reflect the complex interactions among various pathogens. \\
 
-Moreover, what the etiology estimation problem also requires but the classic log-linear model does not have, are good scalability in terms of the sample size as well as the number of candidate pathogens, and of course, good identifiability with low quality measurement data. In addition, in the PERCH study, scientists would like to incorporate their prior knowledge in the model that there exists strong competition among the majority of pathogens when they infect the lung, while other few pathogens might infect independently.\\
+Moreover, what the etiology estimation problem also requires but the classic log-linear model does not have, are excellent scalability in terms of the sample size as well as the number of candidate pathogens, and of course good identifiability with low-quality measurement data. Also, in the PERCH study, scientists would like to incorporate their prior knowledge in the model that there exists strong competition among the majority of pathogens when they infect the lung, while other few pathogens might infect independently.\\
 
 Thus, we propose a parsimonious quadratic exponential representation for the latent vector $L$, and extend the Bayesian partially-Latent Class Model (pLCM) accordingly, for more accurate etiology estimation. In the rest of this section, we will re-introduce the log-linear model in the context of PERCH study and derive our method from it.\\
 
@@ -238,7 +238,7 @@ Note that for any $\mathbf{\phi}$ in the feasible region defined by the above li
 \[L^*\Theta = \log \phi\]
 
 \subsection{Quadratic Exponential Model with Sparse Correlation}
-An important special case of the log-linear model is the ``quadratic expoential family'' (QE) described by Zhao and Prentice (1990) \cite{zhao1990correlated}, where the three- and higher-way association parameters were fixed at zero, which shrinks the model complexity from O($2^K$) to O($K^2$). This parameterization is widely used in multivariate binary data analysis and performs well with fully observed GS data. However, in the case where GS data are completely absent, the parameter of interests are hardly identifiable with such limited information from data. Therefore, a more parsimonious and also flexible parameterization is needed.\\
+An important special case of the log-linear model is the ``quadratic exponential family'' (QE) described by Zhao and Prentice (1990) \cite{zhao1990correlated}, where the three- and higher-way association parameters were fixed at zero, which shrinks the model complexity from O($2^K$) to O($K^2$). This parameterization is widely used in multivariate binary data analysis and performs well with fully observed GS data. However, in the case where GS data are absent, the parameter of interests are hardly identifiable with such limited information from data. Therefore, a more parsimonious and also flexible parameterization is needed.\\
 
 We propose to use an exchangeable association structure with shrinkage estimation to incorporate prior knowledge as well as to improve the model scalability and identifiability. 
 \begin{align}
@@ -272,7 +272,7 @@ where we use a single parameter $\theta_2$ to represent the extent of negative a
 
 % In both QE and PQE models,
 
-The parameter of interests $\mu$ can be recovered from the posterior samples of $\Theta$ using equation (2). When covariates are available, stratified/individual estimation for $\mu$ can be achieved by parameterizing the first order canonical parameters for subject $i$ and pathogen $k$, $\theta^{(1)}_{ik}$, as $X_i^T\beta_k$, where $X_i$ is the vector of covariates.
+The parameter of interests $\mu$ can be recovered from the posterior samples of $\Theta$ using equation (2). When covariates are available, stratified or individual estimation for $\mu$ can be achieved by parameterizing the first-order canonical parameters for subject $i$ and pathogen $k$, $\theta^{(1)}_{ik}$, as $X_i^T\beta_k$, where $X_i$ is the vector of covariates.
 
 \section{Full Model Specification}
 By using a Metropolis-Hastings (within Gibbs) algorithm, we can sample from the posterior distribution as long as we have a well-defined joint distribution of the data and parameters. Throughout this section, let $M_i^{GS} \in \{0,1\}^K$ be the observed GS measurement, $M_i^{SS} \in \{0,1\}^K$ be the observed SS measurement, $M_i^{BS} \in \{0,1\}^K$ be the observed BS measurement and $L_i \in \{0,1\}^K$ be the latent status for subject $i$. Let $\gamma \in [0,1]^K$ and $\delta \in [0,1]^K$ represent the True Positive Rate (TPR) and False Positive Rate (FPR) for BS measurements respectively, and let $\eta \in [0,1]^K$ be the TPR for SS measurements. Also, let $\mathbb{L}$ be the set of all allowed values of L, such that $|\mathbb{L}| = J^*$ and $l_j$ be the $j$th element in $\mathbb{L}$.
@@ -310,7 +310,7 @@ For controls, we only have BS measurements and we know that their lungs were not
 \\
 
 \subsection{The Hierarchical Prior Distribution}
-For the case likelihood, the parameters are $(\Theta, \eta, \gamma, \delta)$, and for control likelihood, the parameters are $(\gamma, \delta)$. Our goal is to put informative prior on $\Theta_2, \eta, \gamma, \delta$ in order to facilitate the estimation of $\mu$. In our study, the TPR's and FPR's of the model are assumed to be mutually independent and independent from $\Theta$, therefore we can put independent Beta priors on them. \\
+For the case likelihood, the parameters are $(\Theta, \eta, \gamma, \delta)$, and for control likelihood, the parameters are $(\gamma, \delta)$. Our goal is to put informative prior on $\Theta_2, \eta, \gamma, \delta$ in order to facilitate the estimation of $\mu$. In our study, the TPR's and FPR's of the model are assumed to be mutually independent and independent from $\Theta$; therefore we can put independent Beta priors on them. \\
 
 Let $(a_k,b_k)$ be the hyper-parameter that defines the prior of $\eta_k$, let $(c_k,d_k)$ be the hyper-parameter for $\gamma_k$ and let $(e_k,f_k)$ be the hyper-parameter for $\delta_k$, and  $a_k,b_k,c_k,d_k,e_k,f_k$ are tuned so that the priors reflect the best knowledge of scientists on the sensitivities and specificities of each test/specimen combination. For example, scientists may believe there is 95 $\%$ of chance that the TPR of a SS measurement is between $0.01$ and $0.2$, then the value of $(a_k,b_k)$ is determined by setting the $2.5$th and $97.5$th percentile of Beta$(a_k,b_k)$ to $0.01$ and $0.2$ respectively and solving the equation.\\
 
@@ -346,9 +346,9 @@ From the form of this model, we can see that the model we proposed incorporates 
 \newpage
 \section{Simulation Studies}
 \subsection{Data Simulation}
-Three sets of simulation studies are carried out to empirically evaluate the effectiveness of the LSC model under different situations. For all three sets of studies, we assume there are five candidate pathogens ($A, B, \ldots, E$) and two binary covariates ($X_1$ and $X_2$). In each study, $200$ independent data sets are simulated, and in each simulated data set, there are $500$ case subjects and $1000$ control subjects.\\
+Three sets of simulation studies are carried out to empirically evaluate the effectiveness of the LSC model under different situations. For all three sets of studies, we assume there are five candidate pathogens ($A, B, \ldots, E$) and two relevant binary covariates ($X_1$ and $X_2$). In each study, $200$ independent data sets are simulated, and in each simulated data set, there are $500$ case subjects and $1000$ control subjects.\\
 
-At the data simulation stage, we first simulate the true lung infection status, then generate the BS and SS measurements. In study I, multiple pathogens are allowed to infect the lung at the same time, and the measurements are of relatively low quality, that is, lower true positive rates and higher false positive rates. In study II, infection is assumed to be caused by a single pathogen, and the measurement quality is the same as in study I. In study III, the true lung status is generated in the same way as in study I, but the measurements have relatively high quality. Details of the study design are described below.
+At the data simulation stage, we first simulate the true lung infection status, then generate the BS and SS measurements. In Study I, multiple pathogens are allowed to infect the lung at the same time, and the measurements are of relatively low quality, that is, lower true positive rates and higher false positive rates. In Study II, infection is assumed to be caused by a single pathogen, and the measurement quality is the same as in Study I. In Study III, the actual lung status is generated in the same way as in Study I, but the measurements have relatively high quality. Details of the study design are described below.
 
 \begin{itemize}
 \item[{\bf I}]
@@ -357,7 +357,7 @@ In the first set of studies, the true lung infection status $L$ of case patients
 \theta^{(1)}_{ik} = \beta_{k0} + \beta_{k1} x_{i1} + \beta_{k2} x_{i2} + \beta_{k3} x_{i1} x_{i2}
 \end{align*} 
 
-Also, with $K = 5$, there are $10$ second order parameters, we assume that two of them are zero, which represents that two particular pairs of pathogens ($B:C$ and $B:D$) infect lungs independently from each other; and the rest eight association parameters share the same negative value: $-1.5$, which stands for the pairwise competition among pathogens. Then, the BS and SS measurements for case subjects are simulated based on formula (8) and (9) respectively, and the SS measurements for control subjects are simulated based on formula (10) assuming that there is no infection at all in control patients' lungs, where $\text{TPR}^{(SS)} \approx 0.1,  \text{TPR}^{(BS)} \approx 0.6, \text{FPR}^{(BS)} \approx 0.45$. And the actual parameter values used in the simulation process are summarized in table \ref{tab:study1}.
+Also, with $K = 5$, there are $10$ second order parameters. We assume that two of them are zero, which represents that two particular pairs of pathogens ($B:C$ and $B:D$) infect lungs independently from each other. The rest eight association parameters share the same negative value: $-1.5$, which stands for the pairwise competition among pathogens. Then, the BS and SS measurements for case subjects are simulated based on formula (8) and (9) respectively, and the SS measurements for control subjects are simulated based on formula (10) assuming that there is no infection at all in control patients' lungs, where $\text{TPR}^{(SS)} \approx 0.1,  \text{TPR}^{(BS)} \approx 0.7, \text{FPR}^{(BS)} \approx 0.45$. The actual parameter values used in the simulation process are summarized in table \ref{tab:study1}.
 
 \begin{table}[h]
 \centering
@@ -371,13 +371,13 @@ $\beta_1$    & -0.1 & -0.5  & 0.5   & 0.2   & 0.1  \\
 $\beta_2$    & -0.3 & 0.2   & -0.2  & -0.1  & 0.3  \\
 $\beta_3$    & 0.4  & 0.3   & -0.4  & 0.2   & -0.2 \\
 TPR$^{(SS)}$ & 0.11 & 0.12  & 0.08  & 0.15  & 0.10 \\
-TPR$^{(BS)}$ & 0.80 & 0.60  & 0.70  & 0.70  & 0.50 \\
+TPR$^{(BS)}$ & 0.80 & 0.60  & 0.70  & 0.70  & 0.65 \\
 FPR$^{(BS)}$ & 0.50 & 0.55  & 0.40  & 0.35  & 0.45 \\ \hline
 \end{tabular}
 \end{table}
 
 \item[{\bf II}]
-In the second set of studies, the true lung infection status $L$ of case patients are generated by a Multinomial Model, which is equivalent to the above QE model but with all the second order parameters set to negative infinity. The multinomial etiology probabilities are listed in table \ref{tab:study2}. And the BS and SS measurements are generated in the same way as they are in study I with the same TPRs and FPRs.
+In the second set of studies, the true lung infection status $L$ of case patients are generated by a Multinomial Model, which is equivalent to the above QE model but with all the second order parameters set to negative infinity. The multinomial etiology probabilities are listed in table \ref{tab:study2}. Also, the BS and SS measurements are generated in the same way as they are in Study I with the same TPRs and FPRs.
 
 \begin{table}[h]
 \centering
@@ -412,7 +412,7 @@ FPR$^{(BS)}$ & 0.050 & 0.055  & 0.040  & 0.035  & 0.045 \\ \hline
 \end{itemize}
 
 \subsection{Model Specifications}
-In each of the above situation, $200$ independent data sets are generated. The LSC model is applied to each data set (without using GS measurements) with a series of different prior specifications on $\alpha_2, \lambda_a$ and $\lambda_b$, which represent the experts' prior knowledge on the magnitude of the competitions between pathogens. Within each study, the values for hyper-parameters $a_k, b_k, c_k, d_k, e_k$ and $f_k$, $k = 1, 2, \ldots, 5$, which control the prior input on measurement quality, do not vary. Wu, et al.(2015) \cite{wu2015partially} had discussed the model sensitivity to these hyper-parameters and the partial identifiability issue, which also applies to our method, thus we do not further study the sensitivity issue on these hyper-parameters. Their values are selected according to experts' knowledge on the quality of BS and SS measurements, and the true TPR and FPR values are set to be covered by the prior 95\% credible interval. For all three studies, same values are used for $\sigma_1$, and $\sigma_2$, which are set large enough to represent non-informativeness. These hyper-parameter values are listed in table \ref{tab:hyper}. \\
+In each of the above situation, $200$ independent data sets are generated. The LSC model is applied to each data set (without using GS measurements) with a series of different prior specifications on $\alpha_2, \lambda_a$ and $\lambda_b$, which represent the experts' prior knowledge on the magnitude of the competitions between pathogens. Within each study, the values for hyper-parameters $a_k, b_k, c_k, d_k, e_k$ and $f_k$, $k = 1, 2, \ldots, 5$, which control the prior input on measurement quality, do not vary. Wu et al.(2015) \cite{wu2015partially} had discussed the model sensitivity to these hyper-parameters and the partial identifiability issue, which also applies to our method. Thus we do not further study the sensitivity issue on these hyper-parameters. Their values are selected according to experts' knowledge on the quality of BS and SS measurements, and the true TPR and FPR values are set to be covered by the prior 95\% credible interval. For all three studies, same values are used for $\sigma_1$, and $\sigma_2$, which are set large enough to represent non-informativeness. These hyper-parameter values are listed in table \ref{tab:hyper}. \\
 
 
 \begin{table}[h]
@@ -422,16 +422,16 @@ In each of the above situation, $200$ independent data sets are generated. The L
 \begin{tabular}{lrrrrrrrr}
 \hline
           & $a_k$    & $b_k$     & $c_k$     & $d_k$     & $e_k$ & $f_k$ & $\sigma_1$  & $\sigma_2$    \\ \hline
-Study I   & 7.6 & 59  & 5  & 3  & 1 & 1 & 2.2 & 2.2 \\
+Study I   & 7.6 & 59  & 12.7  & 4.8  & 1 & 1 & 2.2 & 2.2 \\
 Study II  & 50 & 10  & 12  & 1  & 1 & 1 & 2.2 & 2.2 \\
-Study III & 7.6 & 59  & 5  & 3  & 1 & 1 & 2.2 & 2.2 \\ \hline
+Study III & 7.6 & 59  & 12.7  & 4.8  & 1 & 1 & 2.2 & 2.2 \\ \hline
 \end{tabular}
 \end{table}
 
 
-For each unique prior specification in each study, we have $200$ sets of posterior samples produced by the LSC model. Their posterior means are collected to construct an approximate sampling distribution of the estimator. The mean of these approximate sampling distributions implies empirically the values that our parameter estimates converge to. Thus the overall accuracy of the LSC model is evaluated based on these sampling distributions means. Note that a five-dimensional multivariate binary distribution can be represented by a multinomial distribution with $32$ cells. Let $q_{j}$, $j = 1, \ldots, 32$ be the true multinomial cell probabilities, and let $\hat{q}_j$ be the cell probability estimations based on the sampling distribution means, then the Bhattachayya coefficient \cite{bhattachayya1943measure}, $\sum_{j=1}^{32}\sqrt{q_j \hat{q}_j} \in [0, 1]$, which measures the similarity between two discrete distributions, is a good metric of the general accuracy of the LSC model. \\
+For each different prior specification in each study, we have $200$ sets of posterior samples produced by the LSC model. Their posterior means are collected to construct an approximate sampling distribution of the estimator. The average of these approximate sampling distributions implies empirically the values to which our parameter estimates converge. Thus the overall accuracy of the LSC model is evaluated based on these sampling distributions means. Note that a five-dimensional multivariate binary distribution can be represented by a multinomial distribution with $32$ cells. Let $q_{j}$, $j = 1, \ldots, 32$ be the true multinomial cell probabilities, and let $\hat{q}_j$ be the cell probability estimations based on the sampling distribution means, then the Bhattachayya coefficient \cite{bhattachayya1943measure}, $\sum_{j=1}^{32}\sqrt{q_j \hat{q}_j} \in [0, 1]$, which measures the similarity between two discrete distributions, is a good metric of the general accuracy of the LSC model. \\
 
-In study I and II, the LSC model is compared against the Bayesian partially-Latent Class Model (pLCM) \cite{wu2015partially}. The pLCM, which originally only considers single-pathogen infection, now allows multi-pathogen infection in its latest release by making it possible to manually specify candidate pathogen combinations and a Dirichlet prior with equal weights. But the saturated model, in which all possible combinations are included, is unstable and lack of identifiability with only a few hundred case subjects. Thus, rather than the saturated model, two most commonly used pLCM specifications are applied: 1) the classic pLCM (pLCM-1) where only single pathogen infections are allowed and 2) the new pLCM (pLCM-2) where not only single pathogen but also all pairs of pathogen infections are allowed.\\
+In Study I and II, the LSC model is compared against the Bayesian partially-Latent Class Model (pLCM) \cite{wu2015partially}. The pLCM, which originally only considers single-pathogen infection, now allows multi-pathogen infection in its latest release by making it possible to manually specify candidate pathogen combinations and a Dirichlet prior with equal weights. However, the saturated model, in which all possible combinations are included, is unstable and lack of identifiability with only a few hundred case subjects. Thus, rather than the saturated model, two most commonly used pLCM specifications are applied: 1) the classic pLCM (pLCM-1) where only single pathogen infections are allowed and 2) the new pLCM (pLCM-2) where not only single pathogen but also all pairs of pathogen infections are allowed.\\
 
 \subsection{Results}
 Table \ref{tab:result1} lists the Bhattachayya coefficients of the LSC model under different prior specifications, and of the two pLCMs in Study I. The same information is visualized in figure \ref{fig:study1}. As we can see, when the true data generating mechanism allows multi-pathogen infection, the classic pLCM (pLCM-1) performs the worst, the pLCM-2 is the second worst, and the LSC model, across all prior specifications, shows a significant amount of improvement over the two pLCM models. The variations caused by different prior specifications is relatively small comparing to the improvement over pLCM models, especially the single-pathogen model.\\
@@ -469,14 +469,14 @@ $\alpha_2$ & $\lambda_a$ & $\lambda_b$ & Bhattacharyya \\ \hline
 
 \begin{center}
 \includegraphics[scale=0.6]{StudyI.png}
-\captionof{figure}{{\bf Overall estimation accuracy of models in study I}: The x axis stands for $\alpha_2$, the prior mean of $\theta_2$, and the y axis represents the Bhattacharyya coefficient (BC). The round dots are values generated by LSC models with different priors. The color of dots indicates the mean of the prior distribution of $p$ and the size of dots indicate the standard deviation of the prior distribution of $p$. These two values are calculated based on $\lambda_a$ and $\lambda_b$. The two horizontal lines are benchmark values generated by pLCM models. The solid line represents the pLCM-1 model which only allows singleton infections, and the dash line represents the pLCM-2 model which allows singleton and all the pair infections.}
+\captionof{figure}{{\bf Overall estimation accuracy of models in study I}: The x-axis stands for $\alpha_2$, the prior mean of $\theta_2$, and the y-axis represents the Bhattacharyya coefficient (BC). The round dots are values generated by LSC models with different priors. The color of dots indicates the mean of the prior distribution of $p$ and the size of dots indicate the standard deviation of the prior distribution of $p$. These two values are calculated based on $\lambda_a$ and $\lambda_b$. The two horizontal lines are benchmark values generated by pLCM models. The solid line represents the pLCM-1 model which only allows singleton infections, and the dashed line represents the pLCM-2 model which allows singleton and all the pair infections.}
 \label{fig:study1}
 \end{center}
 
 
 
 
-Model performances in Study II is summarized in table \ref{tab:result2} and plotted in figure \ref{fig:study2}. The figure shows that when the true data generating mechanism is actually single pathogen infection only, the pLCM-1 has the best estimation accuracy since that is the true model, and the pLCM-2 performs the worst because it tends to attribute the cause of disease to two-pathogen infection. The LSC model, on the other hand, shows an increasing trend in estimation accuracy as the prior mean of $\theta_2$ gets more negative, because $\theta_2 = -\infty$ makes the model equivalent to the true model. And in practice, as we can see in figure \ref{fig:study2}, if the true model is not known, the LSC model can still provide an estimate almost as accurate as the pLCM-1 with a moderately negative (e.g. between $-10$ and $-5$) prior mean of $\theta_2$.\\
+Model performances in Study II is summarized in table \ref{tab:result2} and plotted in figure \ref{fig:study2}. The figure shows that when the true data generating mechanism is single pathogen infection only, the pLCM-1 has the best estimation accuracy since that is the true model, and the pLCM-2 performs the worst because it tends to attribute the cause of the disease to two-pathogen infection. The LSC model, on the other hand, shows an increasing trend in estimation accuracy as the prior mean of $\theta_2$ gets more negative because $\theta_2 = -\infty$ makes the model equivalent to the true model. Moreover, in practice, as we can see in figure \ref{fig:study2}, if the true model is not known, the LSC model can still provide an estimate almost as accurate as the pLCM-1 with a moderately negative (e.g. between $-10$ and $-5$) prior mean of $\theta_2$.\\
 
 \begin{table}[]
 \centering
@@ -507,26 +507,39 @@ $\alpha_2$ & $\lambda_a$ & $\lambda_b$ & Bhattacharyya \\ \hline
 
 \begin{center}
 \includegraphics[scale=0.6]{StudyII.png}
-\captionof{figure}{{\bf Overall estimation accuracy of models in study II}: The x axis stands for $\alpha_2$, the prior mean of $\theta_2$, and the y axis represents the Bhattacharyya coefficient (BC). The round dots are values generated by LSC models with different priors. The color of dots indicates the mean of the prior distribution of $p$ and the size of dots indicate the standard deviation of the prior distribution of $p$. These two values are calculated based on $\lambda_a$ and $\lambda_b$. The two horizontal lines are benchmark values generated by pLCM models. The solid line represents the pLCM-1 model which only allows singleton infections, and the dash line represents the pLCM-2 model which allows singleton and all the pair infections.}
+\captionof{figure}{{\bf Overall estimation accuracy of models in study II}: The x-axis stands for $\alpha_2$, the prior mean of $\theta_2$, and the y-axis represents the Bhattacharyya coefficient (BC). The round dots are values generated by LSC models with different priors. The color of dots indicates the mean of the prior distribution of $p$ and the size of dots indicate the standard deviation of the prior distribution of $p$. These two values are calculated based on $\lambda_a$ and $\lambda_b$. The two horizontal lines are benchmark values generated by pLCM models. The solid line represents the pLCM-1 model which only allows singleton infections, and the dashed line represents the pLCM-2 model which allows singleton and all the pair infections.}
 \label{fig:study2}
 \end{center}
 
 
 
-It is very intuitive to think that better measurement quality leads to more accurate etiology estimation. Figure \ref{fig:dataquality} , which compares the etiology estimations, $\hat{\mathbb{E}}(L|Y=1,X)$, from study III and two scenarios of study I, confirms this hypothesis. In this figure, the sampling distributions of the etiology estimations for pathogen A, B and C in the upper panel have larger standard deviations than those in the mid panel, their shapes are more skewed and the estimation bias tends to be larger, and such distributions for pathogen D and E are almost the same in the upper and mid panel. Comparing the lower panel to the mid panel, it is clear that the sampling distributions estimated from high quality measurements have much smaller standard deviations and basically no estimation bias.\\
+It is very intuitive to think that better measurement quality leads to more accurate etiology estimation. Figure \ref{fig:dataquality}, which compares the etiology estimations, $\hat{\mathbb{E}}(L|Y=1, X)$, from study III and two scenarios of study I, confirms this hypothesis. In this figure, the sampling distributions of the etiology estimations for pathogen A, B, and C in the upper panel have larger standard deviations than those in the middle panel. Also, their shapes are more skewed, and the estimation bias tends to be larger. The distributions for pathogen D and E are almost the same in the upper and the middle panel. Comparing the lower panel to the middle panel, we can see that the sampling distributions estimated from high-quality measurements have much smaller standard deviations and nearly no estimation bias.\\
 
 
 \begin{center}
 \includegraphics[scale=0.75]{DataQualityImpact.png}
-\captionof{figure}{{\bf The impact of data quality on the LSC model}: The results from study I are plotted in the mid panel, the results from study I data with SS measurements of pathogen A, B, and C removed are plotted in the upper panel, and the results from study III are plotted in the lower panel. In each plot, there are five facets, with each one corresponds to a pathogen. In each facet, the x axis represents four strata that are determined by the two binary covariates, and the y axis stands for the estimated value of etiology probability, $\hat{\mathbb{E}}(L|Y = 1, X)$. The violin shape indicates the estimated density function of the sampling distributions of $\hat{\mathbb{E}}(L|Y = 1, X)$. The three horizontal lines in each violin shape represent the $2.5th$, $50th$, and $97.5th$ percentiles respectively. The red dots show the true values of the corresponding parameters.}
+\captionof{figure}{{\bf The impact of data quality on the LSC model}: The results from Study I with SS measurements available for all pathogens are plotted in the middle panel, the results from Study I with SS measurements of pathogen A, B, and C removed are plotted in the upper panel, and the results from study III are plotted in the lower panel. In each plot, there are five facets, with each one corresponds to a pathogen. In each facet, the x-axis represents four strata that are determined by the two binary covariates, and the y-axis stands for the estimated value of etiology probability, $\hat{\mathbb{E}}(L|Y = 1, X)$. The violin shape indicates the estimated density function of the sampling distributions of $\hat{\mathbb{E}}(L|Y = 1, X)$. The three horizontal lines in each violin shape represent the $2.5th$, $50th$, and $97.5th$ percentiles respectively. The red dots show the true values of the corresponding parameters.}
 \label{fig:dataquality}
 \end{center}
 
+
+Besides the marginal etiology probability $\mathbb{E}(L|Y = 1, X)$, we also compare the estimated probabilities of the most prevalent etiological combinations of pathogens. Figure \ref{fig:cellprob1} shows the sampling distributions of the singleton and doubleton etiology probabilities estimated in three scenarios. The first thing we can learn from the figure is that in the ideal circumstance with high-quality measurements, the LSC model can provide accurate etiology probability estimates for every single combination of pathogens. While in reality, where measurement quality is relatively low and multiple pathogens do not have SS measurements, the LSC model provides more accurate (less bias and smaller variance) estimate for most etiology combinations than the pLCM-2 model. A general observation is that the pLCM-2 estimates tend to over-estimate the doubleton probabilities. Our explanation is that the multinomial likelihood in the pLCM-2 model does not take the interaction structure into account nor does it provide shrinkage on the probability estimates. Thus it attributes some of the singleton or tripleton combinations to doubleton combinations. 
+
+
+\begin{center}
+\includegraphics[scale=0.55]{Simulation_By_Combination.png}
+\captionof{figure}{{\bf Singleton and doubleton etiology probability estimation comparison}: Each of the four plots in this figure stands for a specific stratum labeled by the top-right legend. In each plot, the x-axis includes $17$ different etiological combinations. Each of the first $16$ combinations from the left is denoted by a unique combination of `\_' and `X', where `\_' means no infection and `X' mean infection for the corresponding pathogen listed on the very left. The last combination is labeled by `The\_Rest' indicating the sum of all the rest possible combinations, e.g. tripletons, etc. For each combination, there are three vertical lines, of which the upper and lower bounds represent the $97.5$th and $2.5$th percentiles of the sampling distribution. The solid dots along these lines indicate the mean of the sampling distribution. The red horizontal lines mark the true values. From left to right, the three lines correspond to three scenarios: (left) LSC estimates in Study I with SS measurements only available for pathogen D and E; (middle) pLCM-2 estimates in Study I with SS measurements only available for pathogen D and E; (right) LSC estimates in Study III.}
+\label{fig:cellprob1}
+\end{center}
+
+
+
 \newpage
 \section{PERCH Data Analysis}
-As what has been introduced in the first section of this paper, the PERCH study enrolled about 4200 children hospitalized for severe/very severe pneumonia and approximately 5300 controls randomly select from communities across $7$ sites around the world. To demonstrate the application of the LSC model for the analysis of PERCH study data, only the Kenya site data, where there is good availability of both BS and SS measurement data, is used so that the site-specific effect if not a concern. We picked the top $5$ pathogens reported in \cite{wu2015partially} as our candidate pathogens in this analysis. These pathogens are streptococcus pneumoniae (PNEU), haemophilus influenzae (HINF), human metapneumovirus type A or B (HMPV\_A\_B), rhonovirus (RHINO), and respiratory syncytial virus type A or B (RSV). The BS measurements (nasopharyngeal specimen with PCR detection of pathogens - NPPCR) are available for all $281$ cases and $1138$ frequency-matched controls on all $5$ pathogens. The SS measurements (blood culture results - BCX) are only available for all cases on the two bacteria pathogens: PNEU and HINF.\\
+As what has been introduced in the first section of this paper, the PERCH study enrolled about 4200 children hospitalized for severe/very severe pneumonia and approximately 5300 controls randomly selected from communities across $7$ sites around the world. To demonstrate the application of the LSC model for the analysis of PERCH study data, only the Kenya site data, where there is good availability of both BS and SS measurement data, is used so that the site-specific effect if not a concern. We picked the top $5$ pathogens reported in \cite{wu2015partially} as our candidate pathogens in this analysis. These pathogens are streptococcus pneumoniae (PNEU), haemophilus influenzae (HINF), human metapneumovirus type A or B (HMPV\_A\_B), rhinovirus (RHINO), and respiratory syncytial virus type A or B (RSV). The BS measurements (nasopharyngeal specimen with PCR detection of pathogens - NPPCR) are available for all $281$ cases and $1138$ frequency-matched controls on all $5$ pathogens. The SS measurements (blood culture results - BCX) are only available for all cases on the two bacteria pathogens: PNEU and HINF. \\
 
-Prior scientific knowledge \cite{murdoch2012laboratory} suggests that the TPR of BS measurements (NPPCR) is in the range of $50$\% - $99$\%, and the TPR of SS measurements (BCX) is in the range of $5$\% - $20$\%. Thus we set the hyper-parameters $a_k = 7.6$, $b_k = 59.0$, $c_k = 6.0$, and $d_k = 1.3$ by range matching, and $e_k = f_k = 1$ for non-informativeness. Other hyper-parameter values used for PERCH data analysis are listed in table \ref{tab:perchhyper}. 
+Prior scientific knowledge \cite{murdoch2012laboratory} suggests that the TPR of BS measurements (NPPCR) is in the range of $50$\% - $99$\%, and the TPR of SS measurements (BCX) is in the range of $5$\% - $20$\%. Thus we set the hyper-parameters $a_k = 7.6$, $b_k = 59.0$, $c_k = 6.0$, and $d_k = 1.3$ by range matching, and $e_k = f_k = 1$ for non-informativeness. Two categorical (binary) variables: age group and disease severity are taken into account, thus the etiology estimation is made for $4$ strata. Regression coefficients including the interaction terms all have prior mean at zero and other hyper-parameter values used for PERCH data analysis are listed in table \ref{tab:perchhyper}. \\
+
 
 \begin{table}[h]
 \centering
@@ -539,13 +552,85 @@ LSC     & -5 & 6  & 2 & 2.2 & 2.2 \\ \hline
 \end{tabular}
 \end{table}
 
+Figure \ref{fig:cellprob2} shows the singleton and doubleton etiology probability estimates for Kenya site given by three models. As we can see, the singleton etiology probability estimates made by the LSC model are quite similar to the corresponding estimates made by pLCM-1. The doubleton estimates and `The Rest' estimates made by the LSC model are mostly nearly zero, with an exception for the PNEU-HINF pair in the Age = 0 and Severity = 1 stratum. These two pathogens are both commensals of the human nasopharynx and have long been detected together in a multispecies biofilm in infected tissue \cite{tikhomirova2013haemophilus}. A noticeable difference between pLCM-2 results and the other two models is that pLCM-2 attributes the etiology more to RHINO and RHINO-PNEU pair and less to pathogens other than these five. Singleton et al. \cite{singleton2010viral} categorize respiratory viruses into two groups based on their contribution to disease. Group 1 includes viruses with a significantly greater contribution to respiratory symptoms, including RSV, metapneumovirus, certain para-influenza viruses, and influenza viruses. Group 2 viruses, including human rhinoviruses, adenoviruses, and coronaviruses, are less likely to be the single etiological pathogen of disease in children. Thus, it appears the pLCM-2 model overestimates the contribution of singleton RHINO in the Age = 1 strata, and the final inference should be based on the LSC model. The etiology probabilities estimated by the LSC model are listed in table \ref{tab:kenya1} and \ref{tab:kenya2} where `None Above' means infection by other pathogens that are not among the listed five candidates, and `The Rest' means infection by any other possible combinations of the listed five candidates.  
 
 
 
+\begin{center}
+\includegraphics[scale=0.55]{Kenya_By_Combination.png}
+\captionof{figure}{{\bf Singleton and doubleton etiology probability estimation for Kenya site}: The legends and labels in this figure have the same meaning as they are in figure \ref{fig:cellprob1}, except that the pathogen names listed in the x-axis labels in this figure are the real pathogen abbreviations. The three vertical lines for each etiological combination correspond to the three models applied to the Kenya data set: (left) the LSC model; (middle) the pLCM-2 model; (right) the pLCM-1 model.}
+\label{fig:cellprob2}
+\end{center}
 
+
+\newpage
 \section{Conclusion}
+In this paper, we propose a new method, the Latent Sparse Correlation (LSC) model, for pneumonia etiology estimation using non-Gold standard measurements. This method takes advantages of the parsimonious parameterization of the latent multivariate binary variables and the Bayesian shrinkage estimation procedure. It is shown by simulation studies that this approach can provide estimation for the latent etiology distribution reasonably well while allowing arbitrary combinations of pathogen infection. In the PERCH data analysis, the estimation results of the LSC model are consistent with published etiology research findings. A limitation of this method is its assumption that any pairs of pathogens either compete against each other or act conditionally independent. A possible extension that allows for synergic effects between pathogens is readily achievable.  
 
 
+
+
+
+\newpage
+
+\begin{table}[htbp]
+\centering
+\caption{Etiology probability estimates for Kenya site}
+\label{tab:kenya1}
+\begin{tabular}{rrrrrrr}
+\hline
+                 & \multicolumn{3}{r}{Age = 1, Severity = 0} & \multicolumn{3}{r}{Age = 0, Severity = 0} \\
+                 & Mean         & 2.5\%        & 97.5\%      & Mean         & 2.5\%        & 97.5\%      \\ \hline
+None\_Above      & 0.3162       & 0.0303       & 0.5748      & 0.1351       & 0.0288       & 0.3003      \\
+RSV              & 0.264        & 0.1335       & 0.4435      & 0.5601       & 0.3669       & 0.7666      \\
+RHINO            & 0.2471       & 0.0397       & 0.6324      & 0.1335       & 0.0257       & 0.3566      \\
+HMPV\_A\_B       & 0.086        & 0.0212       & 0.1946      & 0.0898       & 0.0355       & 0.1805      \\
+PNEU             & 0.0411       & 0.0041       & 0.136       & 0.0304       & 0.0045       & 0.0881      \\
+HINF             & 0.0341       & 0.0013       & 0.1083      & 0.0304       & 0.0058       & 0.0893      \\
+RSV-RHINO        & 0.0015       & 0            & 0.0111      & 0.0025       & 0            & 0.0149      \\
+RSV-HMPV\_A\_B   & 0.0004       & 0            & 0.0022      & 0.0016       & 0            & 0.0081      \\
+RSV-PNEU         & 0.0002       & 0            & 0.0011      & 0.0005       & 0            & 0.0033      \\
+RSV-HINF         & 0.0014       & 0            & 0.0188      & 0.0041       & 0            & 0.0523      \\
+RHINO-HMPV\_A\_B & 0.0011       & 0            & 0.0066      & 0.0014       & 0            & 0.0034      \\
+RHINO-PNEU       & 0.0013       & 0            & 0.0124      & 0.0016       & 0            & 0.0194      \\
+RHINO-HINF       & 0.0007       & 0            & 0.0083      & 0.0009       & 0            & 0.0123      \\
+HMPV\_A\_B-PNEU  & 0.0001       & 0            & 0.0005      & 0.0002       & 0            & 0.0006      \\
+HMPV\_A\_B-HINF  & 0.0002       & 0            & 0.0028      & 0.0005       & 0            & 0.0075      \\
+PNEU-HINF        & 0.0049       & 0            & 0.0236      & 0.0073       & 0            & 0.0268      \\
+The\_Rest        & 0            & 0            & 0.0001      & 0.0001       & 0            & 0.0006      \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Etiology probability estimates for Kenya site}
+\label{tab:kenya2}
+\begin{tabular}{lllllll}
+\hline
+                 & \multicolumn{3}{l}{Age = 1, Severity = 1} & \multicolumn{3}{l}{Age = 0, Severity = 1} \\
+                 & Mean         & 2.5\%        & 97.5\%      & Mean         & 2.5\%        & 97.5\%      \\ \hline
+None\_Above      & 0.3487       & 0.0143       & 0.6874      & 0.1181       & 0.0188       & 0.2886      \\
+RSV              & 0.1269       & 0.0365       & 0.2703      & 0.4295       & 0.2498       & 0.6179      \\
+RHINO            & 0.2718       & 0.0127       & 0.7124      & 0.0541       & 0.0034       & 0.1918      \\
+HMPV\_A\_B       & 0.0561       & 0.0066       & 0.16        & 0.1358       & 0.0512       & 0.268       \\
+PNEU             & 0.157        & 0.0346       & 0.4057      & 0.1535       & 0.0461       & 0.2964      \\
+HINF             & 0.0195       & 0.0003       & 0.0815      & 0.0383       & 0.0044       & 0.1073      \\
+RSV-RHINO        & 0.0012       & 0            & 0.0098      & 0.001        & 0            & 0.0067      \\
+RSV-HMPV\_A\_B   & 0.0001       & 0            & 0.0008      & 0.0025       & 0            & 0.0143      \\
+RSV-PNEU         & 0.0004       & 0            & 0.0028      & 0.003        & 0            & 0.0201      \\
+RSV-HINF         & 0.0005       & 0            & 0.0068      & 0.0054       & 0            & 0.0744      \\
+RHINO-HMPV\_A\_B & 0.0009       & 0            & 0.0074      & 0.001        & 0            & 0.004       \\
+RHINO-PNEU       & 0.0055       & 0            & 0.0585      & 0.0031       & 0            & 0.0415      \\
+RHINO-HINF       & 0.0004       & 0            & 0.0053      & 0.0006       & 0            & 0.0073      \\
+HMPV\_A\_B-PNEU  & 0.0003       & 0            & 0.0013      & 0.0014       & 0            & 0.0063      \\
+HMPV\_A\_B-HINF  & 0.0001       & 0            & 0.0007      & 0.001        & 0            & 0.0118      \\
+PNEU-HINF        & 0.0105       & 0            & 0.053       & 0.0514       & 0.0001       & 0.1356      \\
+The\_Rest        & 0            & 0            & 0.0002      & 0.0003       & 0            & 0.0026      \\ \hline
+\end{tabular}
+\end{table}
+
+
+\newpage
 \bibliographystyle{plain}
 \bibliography{draft_latentquadexp.bib}
 
