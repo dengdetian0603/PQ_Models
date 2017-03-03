@@ -9,9 +9,9 @@ model {
   # case likelihood
   ## new var: I_strata[], N_strata, Beta[,], X_unique[,], D
   for (i in 1:N_case) {
-    gs_index[i] ~ dcat(cell_prob[I_strata[i], ])        ##
+
     for (j in 1:K) {
-      mgs[i, j] <- GSmat[gs_index[i], j]
+      mgs[i, j] ~ dbern(pij)
       mbs_case[i, j] ~ dbern(bs_tpr[j]^mgs[i, j] * bs_fpr[j]^(1 - mgs[i, j]))
       mss_case[i, j] ~ dbern(ss_tpr[j]^mgs[i, j] * (mgs[i, j] > 0) + 1.0E-8)
     }

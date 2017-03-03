@@ -220,11 +220,6 @@ PlotByPathogen <- function(coda.chains, sim.obj,
                            mu.fit = NULL, has.true.value = TRUE) {
 # Example:
 # PlotByPathogen(coda.fit[[1]], sim.obj)
-  Mu0 = sim.obj$Mu.unique
-  Mu.true = data.frame(Value = as.vector(t(Mu0)),
-                       Parameter = rep(etio.names, times = nrow(Mu0)),
-                       Strata = rep(paste("strata", 1:nrow(Mu0)),
-                                    each = ncol(Mu0)))
   if (length(mu.fit) > 0) {
     Mu.fit = mu.fit
   } else {
@@ -243,6 +238,11 @@ PlotByPathogen <- function(coda.chains, sim.obj,
       facet_grid(. ~ Parameter) +
       theme(axis.text.x = element_text(angle = 90, hjust = 1)) + xlab("")
   if (has.true.value) {
+    Mu0 = sim.obj$Mu.unique
+    Mu.true = data.frame(Value = as.vector(t(Mu0)),
+                         Parameter = rep(etio.names, times = nrow(Mu0)),
+                         Strata = rep(paste("strata", 1:nrow(Mu0)),
+                                      each = ncol(Mu0)))
     g = g + geom_point(data = Mu.true,
                        aes(x = Strata, y = Value),
                        shape = 10,

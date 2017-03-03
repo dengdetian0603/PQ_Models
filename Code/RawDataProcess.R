@@ -8,8 +8,8 @@ GetTop5 <- function(rawdata, top5.names) {
   MBS.ctrl = rawdata.ctrl[, grepl("NPPCR", var.names)]
   MSS.case = rawdata.case[, grepl("BCX", var.names)]
   
-  MBS.names = substr(colnames(MBS.case), 7, 99)
-  MSS.names = substr(colnames(MSS.case), 5, 99)
+  MBS.names = substr(colnames(MBS.case), 11, 99)
+  MSS.names = substr(colnames(MSS.case), 9, 99)
   
   top5.mbs.case = as.data.frame(matrix(NA, nrow = nrow(MBS.case), ncol = 5))
   top5.mbs.ctrl = as.data.frame(matrix(NA, nrow = nrow(MBS.ctrl), ncol = 5))
