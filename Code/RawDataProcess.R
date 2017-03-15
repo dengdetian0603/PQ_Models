@@ -36,3 +36,42 @@ GetTop5 <- function(rawdata, top5.names) {
        top5.mbs.ctrl = top5.mbs.ctrl,
        top5.mss.case = top5.mss.case)
 }
+
+GetTopK <- function(rawdata, topK.names) {
+  K = length(topK.names)
+  rawdata.case = subset(rawdata, Y == 1)
+  rawdata.ctrl = subset(rawdata, Y == 0)
+  var.names = colnames(rawdata)
+  
+  MBS.case = rawdata.case[, grepl("NPPCR", var.names)]
+  MBS.ctrl = rawdata.ctrl[, grepl("NPPCR", var.names)]
+  MSS.case = rawdata.case[, grepl("BCX", var.names)]
+  
+  MBS.names = substr(colnames(MBS.case), 11, 99)
+  MSS.names = substr(colnames(MSS.case), 9, 99)
+  
+  topK.mbs.case = as.data.frame(matrix(NA, nrow = nrow(MBS.case), ncol = K))
+  topK.mbs.ctrl = as.data.frame(matrix(NA, nrow = nrow(MBS.ctrl), ncol = K))
+  topK.mss.case = as.data.frame(matrix(NA, nrow = nrow(MSS.case), ncol = K))
+  colnames(topK.mbs.case) = topK.names
+  colnames(topK.mbs.ctrl) = topK.names
+  colnames(topK.mss.case) = topK.names
+  
+  for (var in topK.names) {
+    if (var %in% MSS.names) {
+      topK.mss.case[, var] = MSS.case[, which(MSS.names == var)]
+    } else {
+      topK.mss.case[, var] = as.numeric(topK.mss.case[, var])
+    }
+    if (var %in% MBS.names) {
+      topK.mbs.case[, var] = MBS.case[, which(MBS.names == var)]
+      topK.mbs.ctrl[, var] = MBS.ctrl[, which(MBS.names == var)]
+    } else {
+      topK.mbs.case[, var] = as.numeric(topK.mbs.case[, var])
+      topK.mbs.ctrl[, var] = as.numeric(topK.mbs.trl[, var])
+    }
+  }
+  list(topK.mbs.case = topK.mbs.case,
+       topK.mbs.ctrl = topK.mbs.ctrl,
+       topK.mss.case = topK.mss.case)
+}

@@ -26,6 +26,8 @@ $$
 
 
 
+
+
 ## Regression coefficients sampling strategy
 
 ### Metropolis-Hastings algorithm with pseudolikelihood
@@ -71,11 +73,11 @@ $\tilde{\pi}(Z_k|\theta, M) $ can be approximated in three ways, where simplifie
 
 # Latent Discrete Graphical Model
 
-Measurement $M$, latent state L, parameters  $\Theta = (\delta, \gamma, \theta^{(1)}, \theta^{(2)})$
+Measurement $M$, latent state L, parameters  $\Theta = (\delta, \gamma, \theta^{(1)}, \theta^{(2)}, D_{kk'})$
 
 Bronze standard only  $[M, L, \Theta] =\{\prod_{k=1}^K[M_k|L_k, \Theta]\} [L|\Theta][\Theta]$
 $$
-[M, L, \Theta] \propto \exp \Big\{ \sum_{k=1}^K \log(1-\delta_k) + \sum_{k=1}^K M_k\log \frac{\delta_k}{1-\delta_k} + \sum_{k=1}^K L_k \big(\theta_k^{(1)} + \log \frac{1-\gamma_k}{1-\delta_k} \big) + \\ \sum_{k=1}^K L_k M_k \log \frac{\gamma_k(1-\delta_k)}{\delta_k(1-\gamma_k)} - \sum_{k \neq k'}L_kL_{k'} \theta^{(2)}_{kk'} \Big\} [\Theta]
+[M, L, \Theta] \propto \exp \Big\{ \sum_{k=1}^K \log(1-\delta_k) + \sum_{k=1}^K M_k\log \frac{\delta_k}{1-\delta_k} + \sum_{k=1}^K L_k \big(\theta_k^{(1)} + \log \frac{1-\gamma_k}{1-\delta_k} \big) + \\ \sum_{k=1}^K L_k M_k \log \frac{\gamma_k(1-\delta_k)}{\delta_k(1-\gamma_k)} + \sum_{k \neq k'}L_kL_{k'} \theta^{(2)}D_{kk'} - A(\theta^{(1)}, \theta^{(2)}, D)\Big\} [\Theta]
 $$
 
 
@@ -85,8 +87,17 @@ $$
 - i. Variational EM to find MAP of $\Theta$.
 
 
-- ii. Approximate posterior distribution of $\Theta$. 
-- ​
+- ii. Variational approximate posterior distribution of $\Theta$. 
+
+  Use $Q(\Theta, L) = q(\delta, \gamma)q(L)q(\theta^{(1)}, \theta^{(2))}$ to approximate $[\Theta, L|M]$.
+
+  To optimize $ \mathbb{E}_Q\Big[\log\frac{[M, L, \Theta]}{Q(\Theta, L)}\Big]$
+
+  $$q(\delta, \gamma) \propto  \exp \Big\{ \sum_{k=1}^K \log(1-\delta_k) + \sum_{k=1}^K M_k\log \frac{\delta_k}{1-\delta_k} + \sum_{k=1}^K q(l_k) \big( \log \frac{1-\gamma_k}{1-\delta_k} \big) +  \sum_{k=1}^K q(l_k) M_k \log \frac{\gamma_k(1-\delta_k)}{\delta_k(1-\gamma_k)} \Big \}[\delta, \gamma]$$
+
+  ​
+
+  ​
 
 
 
