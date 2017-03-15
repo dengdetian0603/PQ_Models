@@ -29,7 +29,7 @@ GetTop5 <- function(rawdata, top5.names) {
       top5.mbs.ctrl[, var] = MBS.ctrl[, which(MBS.names == var)]
     } else {
       top5.mbs.case[, var] = as.numeric(top5.mbs.case[, var])
-      top5.mbs.ctrl[, var] = as.numeric(top5.mbs.trl[, var])
+      top5.mbs.ctrl[, var] = as.numeric(top5.mbs.ctrl[, var])
     }
   }
   list(top5.mbs.case = top5.mbs.case,
@@ -68,10 +68,14 @@ GetTopK <- function(rawdata, topK.names) {
       topK.mbs.ctrl[, var] = MBS.ctrl[, which(MBS.names == var)]
     } else {
       topK.mbs.case[, var] = as.numeric(topK.mbs.case[, var])
-      topK.mbs.ctrl[, var] = as.numeric(topK.mbs.trl[, var])
+      topK.mbs.ctrl[, var] = as.numeric(topK.mbs.ctrl[, var])
     }
   }
+  bs.available = which(apply(topK.mbs.case, 2, function(x) mean(is.na(x))) < 0.5)
+  ss.available = which(apply(topK.mss.case, 2, function(x) mean(is.na(x))) < 0.5)
   list(topK.mbs.case = topK.mbs.case,
        topK.mbs.ctrl = topK.mbs.ctrl,
-       topK.mss.case = topK.mss.case)
+       topK.mss.case = topK.mss.case,
+       bs.available = bs.available,
+       ss.available = ss.available)
 }

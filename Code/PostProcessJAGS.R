@@ -252,7 +252,7 @@ ListEtiology <- function(coda.chains, sim.obj, etio.names, reorder = TRUE,
       prob.therest.lower = quantile(prob.therest, probs = 0.025)
     }
   
-    LMAT = rbind(rep(0, 5), design.mat$Lmat)
+    LMAT = rbind(rep(0, K), design.mat$Lmat)
     if (reorder) {
       EtioMat = LMAT[order(cell.prob.mean, decreasing = TRUE), ]
     } else {
