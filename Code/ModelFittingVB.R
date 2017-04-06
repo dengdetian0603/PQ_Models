@@ -165,22 +165,24 @@ FitVBEMnoReg = function(input.obj, hyper.par.list, init.val,
     par.list$qL = qL
 
     # update A, B
+    q.sum = colSums(par.list$qL, TRUE)
     ## silver
-    q.sum = colSums(par.list$qL[, ss.avail], TRUE)
+    qss.sum = q.sum[ss.avail]
     if (length(ss.avail) > 0) {
       qMs.sum = colSums(par.list$qL[, ss.avail] * MSS.case[, ss.avail], TRUE)
       par.list$A_st[ss.avail] = qMs.sum + hyper.par.list$aa[ss.avail]
-      par.list$B_st[ss.avail] = q.sum - qMs.sum + hyper.par.list$bb[ss.avail]
+      par.list$B_st[ss.avail] = qss.sum - qMs.sum + hyper.par.list$bb[ss.avail]
     }
     ## bronze
+    qbs.sum = q.sum[bs.avail]
     qMb.sum = colSums(par.list$qL[, bs.avail] * MBS.case[, bs.avail], TRUE)
     par.list$A_bt[bs.avail] = qMb.sum + hyper.par.list$cc
-    par.list$B_bt[bs.avail] = q.sum - qMb.sum + hyper.par.list$dd
+    par.list$B_bt[bs.avail] = qbs.sum - qMb.sum + hyper.par.list$dd
     Msum.case = colSums(MBS.case[, bs.avail], TRUE)
     Msum.ctrl = colSums(MBS.ctrl[, bs.avail], TRUE)
     par.list$A_bf[bs.avail] = Msum.case + Msum.ctrl -
                                 qMb.sum + hyper.par.list$ee
-    par.list$B_bf[bs.avail] = n.case + n.ctrl + qMb.sum - q.sum -
+    par.list$B_bf[bs.avail] = n.case + n.ctrl + qMb.sum - qbs.sum -
                                 Msum.case - Msum.ctrl + hyper.par.list$ff
 
     # update mu_theta, tau_theta  
@@ -206,7 +208,7 @@ FitVBEMnoReg = function(input.obj, hyper.par.list, init.val,
     
     # stop signal
     par.curr = unlist(par.list[-7])
-    par.diff = sqrt(sum((par.curr - par.prev) ^ 2))
+    par.diff = sqrt(sum((par.curr - par.prev) ^ 2, na.rm = TRUE))
     iter = iter + 1
     if (iter %% 50 == 0) {
       print(paste(iter, ":", par.diff))
@@ -240,6 +242,9 @@ VBEtioProbsNoReg = function(par.list) {
   # round(cbind(etio.probs, etio.probs.pseudo, sim.obj$cell.prob.unique[1, ]), 3)
   list(etio.probs = etio.probs, etio.mean = etio.mean, etio.numPi = etio.numPi,
        etio.probs.pL = etio.probs.pseudo, etio.mean.pL = etio.mean.pseudo,
-       etio.numPi.pL = etio.numPi.pseudo)
+       etio.numPi.pL = etio.numPi.pseudo,
+       ss.tpr = par.list$A_st/(par.list$A_st + par.list$B_st),
+       bs.tpr = par.list$A_bt/(par.list$A_bt + par.list$B_bt),
+       bs.fpr = par.list$A_bf/(par.list$A_bf + par.list$B_bf))
 }
 

@@ -121,12 +121,12 @@ __For $q(\rho)$__:
 $$
 q(\rho) \propto \exp \Big\{ Y\mathbb{E}_{(\theta,L,D)}\big[\rho\sum_{k=1}^K \sum_{k'\neq k} L_kL_{k'}D_{kk'}
 - A(\theta, \rho, D)\big] \Big\}[\rho]\\
-\approx  \exp \Big\{ Y \rho\sum_{k=1}^K \big[\sum_{k'\neq k} q_{l_k}q_{l_{k'}}d_{kk'} -
+\approx  \exp \Big\{ Y \sum_{k=1}^K \big[ \rho \sum_{k'\neq k} q_{l_k}q_{l_{k'}}d_{kk'} -
 \mathbb{E}\log \big(1 + \exp(\theta_k +\rho\sum_{k' \neq k}L_{k'}D_{kk'})\big)\big] \Big\} [\rho]
 $$
 By Le Cam's theorem, $R_k$ can be approximated by Poisson$(\sum_{k' \neq k} q_{l_{k'}}d_{kk'})$, thus
 $$
-q(\rho) \propto \exp \Big\{ Y \rho\sum_{k=1}^K \big[\sum_{k'\neq k} q_{l_k}q_{l_{k'}}d_{kk'} -
+q(\rho) \propto \exp \Big\{ Y \sum_{k=1}^K \big[ \rho \sum_{k'\neq k} q_{l_k}q_{l_{k'}}d_{kk'} -
 \sum_{j=0}^{K-1} \text{Poi}(j;\lambda = \sum_{k' \neq k} q_{l_{k'}}d_{kk'})\Big ( \log (1 + e^{\mu_{\theta_k} + j \rho}) +
 \frac{e^{\mu_{\theta_k} + j\rho}}{2(1 + e^{\mu_{\theta_k} + j\rho})^2}\sigma^2_{\theta_k}\Big) \big]\Big\} [\rho]
 $$
@@ -134,7 +134,7 @@ $$
 
 **With $n$ independent samples**:
 $$
-q(\rho) \propto \exp \Big\{\rho \sum_{i=1}^n Y_i \sum_{k=1}^K \big[\sum_{k'\neq k} q_{l_{ik}}q_{l_{ik'}}d_{kk'} -
+q(\rho) \propto \exp \Big\{ \sum_{i=1}^n Y_i \sum_{k=1}^K \big[ \rho\sum_{k'\neq k} q_{l_{ik}}q_{l_{ik'}}d_{kk'} -
 \sum_{j=0}^{K-1} \text{Poi}(j;\lambda = \sum_{k' \neq k} q_{l_{ik'}}d_{kk'})\Big ( \log (1 + e^{\mu_{\theta_k} + j \rho}) +
 \frac{e^{\mu_{\theta_k} + j\rho}}{2(1 + e^{\mu_{\theta_k} + j\rho})^2}\sigma^2_{\theta_k}\Big) \big]\Big\} [\rho]
 $$
@@ -146,7 +146,7 @@ __For $q(D)$__:
 $$
 q(D) \propto \exp \Big\{ Y\mathbb{E}_{(\theta,L,\rho)}\big[\rho\sum_{k=1}^K \sum_{k'\neq k} L_kL_{k'}D_{kk'}
 - A(\theta, \rho, D)\big] \Big\}[D] \\
-\approx  \exp \Big\{ Y \rho\sum_{k=1}^K \big[\sum_{k'\neq k} q_{l_k}q_{l_{k'}}d_{kk'} -
+\approx  \exp \Big\{ Y \sum_{k=1}^K \big[ \mu_\rho\sum_{k'\neq k} q_{l_k}q_{l_{k'}}d_{kk'} -
 \mathbb{E}\log \big(1 + \exp(\theta_k +\rho\sum_{k' \neq k}L_{k'}D_{kk'})\big)\big] \Big\} [D]\\
 q(D_{k_1k_2}) \propto \exp \Big\{ 2Y\mu_{\rho} q_{l_{k_1}}q_{l_{k_2}}D_{k_1k_2} -
 Y\mathbb{E} \log (1 + e^{\theta_{k_1} + \rho\sum_{k \neq k_1, k\neq k_2}L_kD_{kk_1} + \rho L_{k_2}D_{k_1k_2}}) \\
