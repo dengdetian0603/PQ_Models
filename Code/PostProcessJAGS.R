@@ -230,6 +230,9 @@ ListEtiology <- function(coda.chains, sim.obj, etio.names, reorder = TRUE,
   design.mat = DesignMatrixAppxQuadExp(K, Smax)
   EtioList = list()
   n.strata = nrow(uniquecombs(sim.obj$X))
+  if (length(n.strata) < 1) {
+    n.strata = 1
+  }
   for (i in 1:n.strata) {
     if (n.strata == 1) {
       cell_prob = coda.chains[, paste0("cell_prob[",
