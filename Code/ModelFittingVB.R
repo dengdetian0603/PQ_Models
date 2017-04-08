@@ -100,10 +100,16 @@ UpdateRho = function(rho.init, qL, qLD, mu.theta, tau.theta,
       fmat2 = fmat2 + t(weight.qLD) * f.rho
     }
     fval = sum(x * fmat1 - t(fmat2)) - 0.5 * rho.tau * (x - rho.mu) ^ 2
+    # fval = sum(x * fmat1 - t(fmat2)) + rho.tau * log(-x) - rho.mu * x
     fval
   }
   rho.obj = optim(par = rho.init, fn = QRho, method = "BFGS",
                   control = list(fnscale = -1), hessian = TRUE)
+  # rho.init = -abs(rho.init) - 1e-3
+  # print(rho.init)
+  # rho.obj = constrOptim(theta = rho.init, f = QRho, ui = matrix(-1), ci = 1e-3,
+  #                       control = list(fnscale = -1),
+  #                       method = NULL, hessian = TRUE)
   if (rho.obj$convergence > 0) {
     print(rho.obj$message)
   }

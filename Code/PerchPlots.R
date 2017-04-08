@@ -128,8 +128,8 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
                               num.keep = NULL,
                               baker.result = NULL,
                               baker.result2 = NULL,
-                              text.adjust = -1.2,
-                              has.true.value = FALSE) {
+                              text.adjust = -1.2, has.true.value = FALSE,
+                              display.strata = FALSE) {
 # Example:
 # plog.obj = PlotByCombination(coda.fit[[1]], sim.obj, hyper.pars.list)
 #  
@@ -158,12 +158,12 @@ PlotByCombination <- function(coda.chains, sim.obj, hyper.pars.list,
         scale_x_continuous(breaks = 1:nrow(XLabel),
                            labels = as.character(XLabel$Label)) +
         theme_bw() +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-        annotate("text", x = nrow(EtioList[[i]]) - 4,
-                 y = 0.7 - (1:length(legend)) * 0.1,
-                 hjust = 0, label = legend)
-        
-    
+        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    if (display.strata) {
+      g = g + annotate("text", x = nrow(EtioList[[i]]) - 4,
+                       y = 0.7 - (1:length(legend)) * 0.1,
+                       hjust = 0, label = legend)
+    }
     if (contrast == "prior") {
       g = g + geom_point(data = Prior, aes(x = (1:nrow(Prior)) + 0.2,
                                            y = Probability),
