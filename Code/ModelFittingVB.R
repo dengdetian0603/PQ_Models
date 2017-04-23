@@ -5,7 +5,7 @@ SetVBHyperParameters <- function(K = 5) {
   list(aa = rep(2, K), bb = rep(18, K), # ss.tpr
        cc = 5, dd = 3,  # bs.tpr
        ee = 1, ff = 1,  # bs.fpr
-       theta_mu = rep(-0.5, K), # theta(1)
+       theta_mu = rbind(rep(-0.5, K)), # theta(1)
        rho_mu = -1.5, # theta(2)
        theta_tau = 0.2,
        rho_tau = 0.2,
@@ -24,7 +24,8 @@ SetVBInitialValues <- function(K = 5, input.obj, hyper.par.list) {
                    A_bf = rep(NA, K), B_bf = rep(NA, K),
                    qL = matrix(1/K, nrow = n.case, ncol = K),
                    mu_theta = hyper.par.list$theta_mu,
-                   tau_theta = rep(hyper.par.list$theta_tau, K),
+                   tau_theta = matrix(hyper.par.list$theta_tau,
+                                      nrow = ncol(input.obj$X), ncol = K),
                    mu_rho = hyper.par.list$rho_mu,
                    tau_rho = hyper.par.list$theta_tau,
                    qD = matrix(0.5, nrow = K, ncol = K)
@@ -70,7 +71,7 @@ UpdateTheta = function(theta.init, qL, qD, qLD, mu.rho, tau.rho,
       e.theta = exp(x + rho.qLD[, k])
       fmat = x * qL[, k] - log(1 + e.theta) -
              (e.theta * var.rhoR[, k])/(2 * (1 + e.theta) ^ 2)
-      fval = sum(fmat, TRUE) - 0.5 * theta.tau * (x - theta.mu[k]) ^ 2
+      fval = sum(fmat, na.rm = TRUE) - 0.5 * theta.tau * (x - theta.mu[k]) ^ 2
       fval
     }
     thetak = optim(par = theta.init[k], fn = QThetaK, method = "BFGS",
@@ -99,7 +100,7 @@ UpdateRho = function(rho.init, qL, qLD, mu.theta, tau.theta,
       weight.qLD = dpois(j, qLD)
       fmat2 = fmat2 + t(weight.qLD) * f.rho
     }
-    fval = sum(x * fmat1 - t(fmat2)) - 0.5 * rho.tau * (x - rho.mu) ^ 2
+    fval = sum(x * fmat1 - t(fmat2), na.rm = TRUE) - 0.5 * rho.tau * (x - rho.mu) ^ 2
     # fval = sum(x * fmat1 - t(fmat2)) + rho.tau * log(-x) - rho.mu * x
     fval
   }
@@ -137,10 +138,14 @@ FitVBEMnoReg = function(input.obj, hyper.par.list, init.val,
   # prepare data
   ss.avail = input.obj$ss.available
   bs.avail = input.obj$bs.available
-  MSS.case = input.obj$MSS.case
-  MBS.case = input.obj$MBS.case
-  MBS.ctrl = input.obj$MBS.ctrl
+  MSS.case = as.matrix(input.obj$MSS.case)
+  MBS.case = as.matrix(input.obj$MBS.case)
+  MBS.ctrl = as.matrix(input.obj$MBS.ctrl)
   # 
+  par.list$mu_theta = as.vector(par.list$mu_theta)
+  par.list$tau_theta  = as.vector(par.list$tau_theta)
+  hyper.pars.list$theta_mu = as.vector(hyper.pars.list$theta_mu)
+  #
   n.case = nrow(MBS.case)
   n.ctrl = nrow(MBS.ctrl)
   par.list = init.val
@@ -224,9 +229,12 @@ FitVBEMnoReg = function(input.obj, hyper.par.list, init.val,
 }
 
 # -----------------------------------------------------------------------------
-VBEtioProbsNoReg = function(par.list) {
+VBEtioProbsNoReg = function(par.list, Smax = NULL) {
   K = ncol(par.list$qL)
-  design.mat = DesignMatrixAppxQuadExp(K, K)
+  if (length(Smax) < 1) {
+    Smax = K
+  }
+  design.mat = DesignMatrixAppxQuadExp(K, Smax)
   Lall = rbind(rep(0, K), design.mat$Lmat)
   potentials = exp(Lall %*% par.list$mu_theta +
                    rowSums(Lall %*% (par.list$mu_rho * par.list$qD) * Lall))
@@ -254,3 +262,34 @@ VBEtioProbsNoReg = function(par.list) {
        bs.fpr = par.list$A_bf/(par.list$A_bf + par.list$B_bf))
 }
 
+VBEtioProbsReg = function(par.list, Smax = NULL) {
+  K = ncol(par.list$qL)
+  if (length(Smax) < 1) {
+    Smax = K
+  }
+  design.mat = DesignMatrixAppxQuadExp(K, Smax)
+  Lall = rbind(rep(0, K), design.mat$Lmat)
+  n.strata = nrow(par.list$mu_theta)
+  result = list()
+  for (i in 1:n.strata) {
+    potentials = exp(Lall %*% par.list$mu_theta[i, ] +
+                       rowSums(Lall %*% (par.list$mu_rho * par.list$qD) * Lall))
+    Apseudo = apply(1 + exp(par.list$mu_theta[i, ] +
+                              t(Lall %*% (par.list$mu_rho *
+                                            par.list$qD))), 2, prod)
+    etio.probs.pseudo = potentials/Apseudo
+    etio.probs.pseudo = etio.probs.pseudo/sum(etio.probs.pseudo)
+    etio.mean.pseudo = design.mat$MuMat %*% cbind(etio.probs.pseudo[-1])
+    etio.numPi.pseudo = c(etio.probs.pseudo[1],
+                          (design.mat$PiMat %*%
+                             cbind(etio.probs.pseudo[-1]))[, 1]) 
+    result[[i]] = list(etio.probs.pL = etio.probs.pseudo,
+                       etio.mean.pL = etio.mean.pseudo,
+                       etio.numPi.pL = etio.numPi.pseudo)
+  }
+  result = c(result,
+             list(ss.tpr = par.list$A_st/(par.list$A_st + par.list$B_st),
+                  bs.tpr = par.list$A_bt/(par.list$A_bt + par.list$B_bt),
+                  bs.fpr = par.list$A_bf/(par.list$A_bf + par.list$B_bf)))
+  result  
+}

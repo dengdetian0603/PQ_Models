@@ -2,6 +2,7 @@ setwd("~/Documents/JHSPH/Research/S.Zeger/PQ_Models/Code")
 source("./PerchDataSimulation.R")
 source("./ModelFittingVB.R")
 source("../../BAKER/utils.R")
+Rcpp::sourceCpp('VBEM_Regression.cpp')
 
 # high-quality data
 par.default = SetDefaultSimulationParameter(9)
@@ -20,13 +21,13 @@ hyper.pars.list$aa = rep(25.22, 5)
 hyper.pars.list$bb = rep(4.56, 5)
 hyper.pars.list$cc = 38.1
 hyper.pars.list$dd = 2.4
-hyper.pars.list$rho_mu = -1
-hyper.pars.list$rho_tau = 2
-hyper.pars.list$theta_mu = rep(0, 5)
+hyper.pars.list$rho_mu = -4
+hyper.pars.list$rho_tau = 8
 
 # beta_parms_from_quantiles(c(0.1, 0.12), p = c(0.025, 0.975), plot = TRUE)
 
 # low-quality data
+{
 par.default = SetDefaultSimulationParameter(7)
 par.default$ncase = 1000
 par.default$nctrl = 1000
@@ -51,7 +52,6 @@ hyper.pars.list$aa = c(412, 485, 224, 733, 344)
 hyper.pars.list$bb = c(3340, 3563, 2590, 4158, 3103)
 hyper.pars.list$cc = 12.7  # \in (0.5, 0.9)
 hyper.pars.list$dd = 4.8
-hyper.pars.list$theta_mu = rep(0, 5)
 hyper.pars.list$theta_tau = 1.5
 
 hyper.pars.list$rho_mu = -3
@@ -59,6 +59,7 @@ hyper.pars.list$rho_tau = 26
 
 hyper.pars.list$pind_a = 13
 hyper.pars.list$pind_b = 0.6
+}
 # -----------------------------------------------------------------------------
 
 set.seed(603)
@@ -70,7 +71,7 @@ sim.dat = do.call(ReSimulateData,
                   c(par.default,
                     list(cell.prob.unique = sim.obj$cell.prob.unique)))
 
-group0 = which(rowSums(sim.dat$X) == 1)
+group0 = which(rowSums(sim.dat$X) > 0)
 input.obj = list(MSS.case = sim.dat$MSS.case[group0, ],
                  MBS.case = sim.dat$MBS.case[group0, ],
                  MBS.ctrl = sim.dat$MBS.ctrl,
@@ -78,20 +79,29 @@ input.obj = list(MSS.case = sim.dat$MSS.case[group0, ],
                  ss.available = 1:5, bs.available = 1:5)
 
 # -----------------------------------------------------------------------------
+hyper.pars.list$theta_mu = matrix(0, nrow = ncol(input.obj$X),
+                                  ncol = ncol(input.obj$MBS.case))
 par.list = SetVBInitialValues(5, input.obj, hyper.pars.list)
 
-par.vbfit = FitVBEMnoReg(input.obj, hyper.pars.list, par.list,
-                         max.iter = 450, tol = 1e-6) 
+t0 = proc.time()
+res = regVBEM(input.obj, hyper.pars.list, par.list,
+              maxIter = 300, tol = 5 * 1e-6, 2)
+proc.time() - t0
+
+res$mu_theta = uniquecombs(input.obj$X) %*% res$Beta.mean
+res$mu_rho = res$Rho.mean
 
 # -----------------------------------------------------------------------------
-par.vbfit$mu_theta
-par.vbfit$mu_rho 
-round(par.vbfit$mu_rho * par.vbfit$qD, 3)
+res$mu_theta
+res$mu_rho 
+round(res$mu_rho * res$qD, 3)
 
-etio.info = VBEtioProbsNoReg(par.vbfit)
-plot(etio.info$etio.probs.pL, type = "b", col = "blue", ylim = c(0, 0.28))
+etio.info = VBEtioProbsReg(res)
+plot(etio.info[[1]]$etio.probs.pL, type = "b", col = "blue", ylim = c(0, 0.28))
 lines(sim.obj$cell.prob.unique[1, ], type = "b", col = "red")
 # lines(etio.info$etio.probs, type = "b", col = "black")
+plot(etio.info[[2]]$etio.probs.pL, type = "b", col = "blue", ylim = c(0, 0.28))
+lines(sim.obj$cell.prob.unique[2, ], type = "b", col = "red")
 
 etio.info$ss.tpr
 etio.info$bs.tpr

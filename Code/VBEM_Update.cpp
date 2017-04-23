@@ -58,13 +58,15 @@ NumericMatrix loopyUpdateQD(NumericMatrix& qL, NumericMatrix qD,
                 log(1 + e0i_k2k1) + e0i_k2k1/(2 * pow(1 + e0i_k2k1, 2.0)) * varSi_k2k1;
           T1i = log(1 + e1i_k1k2) + e1i_k1k2/(2 * pow(1 + e1i_k1k2, 2.0)) * (varSi_k1k2 + varRhoL(i, k2)) +
                 log(1 + e1i_k2k1) + e1i_k2k1/(2 * pow(1 + e1i_k2k1, 2.0)) * (varSi_k2k1 + varRhoL(i, k1));
-          T0sum += T0i;
-          T1sum += T1i;
+          if (!isnan(T0i)) {
+            T0sum += T0i;
+            T1sum += T1i;
+          }
           // cout << i << "," << k1 << "," << k2 << "," << qLDi_k1k2 << "/";
         }
         // cout << "," << k1 << "," << k2 << "," << T1sum << "," << T0sum << "/";
-        //double D0 = exp(-T0sum);
-        //double D1 = exp(2 * muRho * qLL(k1, k2) - T1sum + psiAB);
+        // double D0 = exp(-T0sum);
+        // double D1 = exp(2 * muRho * qLL(k1, k2) - T1sum + psiAB);
         double qD_k1k2 = 1/(1 + exp(-T0sum - (2 * muRho * qLL(k1, k2) - T1sum + psiAB)));
         for (int i = 0; i < n; ++i) {
           qLD(i, k1) = qLD(i, k1) + qL(i, k2) * (qD_k1k2 - qD(k1, k2));
