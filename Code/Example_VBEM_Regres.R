@@ -22,7 +22,7 @@ hyper.pars.list$bb = rep(4.56, 5)
 hyper.pars.list$cc = 38.1
 hyper.pars.list$dd = 2.4
 hyper.pars.list$rho_mu = -4
-hyper.pars.list$rho_tau = 8
+hyper.pars.list$rho_tau = 6
 
 # beta_parms_from_quantiles(c(0.1, 0.12), p = c(0.025, 0.975), plot = TRUE)
 
@@ -81,11 +81,11 @@ input.obj = list(MSS.case = sim.dat$MSS.case[group0, ],
 # -----------------------------------------------------------------------------
 hyper.pars.list$theta_mu = matrix(0, nrow = ncol(input.obj$X),
                                   ncol = ncol(input.obj$MBS.case))
-par.list = SetVBInitialValues(5, input.obj, hyper.pars.list)
 
+par.list = SetVBInitialValues(5, input.obj, hyper.pars.list)
 t0 = proc.time()
 res = regVBEM(input.obj, hyper.pars.list, par.list,
-              maxIter = 300, tol = 5 * 1e-6, 2)
+              maxIter = 100, tol = 5 * 1e-5, 2)
 proc.time() - t0
 
 res$mu_theta = uniquecombs(input.obj$X) %*% res$Beta.mean

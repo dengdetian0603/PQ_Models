@@ -391,6 +391,14 @@ void loopyUpdateQD(mat& qL, mat& qD, mat& qLD, mat& qLL, mat& qL2D2,
 }
 
 
+vec digammaVec(vec A, uvec& avail) {
+  vec digammaA(size(avail));
+  for (int i = 0; i < avail.n_elem; ++i) {
+    digammaA(i) = R::digamma(A(avail(i)));
+  }
+  return digammaA;
+}
+
 // [[Rcpp::export]]
 List regVBEM(List inputObj, List hyperPar, List initVal,
              int maxIter, double tol, int nLoop) {
@@ -463,20 +471,25 @@ List regVBEM(List inputObj, List hyperPar, List initVal,
   // VB-EM iteration ===========================================================
   while (parDiff > tol && iter < maxIter) {
     // update qL (E-step) ------------------------------------------------------
-    psiAA = vec(digamma(as<NumericVector>(wrap(A_bt))))(bsAvail) -
-            vec(digamma(as<NumericVector>(wrap(A_bf))))(bsAvail);
-    psiBB = vec(digamma(as<NumericVector>(wrap(B_bt))))(bsAvail) -
-            vec(digamma(as<NumericVector>(wrap(B_bf))))(bsAvail);
-    psiAB = vec(digamma(as<NumericVector>(wrap(A_bf + B_bf))))(bsAvail) -
-            vec(digamma(as<NumericVector>(wrap(A_bt + B_bt))))(bsAvail);
+    psiAA = digammaVec(A_bt, bsAvail) - digammaVec(A_bf, bsAvail);
+    psiBB = digammaVec(B_bt, bsAvail) - digammaVec(B_bf, bsAvail);
+    psiAB = digammaVec(A_bf + B_bf, bsAvail) -
+            digammaVec(A_bt + B_bt, bsAvail);
+    // psiAA = vec(digamma(as<NumericVector>(wrap(A_bt))))(bsAvail) -
+    //         vec(digamma(as<NumericVector>(wrap(A_bf))))(bsAvail);
+    // psiBB = vec(digamma(as<NumericVector>(wrap(B_bt))))(bsAvail) -
+    //         vec(digamma(as<NumericVector>(wrap(B_bf))))(bsAvail);
+    // psiAB = vec(digamma(as<NumericVector>(wrap(A_bf + B_bf))))(bsAvail) -
+    //         vec(digamma(as<NumericVector>(wrap(A_bt + B_bt))))(bsAvail);
     H = thetaMat;
     Hbs = mbsCaseAvail.each_row() % psiAA.t() +
           notMbsCase.each_row() % psiBB.t();
     Hbs.each_row() += psiAB.t();
     H.cols(bsAvail) += Hbs;
     if (!ssAvail.is_empty()) {
-      psiBAB = vec(digamma(as<NumericVector>(wrap(B_st))))(ssAvail) -
-               vec(digamma(as<NumericVector>(wrap(A_st + B_st))))(ssAvail);
+      psiBAB = digammaVec(B_st, ssAvail) - digammaVec(A_st  + B_st, ssAvail);
+      // psiBAB = vec(digamma(as<NumericVector>(wrap(B_st))))(ssAvail) -
+      //          vec(digamma(as<NumericVector>(wrap(A_st + B_st))))(ssAvail);
       mat increMat = mssCaseInfty.each_row() + psiBAB.t();
       H.cols(ssAvail) += increMat;
     }
