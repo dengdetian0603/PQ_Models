@@ -463,20 +463,20 @@ List regVBEM(List inputObj, List hyperPar, List initVal,
   // VB-EM iteration ===========================================================
   while (parDiff > tol && iter < maxIter) {
     // update qL (E-step) ------------------------------------------------------
-    psiAA = vec(digamma(wrap(A_bt)))(bsAvail) -
-            vec(digamma(wrap(A_bf)))(bsAvail);
-    psiBB = vec(digamma(wrap(B_bt)))(bsAvail) -
-            vec(digamma(wrap(B_bf)))(bsAvail);
-    psiAB = vec(digamma(wrap(A_bf + B_bf)))(bsAvail) -
-            vec(digamma(wrap(A_bt + B_bt)))(bsAvail);
+    psiAA = vec(digamma(as<NumericVector>(wrap(A_bt))))(bsAvail) -
+            vec(digamma(as<NumericVector>(wrap(A_bf))))(bsAvail);
+    psiBB = vec(digamma(as<NumericVector>(wrap(B_bt))))(bsAvail) -
+            vec(digamma(as<NumericVector>(wrap(B_bf))))(bsAvail);
+    psiAB = vec(digamma(as<NumericVector>(wrap(A_bf + B_bf))))(bsAvail) -
+            vec(digamma(as<NumericVector>(wrap(A_bt + B_bt))))(bsAvail);
     H = thetaMat;
     Hbs = mbsCaseAvail.each_row() % psiAA.t() +
           notMbsCase.each_row() % psiBB.t();
     Hbs.each_row() += psiAB.t();
     H.cols(bsAvail) += Hbs;
     if (!ssAvail.is_empty()) {
-      psiBAB = vec(digamma(wrap(B_st)))(ssAvail) -
-               vec(digamma(wrap(A_st + B_st)))(ssAvail);
+      psiBAB = vec(digamma(as<NumericVector>(wrap(B_st))))(ssAvail) -
+               vec(digamma(as<NumericVector>(wrap(A_st + B_st))))(ssAvail);
       mat increMat = mssCaseInfty.each_row() + psiBAB.t();
       H.cols(ssAvail) += increMat;
     }
