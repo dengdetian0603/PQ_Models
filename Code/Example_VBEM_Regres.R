@@ -6,7 +6,7 @@ Rcpp::sourceCpp('VBEM_Regression.cpp')
 
 # high-quality data
 par.default = SetDefaultSimulationParameter(9)
-par.default$ncase = 1000
+par.default$ncase = 500
 par.default$nctrl = 1000
 par.default$num.covariates = 1
 par.default$has.interact = FALSE
@@ -72,12 +72,13 @@ sim.dat = do.call(ReSimulateData,
                     list(cell.prob.unique = sim.obj$cell.prob.unique)))
 
 group0 = which(rowSums(sim.dat$X) > 0)
-input.obj = list(MSS.case = sim.dat$MSS.case[group0, ],
-                 MBS.case = sim.dat$MBS.case[group0, ],
-                 MBS.ctrl = sim.dat$MBS.ctrl,
-                 X = sim.dat$X[group0, ],
-                 ss.available = 1:5, bs.available = 1:5)
-
+input.obj0 = list(MSS.case = sim.dat$MSS.case[group0, ],
+                  MBS.case = sim.dat$MBS.case[group0, ],
+                  MBS.ctrl = sim.dat$MBS.ctrl,
+                  X = sim.dat$X[group0, ],
+                  ss.available = 1:5, bs.available = 1:5)
+# input.obj = input.obj0
+input.obj = ResampleCaseCtrl(input.obj0)
 # -----------------------------------------------------------------------------
 hyper.pars.list$theta_mu = matrix(0, nrow = ncol(input.obj$X),
                                   ncol = ncol(input.obj$MBS.case))
@@ -90,6 +91,11 @@ proc.time() - t0
 
 res$mu_theta = uniquecombs(input.obj$X) %*% res$Beta.mean
 res$mu_rho = res$Rho.mean
+
+parMat.boot = rbind(parMat.boot,
+                c(res$qD[lower.tri(res$qD)],
+                  as.vector(res$Beta.mean),
+                  res$Rho.mean))
 
 # -----------------------------------------------------------------------------
 res$mu_theta
@@ -107,3 +113,74 @@ etio.info$ss.tpr
 etio.info$bs.tpr
 etio.info$bs.fpr
 # round(cbind(sim.obj$Mu.unique[1, ], etio.info$etio.mean.pL), 3)
+
+# -----------------------------------------------------------------------------
+library(numDeriv)
+parVec1 = c(
+  as.vector(res$qL),
+  digamma(res$A_st[input.obj$ss.available]) -
+  digamma((res$A_st + res$B_st)[input.obj$ss.available]),
+  digamma(res$B_st[input.obj$ss.available]) -
+  digamma((res$A_st + res$B_st)[input.obj$ss.available]),
+  digamma(res$A_bt[input.obj$bs.available]) -
+  digamma((res$A_bt + res$B_bt)[input.obj$bs.available]),
+  digamma(res$B_bt[input.obj$bs.available]) -
+  digamma((res$A_bt + res$B_bt)[input.obj$bs.available]),
+  digamma(res$A_bf[input.obj$bs.available]) -
+  digamma((res$A_bf + res$B_bf)[input.obj$bs.available]),
+  digamma(res$B_bf[input.obj$bs.available]) -
+  digamma((res$A_bf + res$B_bf)[input.obj$bs.available])
+)
+parVec2 = c(
+  res$qD[lower.tri(res$qD)],
+  as.vector(res$Beta.mean),
+  res$Rho.mean
+)
+
+qLoss = LpseudoExpQ(cbind(c(parVec1, parVec2)), res$Beta.tau, res$Rho.tau,
+                    input.obj, hyper.pars.list)
+
+qLossFunc <- function(x) {
+  LpseudoExpQ(cbind(c(parVec1, x)), res$Beta.tau, res$Rho.tau,
+              input.obj, hyper.pars.list)
+}
+
+Grad = grad(qLossFunc, parVec2)
+H.mat = hessian(qLossFunc, parVec2)
+
+hess.block = hessBlock(res, input.obj, hyper.pars.list)
+Hzz = hess.block[[1]]
+Hza = hess.block[[2]]
+
+varVec1 = c(
+  as.vector(res$qL) * (1 - as.vector(res$qL)),
+  trigamma(res$A_st[input.obj$ss.available]) -
+    trigamma((res$A_st + res$B_st)[input.obj$ss.available]),
+  trigamma(res$B_st[input.obj$ss.available]) -
+    trigamma((res$A_st + res$B_st)[input.obj$ss.available]),
+  trigamma(res$A_bt[input.obj$bs.available]) -
+    trigamma((res$A_bt + res$B_bt)[input.obj$bs.available]),
+  trigamma(res$B_bt[input.obj$bs.available]) -
+    trigamma((res$A_bt + res$B_bt)[input.obj$bs.available]),
+  trigamma(res$A_bf[input.obj$bs.available]) -
+    trigamma((res$A_bf + res$B_bf)[input.obj$bs.available]),
+  trigamma(res$B_bf[input.obj$bs.available]) -
+    trigamma((res$A_bf + res$B_bf)[input.obj$bs.available])
+)
+varVec2 = c(
+  res$qD[lower.tri(res$qD)] * (1 - res$qD[lower.tri(res$qD)]),
+  1/as.vector(res$Beta.tau),
+  1/res$Rho.tau
+)
+
+Vzz = diag(varVec1)
+Vaa = diag(varVec2)
+m0 = solve(diag(1, ncol(Vzz)) - Vzz %*% Hzz, Vzz %*% Hza)
+m1 = Vaa %*% t(Hza) %*% m0
+Haa = H.mat
+Sigma_A = solve(diag(1, ncol(Vaa)) - Vaa %*% Haa - m1, Vaa)
+
+round(cbind(sqrt(diag(Sigma_A)), sqrt(diag(Vaa)),
+            sqrt(diag(-solve(Haa - solve(Vaa)))),
+            apply(parMat.sim, 2, sd),
+            apply(parMat.boot, 2, sd)), 3)

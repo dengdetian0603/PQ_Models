@@ -191,6 +191,147 @@ $$
 
 
 
+### Covariance Matrix Calibration
+
+$$
+\mathbb{E}_Q\log[M, L, \Theta] = \sum_{k=1}^K \Big \{ (\sum_{i=1}^n Y_iq_{l_{ik}}M_{ik} + a^*_k  ) \mathbb{E}_Q (\log \gamma_k) +
+\big [\sum_{i=1}^n Y_iq_{l_{ik}}(1-M_{ik}) + b^*_k \big ] \mathbb{E}_Q [\log(1-\gamma_k)] +\\
+\big [\sum_{i=1}^n M_{ik}(1-Y_iq_{l_{ik}}) + c^*_K \big] \mathbb{E}_Q (\log \delta_k) + 
+\big [ n+\sum_{i=1}^n (Y_iq_{l_{ik}}M_{ik}-Y_iq_{l_{ik}}-M_{ik}) + d^*_K\big] \mathbb{E}_Q [\log (1- \delta_k)] +\\
+(\sum_{i=1}^{n_{case}} q_{l_{ik}}M^{SS}_{ik} + \tilde{a}_k) \mathbb{E}_Q (\log \eta_k) +
+\big[ \sum_{i=1}^{n_{case}} q_{l_{ik}}(1-M^{SS}_{ik}) + \tilde{b}_k \big] \mathbb{E}_Q[\log(1 - \eta_k)] + 
+\sum_{i=1}^{n_{case}} M^{SS}_{ik} (1 - q_{ik}) (-\infty) \Big \} + \\
+\sum_{i=1}^{n_{case}} \sum_{k=1}^K \Big \{ q_{l_{ik}} X_i^T \hat{\beta}_{\cdot k} +
+\hat{\rho} \sum_{k'\neq k} q_{l_{ik}}q_{l_{ik'}}d_{kk'}  -
+\mathbb{E}_Q\log \big [1 + \exp(X_i^T\beta_{\cdot k}+\rho\sum_{k' \neq k}L_{ik'}D_{kk'})\big]\Big \}  +
+\mathbb{E}_Q \log [\beta, \rho, D]\\
+$$
+
+where we denote $\hat{\theta}_{ik} = X_i^T \hat{\beta}_{\cdot k}$ and 
+$$
+\mathbb{E}_Q\log \big [1 + \exp(X_i^T\beta_{\cdot k}+\rho\sum_{k' \neq k}L_{ik'}D_{kk'})\big] \\
+\approx \sum_{j=0}^{K-1} \text{Poi}(j;\lambda = \sum_{k' \neq k} q_{l_{ik'}}d_{kk'})
+\Big [ \log (1 + e^{\hat{\theta}_{ik} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik}} + j^2\sigma^2_{\rho})\Big]
+$$
+
+Denote $\mathbb{E}_Q \log[M, L, \Theta]$ as $\mathcal{L}$, and let $\lambda_{ik} = \sum_{k' \neq k} q_{l_{ik'}}d_{kk'}$ then
+
+qL:
+$$
+\frac{\partial \mathcal{L}}{\partial q_{l_{ik}}} = 
+M_{ik}^{SS} \mathbb{E}_Q(\log \eta_k) + (1 - M_{ik}^{SS}) \mathbb{E}_Q[\log(1 - \eta_k)] + \\
+M_{ik}^{BS} \mathbb{E}_Q(\log \gamma_k) + (1 - M_{ik}^{BS}) \mathbb{E}_Q[\log(1 - \gamma_k)] - \\
+M_{ik}^{BS} \mathbb{E}_Q(\log \delta_k) - (1 - M_{ik}^{BS}) \mathbb{E}_Q[\log(1 - \delta_k)] +\\
+X_i^T\beta_{\cdot k} + 2 \rho \lambda_{ik} - \\
+\sum_{k' \neq k} \sum_{j=0}^{K-1} \frac{\lambda_{ik'}^{j - 1}e^{-\lambda_{ik'}}}{j\text{!}} (j - \lambda_{ik'}) d_{kk'}
+\Big [ \log (1 + e^{\hat{\theta}_{ik'} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik'} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik'} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik'}} + j^2\sigma^2_{\rho})\Big]\\
+$$
+D:
+$$
+\text{for } k_1 < k_2, \;\frac{\partial \mathcal{L}}{\partial d_{k_1k_2}} = 
+2  \sum_{i=1}^{n_{case}} \Big \{ \hat{\rho}\sum_{k_1 <k_2} q_{l_{ik_1}} q_{l_{ik_2}} - \\
+\sum_{j=0}^{K-1} \frac{\lambda_{ik_1}^{j - 1}e^{-\lambda_{ik_1}}}{j\text{!}} (j - \lambda_{ik_1}) q_{l_{ik_2}}
+\Big [ \log (1 + e^{\hat{\theta}_{ik_1} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik_1} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik_1} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik_1}} + j^2\sigma^2_{\rho})\Big]  -\\
+\sum_{j=0}^{K-1} \frac{\lambda_{ik_2}^{j - 1}e^{-\lambda_{ik_2}}}{j\text{!}} (j - \lambda_{ik_2}) q_{l_{ik_1}}
+\Big [ \log (1 + e^{\hat{\theta}_{ik_2} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik_2} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik_2} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik_2}} + j^2\sigma^2_{\rho})\Big] \Big \}\\
+$$
+$\mathbb{\beta}_{\cdot k}$:
+$$
+\frac{\partial \mathcal{L}}{\partial \hat{\beta}_{\cdot k}} = 
+\sum_{i=1}^{n_{case}} q_{l_{ik}}X_i - 
+\sum_{i=1}^{n_{case}} \sum_{j=0}^{K-1}\text{Poi}(j; \lambda_{ik})
+\Big[ \frac{e^{\hat{\theta}_{ik} + j \hat{\rho}}}{1 + e^{\hat{\theta}_{ik} + j \hat{\rho}}}+
+\frac{e^{\hat{\theta}_{ik} + j\hat{\rho}} - e^{3(\hat{\theta}_{ik} + j\hat{\rho})}}
+{2(1 + e^{\hat{\theta}_{ik} + j\hat{\rho}})^4} 
+(\sigma^2_{\theta_{ik}} + j^2\sigma^2_{\rho})
+\Big] X_i \\
+$$
+$\rho$:
+$$
+\frac{\partial \mathcal{L}}{\partial \hat{\rho}} = 
+2 \sum_{i=1}^{n_{case}}\sum_{k_1 <k_2} q_{l_{ik_1}} q_{l_{ik_2}} d_{k_1k_2} - 
+\sum_{i=1}^{n_{case}} \sum_{k=1}^K\sum_{j=0}^{K-1}\text{Poi}(j; \lambda_{ik})
+\Big[ \frac{e^{\hat{\theta}_{ik} + j \hat{\rho}}}{1 + e^{\hat{\theta}_{ik} + j \hat{\rho}}}+
+\frac{e^{\hat{\theta}_{ik} + j\hat{\rho}} - e^{3(\hat{\theta}_{ik} + j\hat{\rho})}}
+{2(1 + e^{\hat{\theta}_{ik} + j\hat{\rho}})^4} 
+(\sigma^2_{\theta_{ik}} + j^2\sigma^2_{\rho})
+\Big] j \\
+$$
 
 
+Second order partial derivatives for qL:
 
+vs. qL:
+$$
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik}} \partial q_{l_{i'k'}}} =  0\\
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik_1}} \partial q_{l_{ik_2}}} =  2 \hat{\rho} d_{k_1k_2} - \\
+\sum_{k' \neq k_1, k' \neq k_2}\sum_{j = 0}^{K-1} \frac{1}{j\text{!}} \lambda_{ik'}^{j - 2}e^{-\lambda_{ik'}}[j(j-1) -2 j\lambda_{ik'} +
+\lambda_{ik'}^2]d_{k_1k'}d_{k_2k'} 
+\Big [ \log (1 + e^{\hat{\theta}_{ik'} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik'} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik'} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik'}} + j^2\sigma^2_{\rho})\Big]\\
+$$
+
+
+vs. D:
+$$
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik_1}} \partial d_{k_1k_2}} =  2 \hat{\rho} q_{l_{ik_2}} - \\
+\sum_{j=0}^{K-1} \Big \{ \frac{1}{j\text{!}} \Big [ \lambda_{ik_2}^{j - 2}e^{-\lambda_{ik_2}}[j(j-1) -2 j\lambda_{ik_2} +
+\lambda_{ik_2}^2]q_{l_{ik_1}}^2 + \lambda_{ik_2}^{j - 1}e^{-\lambda_{ik_2}} (j - \lambda_{ik_2}) \Big ]\\
+\Big [ \log (1 + e^{\hat{\theta}_{ik_2} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik_2} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik_2} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik_2}} + j^2\sigma^2_{\rho})\Big] \Big \}\\
+\\ %----------------------------------------------------------------------------------------------------------------------------
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik_2}} \partial d_{k_1k_2}} =  2 \hat{\rho} q_{l_{ik_1}} - \\
+\sum_{j=0}^{K-1} \Big \{ \frac{1}{j\text{!}} \Big [ \lambda_{ik_1}^{j - 2}e^{-\lambda_{ik_1}}[j(j-1) -2 j\lambda_{ik_1} +
+\lambda_{ik_1}^2]q_{l_{ik_2}}^2 + \lambda_{ik_1}^{j - 1}e^{-\lambda_{ik_1}} (j - \lambda_{ik_1}) \Big ]\\
+\Big [ \log (1 + e^{\hat{\theta}_{ik_1} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik_1} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik_1} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik_1}} + j^2\sigma^2_{\rho})\Big] \Big \}\\
+$$
+​	for $k_3 \neq k_2$ and $k_3 \neq k1$,
+
+​	
+$$
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik_3}} \partial d_{k_1k_2}} = -
+\sum_{j=0}^{K-1} \Big \{ \frac{1}{j\text{!}} \lambda_{ik_2}^{j - 2}e^{-\lambda_{ik_2}}[j(j-1) -2 j\lambda_{ik_2} +
+\lambda_{ik_2}^2]q_{l_{ik_1}}q_{l_{ik_3}}\\
+\Big [ \log (1 + e^{\hat{\theta}_{ik_2} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik_2} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik_2} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik_2}} + j^2\sigma^2_{\rho})\Big] \Big \} -\\
+\sum_{j=0}^{K-1} \Big \{ \frac{1}{j\text{!}} \lambda_{ik_1}^{j - 2}e^{-\lambda_{ik_1}}[j(j-1) -2 j\lambda_{ik_1} +
+\lambda_{ik_1}^2]q_{l_{ik_2}}q_{l_{ik_3}}\\
+\Big [ \log (1 + e^{\hat{\theta}_{ik_1} + j \hat{\rho}}) +
+\frac{e^{\hat{\theta}_{ik_1} + j\hat{\rho}}}{2(1 + e^{\hat{\theta}_{ik_1} + j\hat{\rho}})^2}
+(\sigma^2_{\theta_{ik_1}} + j^2\sigma^2_{\rho})\Big] \Big \}\\
+$$
+vs. $\beta$:
+$$
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik}} \partial \hat{\beta}_{\cdot k}} = X_i \\
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik}} \partial \hat{\beta}_{\cdot k'}} =
+\sum_{j=0}^{K-1} \frac{\lambda_{ik'}^{j - 1}e^{-\lambda_{ik'}}}{j\text{!}} (j - \lambda_{ik'}) d_{kk'}
+\Big[ \frac{e^{\hat{\theta}_{ik'} + j \hat{\rho}}}{1 + e^{\hat{\theta}_{ik'} + j \hat{\rho}}}+
+\frac{e^{\hat{\theta}_{ik'} + j\hat{\rho}} - e^{3(\hat{\theta}_{ik'} + j\hat{\rho})}}
+{2(1 + e^{\hat{\theta}_{ik'} + j\hat{\rho}})^4} 
+(\sigma^2_{\theta_{ik'}} + j^2\sigma^2_{\rho})
+\Big] X_i \\
+$$
+vs. $\rho$:
+$$
+\frac{\partial^2 \mathcal{L}}{\partial q_{l_{ik}} \partial \hat{\rho}} = 
+2 \lambda_{ik} - \\
+\sum_{k' \neq k} \sum_{j=0}^{K-1} \frac{\lambda_{ik'}^{j - 1}e^{-\lambda_{ik'}}}{j\text{!}} (j - \lambda_{ik'}) d_{kk'}
+\Big[ \frac{e^{\hat{\theta}_{ik'} + j \hat{\rho}}}{1 + e^{\hat{\theta}_{ik'} + j \hat{\rho}}}+
+\frac{e^{\hat{\theta}_{ik'} + j\hat{\rho}} - e^{3(\hat{\theta}_{ik'} + j\hat{\rho})}}
+{2(1 + e^{\hat{\theta}_{ik'} + j\hat{\rho}})^4} 
+(\sigma^2_{\theta_{ik'}} + j^2\sigma^2_{\rho})
+\Big]j
+$$

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <RcppArmadillo.h>
 #include <vector>
-//#include </Users/dengdetian0603/Downloads/dlib-18.18/dlib/optimization.h>
-#include </users/ddeng/dlib-18.18/dlib/optimization.h>
+#include </Users/dengdetian0603/Downloads/dlib-18.18/dlib/optimization.h>
+// #include </users/ddeng/dlib-18.18/dlib/optimization.h>
 // [[Rcpp::depends(RcppArmadillo)]]
 
 using namespace arma;
@@ -579,21 +579,397 @@ List regVBEM(List inputObj, List hyperPar, List initVal,
 }
 
 // [[Rcpp::export]]
-vec a1(vec m0) {
-  vec res(size(m0));
-  for (int i = 0; i < m0.n_elem; ++i) {
-    res(i) = R::dpois(0, m0(i), false);
-  }
-  return res;
+mat a1(mat m0, vec v0) {
+  mat m1 = m0.t() * v0;
+  return m1;
 }
 
 
-/*** R
-# input.obj$X = cbind(input.obj$X[, 1])
-# input.obj$ss.available = 3:4
-# input.obj$bs.available = 0:4
-# par.list$mu_theta = rbind(par.list$mu_theta)
-# par.list$tau_theta = rbind(par.list$tau_theta)
-# hyper.pars.list$theta_mu = rbind(hyper.pars.list$theta_mu)
-# res = regVBEM(input.obj, hyper.pars.list, par.list, maxIter = 250, tol = 5 * 1e-6) 
-  */
+// [[Rcpp::export]]
+double LpseudoExpQ(mat& parVec, mat& betaTauMat, double rhoPostTau,
+                   List inputObj, List hyperPar) {
+  // prepare data ==============================================================
+  uvec ssAvail = inputObj["ss.available"];
+  ssAvail -= 1;
+  uvec bsAvail = inputObj["bs.available"];
+  bsAvail -= 1;
+  mat mssCase = inputObj["MSS.case"];
+  mat mbsCase = inputObj["MBS.case"];
+  mat mbsCtrl = inputObj["MBS.ctrl"];
+  mat X = inputObj["X"];
+  mat XX = square(X);
+  int nCase = mbsCase.n_rows;
+  int nCtrl = mbsCtrl.n_rows;
+  int K = mbsCase.n_cols;
+  mat mssCaseAvail;
+  if (!ssAvail.is_empty()) {
+    mssCaseAvail = mssCase.cols(ssAvail);
+  }
+  mat mbsCaseAvail = mbsCase.cols(bsAvail);
+  mat mbsCtrlAvail = mbsCtrl.cols(bsAvail);
+  vec mbsCaseSum = sum(mbsCaseAvail, 0).t();
+  vec mbsCtrlSum = sum(mbsCtrlAvail, 0).t();
+  // re-arrange parameters =====================================================
+  int thisRow = nCase * K;
+  mat qL = parVec.head_rows(thisRow);
+  qL.reshape(nCase, K);
+  mat logSStpr, log1_SStpr;
+  if (!ssAvail.is_empty()) {
+    logSStpr = parVec.rows(thisRow, thisRow + ssAvail.n_elem - 1);
+    thisRow += ssAvail.n_elem;
+    log1_SStpr = parVec.rows(thisRow, thisRow + ssAvail.n_elem - 1);
+    thisRow += ssAvail.n_elem;
+  }
+  mat logBStpr = parVec.rows(thisRow, thisRow + bsAvail.n_elem - 1);
+  thisRow += bsAvail.n_elem;
+  mat log1_BStpr = parVec.rows(thisRow, thisRow + bsAvail.n_elem - 1);
+  thisRow += bsAvail.n_elem;
+  mat logBSfpr = parVec.rows(thisRow, thisRow + bsAvail.n_elem - 1);
+  thisRow += bsAvail.n_elem;
+  mat log1_BSfpr = parVec.rows(thisRow, thisRow + bsAvail.n_elem - 1);
+  thisRow += bsAvail.n_elem;
+  mat qD(K, K);
+  qD.zeros();
+  for (int r = 0; r < K; ++r) {
+    for (int c = r + 1; c < K; ++c) {
+      qD(r, c) = parVec(thisRow, 0);
+      qD(c, r) = parVec(thisRow, 0);
+      thisRow++;
+    }
+  }
+  mat betaMat = parVec.rows(thisRow, thisRow + K * X.n_cols - 1);
+  betaMat.reshape(X.n_cols, K);
+  thisRow += K * X.n_cols;
+  if (thisRow != parVec.n_rows - 1) {
+    cout << "parVec index does not match." << endl;
+  }
+  double rhoPostMean = parVec(thisRow, 0);
+  // prepare hyper parameters ==================================================
+  vec aa = hyperPar["aa"];
+  vec bb = hyperPar["bb"];
+  double cc = hyperPar["cc"];
+  double dd = hyperPar["dd"];
+  double ee = hyperPar["ee"];
+  double ff = hyperPar["ff"];
+  mat betaPriorMean = hyperPar["theta_mu"];
+  mat betaPriorTau(size(betaPriorMean));
+  betaPriorTau.fill(hyperPar["theta_tau"]);
+  double rhoPriorMean = hyperPar["rho_mu"];
+  double rhoPriorTau = hyperPar["rho_tau"];
+  NumericVector pind_a = hyperPar["pind_a"];
+  NumericVector pind_b = hyperPar["pind_b"];
+  NumericVector psiD = digamma(pind_a) - digamma(pind_b);
+  // Expected log density ======================================================
+  // measurement density ---------------
+  vec qSum, qmsSum, qmbSum;
+  vec A_st, B_st, A_bt, B_bt, A_bf, B_bf;
+  mat logLSS, logLBS;
+  double result = 0.0;
+  qSum = sum(qL, 0).t();
+  if (!ssAvail.is_empty()) {
+    qmsSum = sum(qL.cols(ssAvail) % mssCaseAvail, 0).t();
+    A_st = qmsSum + aa(ssAvail);
+    B_st = qSum(ssAvail) - qmsSum + bb(ssAvail);
+    logLSS = logSStpr.t() * A_st + log1_SStpr.t() * B_st;
+    result = logLSS(0, 0);
+  }
+  qmbSum = sum(qL.cols(bsAvail) % mbsCaseAvail, 0).t();
+  A_bt = qmbSum + cc;
+  B_bt = qSum(bsAvail) - qmbSum + dd;
+  A_bf = mbsCaseSum + mbsCtrlSum - qmbSum + ee;
+  B_bf = nCase + nCtrl + qmbSum - qSum(bsAvail) -
+         mbsCaseSum - mbsCtrlSum + ff;
+  logLBS = logBStpr.t() * A_bt + log1_BStpr.t() * B_bt +
+           logBSfpr.t() * A_bf + log1_BSfpr.t() * B_bf;
+  result += logLBS(0, 0);
+  // latent density -------------------
+  mat qLD = qL * qD;
+  mat thetaMat = X * betaMat;
+  double qLtheta = accu(qL % thetaMat);
+  double rhoLLD = rhoPostMean * accu(qL % qLD);
+  cube dPois = zeros<cube>(qL.n_rows, qL.n_cols, qL.n_cols);
+  for (int j = 0; j < qL.n_cols; ++j) {
+    for (int i = 0; i < qL.n_rows; ++i) {
+      for (int k = 0; k < qL.n_cols; ++k) {
+        dPois(i, k, j) = R::dpois(j, qLD(i, k), false);
+      }
+    }
+  }
+  mat thetaVarMat = XX * (1/betaTauMat);
+  mat qMat(size(qL));
+  qMat.fill(0);
+  mat eMat(size(thetaMat));
+  mat fMat(size(thetaMat));
+  for (int j = 0; j < qL.n_cols; ++j) {
+    eMat = exp(thetaMat + j * rhoPostMean);
+    fMat = log(1 + eMat) + 0.5 * (eMat % (thetaVarMat + j * j/rhoPostTau))/square(1 + eMat);
+    qMat += dPois.slice(j) % fMat;
+  }
+  double logLatent = qLtheta + rhoLLD - accu(qMat);
+  double logPrior = -0.5 * rhoPriorTau *
+                    (1/rhoPostTau + rhoPostMean * rhoPostMean -
+                    2 * rhoPostMean * rhoPriorMean) -
+                    0.5 * accu(betaPriorTau %
+                    (1/betaTauMat + square(betaMat) -
+                    2 * betaMat % betaPriorMean)) +
+                    accu(qD) * psiD(0)/2;
+  result += logLatent + logPrior;
+  return result;
+}
+
+
+
+vec factorial(int K);
+cube gradPois(mat& qLD, vec& factJ); 
+cube hessPois(mat& qLD, vec& factJ);
+List approxIntegral(mat& thetaMat, mat& thetaVarMat, double rhoPostMean, double rhoPostTau);
+
+// [[Rcpp::export]]
+List hessBlock(List vbResult, List inputObj, List hyperPar) {
+  // prepare data ==============================================================
+  uvec ssAvail = inputObj["ss.available"];
+  ssAvail -= 1;
+  uvec bsAvail = inputObj["bs.available"];
+  bsAvail -= 1;
+  mat mssCase = inputObj["MSS.case"];
+  mat mbsCase = inputObj["MBS.case"];
+  mat mbsCtrl = inputObj["MBS.ctrl"];
+  mat X = inputObj["X"];
+  mat XX = square(X);
+  int nCase = mbsCase.n_rows;
+  // int nCtrl = mbsCtrl.n_rows;
+  int K = mbsCase.n_cols;
+  mat mssCaseAvail;
+  if (!ssAvail.is_empty()) {
+    mssCaseAvail = mssCase.cols(ssAvail);
+  }
+  mat mbsCaseAvail = mbsCase.cols(bsAvail);
+  // mat mbsCtrlAvail = mbsCtrl.cols(bsAvail);
+  // vec mbsCaseSum = sum(mbsCaseAvail, 0).t();
+  // vec mbsCtrlSum = sum(mbsCtrlAvail, 0).t();
+  // prepare parameters =====================================================
+  // vec A_st = vbResult["A_st"];
+  // vec B_st = vbResult["B_st"];
+  // vec A_bt = vbResult["A_bt"]; 
+  // vec B_bt = vbResult["B_bt"];
+  // vec A_bf = vbResult["A_bf"];
+  // vec B_bf = vbResult["B_bf"];
+  mat qL = vbResult["qL"];
+  // mat logSStpr, log1_SStpr;
+  // if (!ssAvail.is_empty()) {
+  //   logSStpr = digammaVec(A_st, ssAvail) - digammaVec(A_st + B_st, ssAvail);
+  //   log1_SStpr = digammaVec(B_st, ssAvail) - digammaVec(A_st + B_st, ssAvail);
+  // }
+  // mat logBStpr = digammaVec(A_bt, ssAvail) - digammaVec(A_bt + B_bt, ssAvail);
+  // mat log1_BStpr = digammaVec(B_bt, ssAvail) - digammaVec(A_bt + B_bt, ssAvail);
+  // mat logBSfpr = digammaVec(A_bf, ssAvail) - digammaVec(A_bf + B_bf, ssAvail);
+  // mat log1_BSfpr = digammaVec(B_bf, ssAvail) - digammaVec(A_bf + B_bf, ssAvail);
+  mat qD = vbResult["qD"];
+  mat betaMat = vbResult["Beta.mean"];
+  mat betaTauMat = vbResult["Beta.tau"];
+  double rhoPostMean = vbResult["Rho.mean"];
+  double rhoPostTau = vbResult["Rho.tau"];
+  // prepare hyper parameters ==================================================
+  // vec aa = hyperPar["aa"];
+  // vec bb = hyperPar["bb"];
+  // double cc = hyperPar["cc"];
+  // double dd = hyperPar["dd"];
+  // double ee = hyperPar["ee"];
+  // double ff = hyperPar["ff"];
+  // mat betaPriorMean = hyperPar["theta_mu"];
+  // mat betaPriorTau(size(betaPriorMean));
+  // betaPriorTau.fill(hyperPar["theta_tau"]);
+  // double rhoPriorMean = hyperPar["rho_mu"];
+  // double rhoPriorTau = hyperPar["rho_tau"];
+  // NumericVector pind_a = hyperPar["pind_a"];
+  // NumericVector pind_b = hyperPar["pind_b"];
+  // NumericVector psiD = digamma(pind_a) - digamma(pind_b);
+  // hessin matrix by block ====================================================
+  mat qLD = qL * qD;
+  mat thetaMat = X * betaMat;
+  mat thetaVarMat = XX * (1/betaTauMat);
+  vec factorialJ = factorial(K);
+  cube gPois = gradPois(qLD, factorialJ);
+  cube hPois = hessPois(qLD, factorialJ);
+  List approx = approxIntegral(thetaMat, thetaVarMat, rhoPostMean, rhoPostTau);
+  cube intgeral = approx["res1"];
+  cube gradIntegral = approx["res2"];
+  // Hzz ------------------------------
+  int lenZ = qL.n_cols * qL.n_rows + 2 * ssAvail.n_elem + 4 * bsAvail.n_elem;
+  mat Hzz(lenZ, lenZ);
+  Hzz.fill(0.0);
+  mat hQL(size(qL));
+  hQL.fill(0.0);
+  for (int j = 0; j < K; ++j) {
+    hQL += hPois.slice(j) % intgeral.slice(j);
+  }
+  int r = 0; int c = 0;
+  for (int k1 = 0; k1 < K; ++k1) {
+    for (int i = 0; i < nCase; ++i) {
+      r = k1 * nCase + i;
+      /* qL, qL */
+      for (int k2 = k1; k2 < K; ++k2) {
+        c = k2 * nCase + i;
+        Hzz(r, c) = 2 * rhoPostMean * qD(k1, k2);
+        for (int k = 0; k < K; ++k) {
+          Hzz(r, c) -= hQL(i, k) * qD(k1, k) * qD(k2, k); 
+        }
+        Hzz(c, r) = Hzz(r, c);
+      }
+      /* qL, log(sstpr) */
+      c = K * nCase;
+      if (!ssAvail.is_empty()) {
+        for (int kss = 0; kss < ssAvail.n_elem; ++kss) {
+          Hzz(r, c) = mssCaseAvail(i, kss);
+          Hzz(c, r) = Hzz(r, c);
+          Hzz(r, c + ssAvail.n_elem) = 1 - mssCaseAvail(i, kss);
+          Hzz(c + ssAvail.n_elem, r) = Hzz(r, c + ssAvail.n_elem);
+          c++;
+        }
+      }
+      /* qL, log(bstpr) & log(bsfpr) */
+      c = K * nCase + 2 * ssAvail.n_elem;
+      for (int kbs = 0; kbs < bsAvail.n_elem; ++kbs) {
+        Hzz(r, c) = mbsCaseAvail(i, kbs);
+        Hzz(c, r) = Hzz(r, c);
+        Hzz(r, c + bsAvail.n_elem) = 1 - mbsCaseAvail(i, kbs);
+        Hzz(c + bsAvail.n_elem, r) = Hzz(r, c + bsAvail.n_elem);
+        Hzz(r, c + 2 * bsAvail.n_elem) = - mbsCaseAvail(i, kbs);
+        Hzz(c + 2 * bsAvail.n_elem, r) = Hzz(r, c + 2 * bsAvail.n_elem);
+        Hzz(r, c + 3 * bsAvail.n_elem) = mbsCaseAvail(i, kbs) - 1;
+        Hzz(c + 3 * bsAvail.n_elem, r) = Hzz(r, c + 3 * bsAvail.n_elem);
+        c++;
+      }
+    }
+  }
+  // Hza -----------------------------
+  int lenA = (K * K - K)/2 + betaMat.n_elem + 1;
+  mat Hza(lenZ, lenA);
+  Hza.fill(0.0);
+  mat gQL(size(qL));
+  gQL.fill(0.0);
+  for (int j = 0; j < K; ++j) {
+    gQL += gPois.slice(j) % intgeral.slice(j);
+  }
+  mat hQLtheta(size(qL));
+  hQLtheta.fill(0.0);
+  for (int j = 0; j < K; ++j) {
+    hQLtheta += gPois.slice(j) % gradIntegral.slice(j);
+  }
+  mat hQLrho(size(qL));
+  hQLrho.fill(0.0);
+  for (int j = 1; j < K; ++j) {
+    hQLrho += gPois.slice(j) % gradIntegral.slice(j) * j;
+  }
+  hQLrho = hQLrho * qD;
+  for (int k = 0; k < K; ++k) {
+    for (int i = 0; i < nCase; ++i) {
+      r = k * nCase + i;
+      c = 0;
+      /* qL, qD */
+      for (int k2 = 0; k2 < K; ++k2) {
+        for (int k1 = k2 + 1; k1 < K; ++k1) {
+          if (k == k1) {
+            Hza(r, c) = 2 * rhoPostMean * qL(i, k2) -
+                        hQL(i, k2) * qL(i, k1) * qL(i, k1) + gQL(i, k2);
+          } else if (k == k2) {
+            Hza(r, c) = 2 * rhoPostMean * qL(i, k1) -
+                        hQL(i, k1) * qL(i, k2) * qL(i, k2) + gQL(i, k1);
+          } else {
+            Hza(r, c) = - hQL(i, k2) * qL(i, k) * qL(i, k1) -
+                        hQL(i, k1) * qL(i, k) * qL(i, k2);
+          }
+          c++; 
+        }
+      }
+      /* qL, beta */
+      c =  (K * K - K)/2;
+      for (int kx = 0; kx < K; ++kx) {
+        double hqlbeta = hQLtheta(i, k) * qD(k, kx);
+        for (int px = 0; px < betaMat.n_rows; ++px) {
+          if (kx == k) {
+            Hza(r, c) = X(i, px);
+          } else {
+            Hza(r, c) = hqlbeta * X(i, px);
+          }
+          c++;
+        }
+      }
+      /* qL, rho */
+      c = lenA - 1;
+      Hza(r, c) = 2 * qLD(i, k) - hQLrho(i, k);
+    }
+  }
+  List hessList;
+  hessList["Hzz"] = Hzz;
+  hessList["Hza"] = Hza;
+  return hessList;
+}
+
+// ----------------------------------------------------------------------------
+vec factorial(int K) {
+  vec facVec(K + 1);
+  facVec(0) = 1;
+  for (int j = 1; j <= K; ++j) {
+    facVec(j) = j * facVec(j - 1);
+  }
+  return facVec;
+}
+
+cube gradPois(mat& qLD, vec& factJ) {
+  cube gPois = zeros<cube>(qLD.n_rows, qLD.n_cols, qLD.n_cols);
+  for (int j = 0; j < qLD.n_cols; ++j) {
+    for (int i = 0; i < qLD.n_rows; ++i) {
+      for (int k = 0; k < qLD.n_cols; ++k) {
+        double lambdaik = qLD(i, k);
+        gPois(i, k, j) = pow(lambdaik, j - 1) * 
+                         exp(-lambdaik) * (j - lambdaik) / factJ(j);
+      }
+    }
+  }
+  return gPois;
+}
+
+cube hessPois(mat& qLD, vec& factJ) {
+  cube hPois = zeros<cube>(qLD.n_rows, qLD.n_cols, qLD.n_cols);
+  for (int j = 0; j < qLD.n_cols; ++j) {
+    for (int i = 0; i < qLD.n_rows; ++i) {
+      for (int k = 0; k < qLD.n_cols; ++k) {
+        double lambdaik = qLD(i, k);
+        hPois(i, k, j) = pow(lambdaik, j - 2) * 
+                         exp(-lambdaik) / factJ(j) *
+                         (j * (j - 1) - 2 * j * lambdaik + lambdaik * lambdaik);
+      }
+    }
+  }
+  return hPois;
+}
+
+List approxIntegral(mat& thetaMat, mat& thetaVarMat,
+                    double rhoPostMean, double rhoPostTau) {
+  cube res1 = zeros<cube>(thetaMat.n_rows, thetaMat.n_cols, thetaMat.n_cols);
+  cube res2 = zeros<cube>(thetaMat.n_rows, thetaMat.n_cols, thetaMat.n_cols);
+  mat eMat(size(thetaMat));
+  mat eMatPlus1(size(thetaMat));
+  for (int j = 0; j < thetaMat.n_cols; ++j) {
+    eMat = exp(thetaMat + j * rhoPostMean);
+    eMatPlus1 = 1 + eMat;
+    res1.slice(j) = log(eMatPlus1) +
+      0.5 * (eMat % (thetaVarMat + j * j/rhoPostTau))/square(eMatPlus1);
+    res2.slice(j) = eMat/(eMatPlus1) + 0.5 * (eMat - pow(eMat, 3)) %
+                    (thetaVarMat + j * j/rhoPostTau) / pow(eMatPlus1, 4);
+  }
+  List result;
+  result["res1"] = res1;
+  result["res2"] = res2;
+  return result;
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  

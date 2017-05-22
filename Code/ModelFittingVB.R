@@ -293,3 +293,16 @@ VBEtioProbsReg = function(par.list, Smax = NULL) {
                   bs.fpr = par.list$A_bf/(par.list$A_bf + par.list$B_bf)))
   result  
 }
+
+
+ResampleCaseCtrl = function(input.obj) {
+  nCase = nrow(input.obj$MBS.case)
+  nCtrl = nrow(input.obj$MBS.ctrl)
+  boot.case = sample(1:nCase, nCase, replace = TRUE)
+  boot.ctrl = sample(1:nCtrl, nCtrl, replace = TRUE)
+  input.obj$MSS.case = input.obj$MSS.case[boot.case, ]
+  input.obj$MBS.case = input.obj$MBS.case[boot.case, ]
+  input.obj$X = input.obj$X[boot.case, ]
+  input.obj$MBS.ctrl = input.obj$MBS.ctrl[boot.ctrl, ]
+  input.obj
+}
