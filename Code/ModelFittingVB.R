@@ -306,3 +306,30 @@ ResampleCaseCtrl = function(input.obj) {
   input.obj$MBS.ctrl = input.obj$MBS.ctrl[boot.ctrl, ]
   input.obj
 }
+
+
+PredNoRegGOF <- function(etio.info, n.pred, input.obj, n.case) {
+# predictive goodness of fit
+  pred = SimulateNoRegData(ncase = n.pred, nctrl = 100,
+                           theta1 = rep(0, length(etio.info$etio.mean)),
+                           theta2 = NULL,
+                           ss.tpr = etio.info$ss.tpr,
+                           bs.tpr = etio.info$bs.tpr,
+                           bs.fpr = etio.info$bs.fpr,
+                           cell.probs = etio.info$etio.probs.pL)
+  tmp.bs = uniquecombs(rbind(input.obj$MBS.case, pred$MBS.case), ordered = TRUE)
+  tmp.ss = uniquecombs(rbind(input.obj$MSS.case, pred$MSS.case), ordered = TRUE)
+  pred.bs.idx = factor(attr(tmp.bs, "index"))
+  pred.ss.idx = factor(attr(tmp.ss, "index"))
+  
+  p.obs.bs = table(pred.bs.idx[1:n.case])/n.case
+  p.pred.bs = table(pred.bs.idx[-(1:n.case)])/n.pred
+  p.obs.ss = table(pred.ss.idx[1:n.case])/n.case
+  p.pred.ss = table(pred.ss.idx[-(1:n.case)])/n.pred
+  list(Prob.BS = cbind(p.obs.bs, p.pred.bs),
+       Prob.SS = cbind(p.obs.ss, p.pred.ss),
+       BS.gof = sum(sqrt(p.obs.bs * p.pred.bs)),
+       SS.gof = sum(sqrt(p.obs.ss * p.pred.ss)))
+}
+
+

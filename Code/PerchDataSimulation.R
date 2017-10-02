@@ -349,14 +349,16 @@ ReSimulateData <- function(ncase, nctrl, num.covariates, has.interact,
 }
 
 SimulateNoRegData <- function(ncase, nctrl, theta1, theta2, 
-                              ss.tpr, bs.tpr, bs.fpr) {
+                              ss.tpr, bs.tpr, bs.fpr, cell.probs = NULL) {
   # simulate data from quadratic exponential data explicitly
   K = length(theta1)
   theta.vec = c(theta1, theta2) # of length: K + choose(K, 2)
   d.mat = DesignMatrixAppxQuadExp(K, K)
-  LU.mat = cbind(d.mat$Lmat, d.mat$Umat)
-  potentials = c(1, exp((LU.mat %*% cbind(theta.vec))[, 1]))
-  cell.probs = potentials/sum(potentials)  
+  if (length(cell.probs) < 1) {
+    LU.mat = cbind(d.mat$Lmat, d.mat$Umat)
+    potentials = c(1, exp((LU.mat %*% cbind(theta.vec))[, 1]))
+    cell.probs = potentials/sum(potentials)
+  }
   
   Lmat.withZero = rbind(rep(0, K), d.mat$Lmat)
   dat.GS = t(rmultinom(ncase, 1, cell.probs)) %*% Lmat.withZero

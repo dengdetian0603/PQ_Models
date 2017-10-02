@@ -61,7 +61,27 @@ hyper.pars.list$rho_tau = 18
 hyper.pars.list$pind_a = 9
 hyper.pars.list$pind_b = 3
 # -----------------------------------------------------------------------------
+ss.tpr = c(0.5, 0.6, 0.4, 0.55, 0.45)
 
+bs.tpr = c(0.8, 0.6, 0.7, 0.7, 0.65)
+bs.fpr = c(0.45, 0.3, 0.35, 0.4, 0.35)
+
+theta1 = c(-1, -0.5, 0, 1, 2) + 0.5
+theta2 = c(-2, -1, -1, -1,
+           -2, -2, -1,
+           -2, -2,
+           -2) * 1.5
+sim.obj = SimulateNoRegData(ncase = 300, nctrl = 1000, 
+                            theta1 = theta1,
+                            theta2 = theta2,
+                            ss.tpr = ss.tpr,
+                            bs.tpr = bs.tpr,
+                            bs.fpr = bs.fpr)
+sim.obj$Pr.NumPathogen
+sim.obj$Mu
+
+input.obj = c(sim.obj, list(ss.available = 1:5, bs.available = 1:5))
+#------------------------------------------------------------------------------
 set.seed(603)
 sim.obj = do.call(SimulatePerchData, par.default)
 round(sim.obj$pars.baseline$Mu[1, ], 4)
@@ -92,9 +112,11 @@ round(par.vbfit$mu_rho * par.vbfit$qD, 3)
 etio.info = VBEtioProbsNoReg(par.vbfit)
 plot(etio.info$etio.probs.pL, type = "b", col = "blue", ylim = c(0, 0.28))
 lines(sim.obj$cell.prob.unique[1, ], type = "b", col = "red")
+# lines(sim.obj$cell.probs, type = "b", col = "red")
 # lines(etio.info$etio.probs, type = "b", col = "black")
 
 sum(sqrt(etio.info$etio.probs.pL * sim.obj$cell.prob.unique[1, ]))
+sum(sqrt(etio.info$etio.probs.pL * sim.obj$cell.probs))
 
 # etio.info$ss.tpr
 # etio.info$bs.tpr
