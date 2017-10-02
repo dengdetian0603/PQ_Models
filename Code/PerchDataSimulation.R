@@ -327,7 +327,6 @@ SimulatePerchData <- function(ncase, nctrl, K, Smax, Pi.seed, phi.iter = 500,
        cell.prob.unique = GS.obj$cell.prob.unique, Mu.unique = Mu.unique)
 }
 
-
 ReSimulateData <- function(ncase, nctrl, num.covariates, has.interact,
                            cell.prob.unique, K, Smax, 
                            ss.tpr, bs.tpr, bs.fpr, ...) {
@@ -347,6 +346,30 @@ ReSimulateData <- function(ncase, nctrl, num.covariates, has.interact,
   MBS.ctrl = t(matrix(rbinom(nctrl * K, 1, bs.fpr), nrow = K))
   list(L = L, MSS.case = MSS.case, MBS.case = MBS.case, MBS.ctrl = MBS.ctrl,
        X = X, K = K, Smax = Smax, cell.prob.unique = cell.prob.unique)
+}
+
+SimulateNoRegData <- function(ncase, nctrl, theta1, theta2, 
+                              ss.tpr, bs.tpr, bs.fpr) {
+  # simulate data from quadratic exponential data explicitly
+  K = length(theta1)
+  theta.vec = c(theta1, theta2) # of length: K + choose(K, 2)
+  d.mat = DesignMatrixAppxQuadExp(K, K)
+  LU.mat = cbind(d.mat$Lmat, d.mat$Umat)
+  potentials = c(1, exp((LU.mat %*% cbind(theta.vec))[, 1]))
+  cell.probs = potentials/sum(potentials)  
+  
+  Lmat.withZero = rbind(rep(0, K), d.mat$Lmat)
+  dat.GS = t(rmultinom(ncase, 1, cell.probs)) %*% Lmat.withZero
+  L = dat.GS
+  MSS.case = LtoM(L, ss.tpr, 0)
+  MBS.case = LtoM(L, bs.tpr, bs.fpr)
+  MBS.ctrl = t(matrix(rbinom(nctrl * K, 1, bs.fpr), nrow = K))
+  list(L = L, MSS.case = MSS.case, MBS.case = MBS.case, MBS.ctrl = MBS.ctrl,
+       X = matrix(1, nrow = ncase, ncol = 1), K = K,
+       cell.probs = cell.probs,
+       Mu = round(d.mat$MuMat %*% cbind(cell.probs[-1]), 4),
+       Pr.NumPathogen = round(rbind(cell.probs[1],
+                                    d.mat$PiMat %*% cbind(cell.probs[-1])), 4))
 }
 
 

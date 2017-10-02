@@ -51,14 +51,15 @@ hyper.pars.list$aa = c(412, 485, 224, 733, 344)
 hyper.pars.list$bb = c(3340, 3563, 2590, 4158, 3103)
 hyper.pars.list$cc = 12.7  # \in (0.5, 0.9)
 hyper.pars.list$dd = 4.8
-hyper.pars.list$theta_mu = rep(0, 5)
-hyper.pars.list$theta_tau = 1.5
+
+hyper.pars.list$theta_mu = c(0, 0, 0, 0, 0)
+hyper.pars.list$theta_tau = 2.5
 
 hyper.pars.list$rho_mu = -3
-hyper.pars.list$rho_tau = 26
+hyper.pars.list$rho_tau = 18
 
-hyper.pars.list$pind_a = 13
-hyper.pars.list$pind_b = 0.6
+hyper.pars.list$pind_a = 9
+hyper.pars.list$pind_b = 3
 # -----------------------------------------------------------------------------
 
 set.seed(603)
@@ -93,7 +94,10 @@ plot(etio.info$etio.probs.pL, type = "b", col = "blue", ylim = c(0, 0.28))
 lines(sim.obj$cell.prob.unique[1, ], type = "b", col = "red")
 # lines(etio.info$etio.probs, type = "b", col = "black")
 
-etio.info$ss.tpr
-etio.info$bs.tpr
-etio.info$bs.fpr
-# round(cbind(sim.obj$Mu.unique[1, ], etio.info$etio.mean.pL), 3)
+sum(sqrt(etio.info$etio.probs.pL * sim.obj$cell.prob.unique[1, ]))
+
+# etio.info$ss.tpr
+# etio.info$bs.tpr
+# etio.info$bs.fpr
+round(cbind(sim.obj$Mu.unique[1, ], etio.info$etio.mean.pL), 3)
+round(cbind(sim.obj$pars.baseline$Pi[1, ], etio.info$etio.numPi.pL), 3)
