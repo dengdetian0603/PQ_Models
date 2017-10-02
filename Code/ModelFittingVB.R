@@ -142,13 +142,13 @@ FitVBEMnoReg = function(input.obj, hyper.par.list, init.val,
   MBS.case = as.matrix(input.obj$MBS.case)
   MBS.ctrl = as.matrix(input.obj$MBS.ctrl)
   # 
+  par.list = init.val
   par.list$mu_theta = as.vector(par.list$mu_theta)
   par.list$tau_theta  = as.vector(par.list$tau_theta)
   hyper.pars.list$theta_mu = as.vector(hyper.pars.list$theta_mu)
   #
   n.case = nrow(MBS.case)
   n.ctrl = nrow(MBS.ctrl)
-  par.list = init.val
   par.diff = 1
   par.curr = unlist(par.list[-7])
   iter = 0

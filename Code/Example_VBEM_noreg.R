@@ -74,7 +74,7 @@ group0 = which(rowSums(sim.dat$X) == 1)
 input.obj = list(MSS.case = sim.dat$MSS.case[group0, ],
                  MBS.case = sim.dat$MBS.case[group0, ],
                  MBS.ctrl = sim.dat$MBS.ctrl,
-                 X = sim.dat$X[group0, ],
+                 X = cbind(sim.dat$X[group0, 1]),
                  ss.available = 1:5, bs.available = 1:5)
 
 # -----------------------------------------------------------------------------
