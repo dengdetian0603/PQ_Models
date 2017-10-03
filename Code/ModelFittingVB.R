@@ -308,7 +308,8 @@ ResampleCaseCtrl = function(input.obj) {
 }
 
 
-PredNoRegGOF <- function(K, etio.info, n.pred, input.obj, n.case) {
+PredNoRegGOF <- function(K, etio.info, n.pred, input.obj, n.case,
+                         method = 2) {
 # predictive goodness of fit
   pred = SimulateNoRegData(ncase = n.pred, nctrl = 100,
                            theta1 = rep(0, K),
@@ -323,13 +324,23 @@ PredNoRegGOF <- function(K, etio.info, n.pred, input.obj, n.case) {
   pred.ss.idx = factor(attr(tmp.ss, "index"))
   
   p.obs.bs = table(pred.bs.idx[1:n.case])/n.case
-  p.pred.bs = table(pred.bs.idx[-(1:n.case)])/n.pred
   p.obs.ss = table(pred.ss.idx[1:n.case])/n.case
+  p.pred.bs = table(pred.bs.idx[-(1:n.case)])/n.pred
   p.pred.ss = table(pred.ss.idx[-(1:n.case)])/n.pred
-  list(Prob.BS = cbind(p.obs.bs, p.pred.bs),
-       Prob.SS = cbind(p.obs.ss, p.pred.ss),
-       BS.gof = sum(sqrt(p.obs.bs * p.pred.bs)),
-       SS.gof = sum(sqrt(p.obs.ss * p.pred.ss)))
+  if (method == 1) {
+    res = list(Prob.BS = cbind(p.obs.bs, p.pred.bs),
+               Prob.SS = cbind(p.obs.ss, p.pred.ss),
+               BS.gof = sum(sqrt(p.obs.bs * p.pred.bs)),
+               SS.gof = sum(sqrt(p.obs.ss * p.pred.ss)))
+  } else if (method == 2) {
+    cnt.obs.bs = table(pred.bs.idx[1:n.case])
+    cnt.obs.ss = table(pred.ss.idx[1:n.case])
+    res = list(Prob.BS = cbind(p.obs.bs, p.pred.bs),
+               Prob.SS = cbind(p.obs.ss, p.pred.ss),
+               BS.gof = dmultinom(x = cnt.obs.bs, prob = p.pred.bs, log = TRUE),
+               SS.gof = dmultinom(x = cnt.obs.ss, prob = p.pred.ss, log = TRUE))
+  }
+  res
 }
 
 
