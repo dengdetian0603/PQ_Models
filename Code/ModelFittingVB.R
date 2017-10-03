@@ -308,10 +308,10 @@ ResampleCaseCtrl = function(input.obj) {
 }
 
 
-PredNoRegGOF <- function(etio.info, n.pred, input.obj, n.case) {
+PredNoRegGOF <- function(K, etio.info, n.pred, input.obj, n.case) {
 # predictive goodness of fit
   pred = SimulateNoRegData(ncase = n.pred, nctrl = 100,
-                           theta1 = rep(0, length(etio.info$etio.mean)),
+                           theta1 = rep(0, K),
                            theta2 = NULL,
                            ss.tpr = etio.info$ss.tpr,
                            bs.tpr = etio.info$bs.tpr,
