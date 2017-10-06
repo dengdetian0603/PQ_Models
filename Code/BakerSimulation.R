@@ -128,7 +128,10 @@ BakerSimulation2 <- function(is.regression = TRUE,
                              n.itermcmc = 8000,
                              n.burnin   = 5000,
                              n.thin     = 3, save.img = FALSE,
-                             has.MSS = c("A", "B", "C", "D", "E")) {
+                             has.MSS = c("A", "B", "C", "D", "E"), 
+                             SS.low = 0.3, SS.high = 0.7,
+                             BS.low = 0.5, BS.high = 0.9,
+                             Smax = 5) {
   #
   # 1.Clean Data:
   # specify cause list: all combinations
@@ -144,6 +147,29 @@ BakerSimulation2 <- function(is.regression = TRUE,
                   "A+B+C+D", "A+B+C+E", "A+B+D+E",
                   "A+C+D+E", "B+C+D+E", 
                   "A+B+C+D+E")
+  if (Smax == 4) {
+    cause_list <- c("NoA", "A", "B", "C", "D", "E",
+                    "A+B", "A+C", "A+D", "A+E",
+                    "B+C", "B+D", "B+E",
+                    "C+D", "C+E",
+                    "D+E",
+                    "A+B+C", "A+B+D", "A+B+E",
+                    "A+C+D", "A+C+E", "A+D+E",
+                    "B+C+D", "B+C+E", "B+D+E",
+                    "C+D+E",
+                    "A+B+C+D", "A+B+C+E", "A+B+D+E",
+                    "A+C+D+E", "B+C+D+E")
+  } else if (Smax == 3) {
+    cause_list <- c("NoA", "A", "B", "C", "D", "E",
+                    "A+B", "A+C", "A+D", "A+E",
+                    "B+C", "B+D", "B+E",
+                    "C+D", "C+E",
+                    "D+E",
+                    "A+B+C", "A+B+D", "A+B+E",
+                    "A+C+D", "A+C+E", "A+D+E",
+                    "B+C+D", "B+C+E", "B+D+E",
+                    "C+D+E")
+  }
 
   # specify measurements:
   patho_BrS_NPPCR = c("A", "B", "C", "D", "E")
@@ -156,10 +182,10 @@ BakerSimulation2 <- function(is.regression = TRUE,
   working_dir <- "/users/ddeng/ThesisTopic/PQModels/Experiments/Baker/"
   
   ### Set Sensitivity Bound
-  sens_NPPCR_low_noabx = rep(0.5, 5)
-  sens_NPPCR_up_noabx = rep(0.9, 5)
-  sens_BCX_low_noabx = rep(0.05, 5)
-  sens_BCX_up_noabx = rep(0.2, 5)
+  sens_NPPCR_low_noabx = rep(BS.low, 5)
+  sens_NPPCR_up_noabx = rep(BS.high, 5)
+  sens_BCX_low_noabx = rep(SS.low, 5)
+  sens_BCX_up_noabx = rep(SS.high, 5)
   
   ## clean PERCH data:
   data_nplcm.sim <- ReorgToNplcmData(sim.obj)
