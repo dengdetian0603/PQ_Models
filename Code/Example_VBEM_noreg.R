@@ -43,12 +43,12 @@ par.default$bs.fpr = c(0.45, 0.3, 0.35, 0.4, 0.35)
 #par.default$ss.tpr = c(0.5, 0.6, 0.4, 0.55, 0.45)
 
 hyper.pars.list = SetVBHyperParameters(K = 5)
-# hyper.pars.list$aa = rep(11.26, 5)  # \in (0.3, 0.7)
-# hyper.pars.list$bb = rep(11.26, 5)
+hyper.pars.list$aa = rep(11.26, 5)  # \in (0.3, 0.7)
+hyper.pars.list$bb = rep(11.26, 5)
 # hyper.pars.list$aa = rep(7.6, 5)  # \in (0.05, 0.2)
 # hyper.pars.list$bb = rep(59, 5)
-hyper.pars.list$aa = c(412, 485, 224, 733, 344)
-hyper.pars.list$bb = c(3340, 3563, 2590, 4158, 3103)
+# hyper.pars.list$aa = c(412, 485, 224, 733, 344)
+# hyper.pars.list$bb = c(3340, 3563, 2590, 4158, 3103)
 hyper.pars.list$cc = 12.7  # \in (0.5, 0.9)
 hyper.pars.list$dd = 4.8
 
@@ -125,8 +125,15 @@ etio.info = VBEtioProbsNoReg(par.vbfit)
 plot(etio.info$etio.probs.pL, type = "b", col = "blue", ylim = c(0, 0.5))
 lines(sim.obj$cell.probs, type = "b", col = "red")
 
+lines(baker.smax3.probs , type = "b", col = "black")
+lines(baker.smax5.probs , type = "b", col = "gray")
+
+# - - - - -    - - --   - - - - 
 PredNoRegGOF(5, etio.info, 5000, input.obj, 300)[3:4]
 sum(sqrt(etio.info$etio.probs.pL * sim.obj$cell.probs))
+sum(sqrt(sim.obj$cell.probs * baker.smax3.probs))
+sum(sqrt(sim.obj$cell.probs * baker.smax5.probs))
+
 
 round(cbind(sim.obj$Mu, etio.info$etio.mean.pL), 3)
 round(cbind(sim.obj$Pr.NumPathogen, etio.info$etio.numPi.pL), 3)
@@ -135,14 +142,19 @@ round(cbind(sim.obj$Pr.NumPathogen, etio.info$etio.numPi.pL), 3)
 # etio.info$bs.tpr
 # etio.info$bs.fpr
 # ==============================================================================
+benchmark = read.csv("../WorkSpace/BenchMarks/Baker_Smax_NoReg.csv")
+baker.smax3.probs = unlist(benchmark[1, -(1:12)])
+baker.smax5.probs = unlist(benchmark[2, -(1:12)])
+
+# ==============================================================================
 library(dplyr)
 res = read.csv("../WorkSpace/VBexperiments/VB-NoReg-HQBS+HQSS-result-v2.csv")
 res = read.csv("../WorkSpace/VBexperiments/VB-NoReg-MQBS+MQSS-result-v2.csv")
-res = read.csv("../WorkSpace/VBexperiments/VB-NoReg-LQBS+LQSS-result-v2.csv")
+res = read.csv("../WorkSpace/Manuscript2017/VB-NoReg-MQBS+MQSS-result.csv")
 ###
 with(res, plot(BS.gof.pred, Bhattacharyya.Coef, col = rep))
 with(res, plot(SS.gof.pred, Bhattacharyya.Coef, col = rep))
-with(res, plot(0.8 * SS.gof.pred + 0.2 * BS.gof.pred,
+with(res, plot(SS.gof.pred + BS.gof.pred,
                Bhattacharyya.Coef, col = rep))
 with(res, cor(0.8 * SS.gof.pred + 0.2 * BS.gof.pred, Bhattacharyya.Coef))
 
@@ -153,6 +165,15 @@ for (i in 1:nrow(res)) {
          col = alpha(rgb(0, 0, 0), 0.3), cex = 0.7)
 }
 points(sim.obj$cell.probs, col = "red", cex = 3, pch = "-")
+
+## for Mu
+plot(sim.obj$Mu[, 1], type = "n", ylim = c(0, 0.7))
+for (i in 1:nrow(res)) {
+  points(jitter(1:5), unlist(res[i, 35:39]), pch = 16,
+         col = alpha(rgb(0, 0, 0), 0.3), cex = 0.7)
+}
+points(sim.obj$Mu[, 1], col = "red", cex = 3, pch = "-")
+
 
 #### variation by data in best prior
 plot(sim.obj$cell.probs, type = "n", ylim = c(0, 0.5))
@@ -187,6 +208,17 @@ for (i in 1:nrow(res.by.prior)) {
 lines(unlist(res.by.prior[which(gof == max(gof)), 3:34]),
       type = "b", pch = "-", col = "blue", cex = 2, lwd = 2)
 points(sim.obj$cell.probs, col = "red", cex = 2, pch = "-")
+
+## for Mu
+plot(sim.obj$Mu[, 1], type = "n", ylim = c(0, 0.6))
+for (i in 1:nrow(res.by.prior)) {
+  points(jitter(1:5), unlist(res.by.prior[i, 35:39]), pch = 16,
+         col = alpha(rgb(0, 0, 0), 0.5), cex = 1.2)
+}
+lines(unlist(res.by.prior[which(gof == max(gof)), 35:39]),
+      type = "b", pch = "-", col = "blue", cex = 2, lwd = 2)
+points(sim.obj$Mu[, 1], col = "red", cex = 2, pch = "-")
+
 
 
 
