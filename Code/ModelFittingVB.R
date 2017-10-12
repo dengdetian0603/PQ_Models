@@ -350,29 +350,35 @@ PredRegGOF <- function(K, etio.info, n.pred, input.obj) {
   bs.gof = 0
   ss.gof = 0
   for (i in 1:nrow(X.unique)) {
-    pred = SimulateNoRegData(ncase = n.pred, nctrl = 100,
-                             theta1 = rep(0, K),
-                             theta2 = NULL,
-                             ss.tpr = etio.info$ss.tpr,
-                             bs.tpr = etio.info$bs.tpr,
-                             bs.fpr = etio.info$bs.fpr,
-                             cell.probs = etio.info[[i]]$etio.probs.pL)
-    strata.i = (strata.idx == i)
-    tmp.bs = uniquecombs(rbind(input.obj$MBS.case[strata.i, ],
-                               pred$MBS.case),
-                         ordered = TRUE)
-    tmp.ss = uniquecombs(rbind(input.obj$MSS.case[strata.i, ],
-                               pred$MSS.case),
-                         ordered = TRUE)
-    pred.bs.idx = factor(attr(tmp.bs, "index"))
-    pred.ss.idx = factor(attr(tmp.ss, "index"))
-    
-    n.case = sum(strata.i)
-    cnt.obs.bs = table(pred.bs.idx[1:n.case])
-    cnt.obs.ss = table(pred.ss.idx[1:n.case])
-    p.pred.bs = table(pred.bs.idx[-(1:n.case)])/n.pred
-    p.pred.ss = table(pred.ss.idx[-(1:n.case)])/n.pred
-  
+    p.pred.bs = 0
+    p.pred.ss = 0
+    scale.up = 1
+    while(0 %in% c(p.pred.bs, p.pred.ss) & scale.up < 10) {
+      pred = SimulateNoRegData(ncase = n.pred * scale.up, nctrl = 100,
+                               theta1 = rep(0, K),
+                               theta2 = NULL,
+                               ss.tpr = etio.info$ss.tpr,
+                               bs.tpr = etio.info$bs.tpr,
+                               bs.fpr = etio.info$bs.fpr,
+                               cell.probs = etio.info[[i]]$etio.probs.pL)
+      strata.i = (strata.idx == i)
+      tmp.bs = uniquecombs(rbind(input.obj$MBS.case[strata.i, ],
+                                 pred$MBS.case),
+                           ordered = TRUE)
+      tmp.ss = uniquecombs(rbind(input.obj$MSS.case[strata.i, ],
+                                 pred$MSS.case),
+                           ordered = TRUE)
+      pred.bs.idx = factor(attr(tmp.bs, "index"))
+      pred.ss.idx = factor(attr(tmp.ss, "index"))
+      
+      n.case = sum(strata.i)
+      cnt.obs.bs = table(pred.bs.idx[1:n.case])
+      cnt.obs.ss = table(pred.ss.idx[1:n.case])
+      p.pred.bs = table(pred.bs.idx[-(1:n.case)])/(n.pred * scale.up)
+      p.pred.ss = table(pred.ss.idx[-(1:n.case)])/(n.pred * scale.up)
+      
+      scale.up = 2 * scale.up
+    }
     bs.gof = bs.gof + dmultinom(x = cnt.obs.bs, prob = p.pred.bs, log = TRUE)
     ss.gof = ss.gof + dmultinom(x = cnt.obs.ss, prob = p.pred.ss, log = TRUE)
   }
