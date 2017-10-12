@@ -345,7 +345,7 @@ PredNoRegGOF <- function(K, etio.info, n.pred, input.obj, n.case,
 
 PredRegGOF <- function(K, etio.info, n.pred, input.obj) {
   X.unique = uniquecombs(input.obj$X)
-  strara.idx = attr(X.unique, "index")
+  strata.idx = attr(X.unique, "index")
   # predictive goodness of fit
   bs.gof = 0
   ss.gof = 0
