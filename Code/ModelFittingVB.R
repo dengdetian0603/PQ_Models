@@ -300,6 +300,13 @@ ResampleCaseCtrl = function(input.obj) {
   nCtrl = nrow(input.obj$MBS.ctrl)
   boot.case = sample(1:nCase, nCase, replace = TRUE)
   boot.ctrl = sample(1:nCtrl, nCtrl, replace = TRUE)
+  
+  X.unique = uniquecombs(input.obj$X)
+  n.strata = nrow(X.unique)
+  strata.idx = attr(X.unique, "index")
+  boot.strata = strata.idx[boot.case]
+  boot.case = boot.case[order(boot.strata)]
+  
   input.obj$MSS.case = input.obj$MSS.case[boot.case, ]
   input.obj$MBS.case = input.obj$MBS.case[boot.case, ]
   input.obj$X = input.obj$X[boot.case, ]
