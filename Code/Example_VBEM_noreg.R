@@ -24,7 +24,7 @@ hyper.pars.list$rho_mu = -1
 hyper.pars.list$rho_tau = 2
 hyper.pars.list$theta_mu = rep(0, 5)
 
-# beta_parms_from_quantiles(c(0.1, 0.12), p = c(0.025, 0.975), plot = TRUE)
+# beta_parms_from_quantiles(c(0.6, 0.9), p = c(0.025, 0.975), plot = TRUE)
 
 # low-quality data
 par.default = SetDefaultSimulationParameter(7)
@@ -47,8 +47,8 @@ hyper.pars.list$aa = rep(11.26, 5)  # \in (0.3, 0.7)
 hyper.pars.list$bb = rep(11.26, 5)
 # hyper.pars.list$aa = rep(7.6, 5)  # \in (0.05, 0.2)
 # hyper.pars.list$bb = rep(59, 5)
-# hyper.pars.list$aa = c(412, 485, 224, 733, 344)
-# hyper.pars.list$bb = c(3340, 3563, 2590, 4158, 3103)
+# hyper.pars.list$aa = rep(8.6, 5) # \in (0.6, 0.99)
+# hyper.pars.list$bb = rep(1.41, 5)
 hyper.pars.list$cc = 12.7  # \in (0.5, 0.9)
 hyper.pars.list$dd = 4.8
 
@@ -61,10 +61,10 @@ hyper.pars.list$rho_tau = 18
 hyper.pars.list$pind_a = 9
 hyper.pars.list$pind_b = 3
 # -----------------------------------------------------------------------------
-ss.tpr = c(0.5, 0.6, 0.4, 0.55, 0.45)
+ss.tpr = c(0.5, 0.6, 0.4, 0.55, 0.45) + 0.3
 
-bs.tpr = c(0.8, 0.6, 0.7, 0.7, 0.65) - 0.05
-bs.fpr = c(0.45, 0.3, 0.35, 0.4, 0.35) - 0.1
+bs.tpr = c(0.8, 0.6, 0.7, 0.7, 0.65) + 0.1
+bs.fpr = c(0.45, 0.3, 0.35, 0.4, 0.35) - 0.2
 
 # theta1 = c(-1, -0.5, 0, 1, 1.5) + 0.5 # v0
 # theta1 = c(-1, -0.5, 0, 1, 2) + 0 # v1
@@ -74,7 +74,7 @@ theta2 = c(-0, -1, -2, -2,
            -1, -5,
            -2) * 1 # v3    # v0-1: *1.5
 
-sim.obj = SimulateNoRegData(ncase = 250, nctrl = 1000, 
+sim.obj = SimulateNoRegData(ncase = 300, nctrl = 1000, 
                             theta1 = theta1,
                             theta2 = theta2,
                             ss.tpr = ss.tpr,
@@ -84,36 +84,24 @@ sim.obj$Pr.NumPathogen
 sim.obj$Mu
 
 input.obj = c(sim.obj, list(ss.available = 1:5, bs.available = 1:5))
-#------------------------------------------------------------------------------
-# set.seed(603)
-# sim.obj = do.call(SimulatePerchData, par.default)
-# round(sim.obj$pars.baseline$Mu[1, ], 4)
-# round(sim.obj$pars.baseline$Pi[1, ], 4)
-# 
-# sim.dat = do.call(ReSimulateData,
-#                   c(par.default,
-#                     list(cell.prob.unique = sim.obj$cell.prob.unique)))
-# 
-# group0 = which(rowSums(sim.dat$X) == 1)
-# input.obj = list(MSS.case = sim.dat$MSS.case[group0, ],
-#                  MBS.case = sim.dat$MBS.case[group0, ],
-#                  MBS.ctrl = sim.dat$MBS.ctrl,
-#                  X = cbind(sim.dat$X[group0, 1]),
-#                  ss.available = 1:5, bs.available = 1:5)
 
 # -----------------------------------------------------------------------------
 hyper.pars.list = SetVBHyperParameters(K = 5)
-hyper.pars.list$aa = rep(11.26, 5)  # \in (0.3, 0.7)
-hyper.pars.list$bb = rep(11.26, 5)
+# hyper.pars.list$aa = rep(11.26, 5)  # \in (0.3, 0.7)
+# hyper.pars.list$bb = rep(11.26, 5)
+hyper.pars.list$aa = rep(8.6, 5) # \in (0.6, 0.99)
+hyper.pars.list$bb = rep(1.41, 5)
 
-hyper.pars.list$cc = 12.7  # \in (0.5, 0.9)
-hyper.pars.list$dd = 4.8
+# hyper.pars.list$cc = 12.7  # \in (0.5, 0.9)
+# hyper.pars.list$dd = 4.8
+hyper.pars.list$cc = 8.6 # \in (0.6, 0.99)
+hyper.pars.list$dd = 1.41
 
 hyper.pars.list$theta_mu = c(0, 0, 0, 0, 0) + 0.5
 hyper.pars.list$theta_tau = 1
 
-hyper.pars.list$rho_mu = -3.5
-hyper.pars.list$rho_tau = 15
+hyper.pars.list$rho_mu = -2.5
+hyper.pars.list$rho_tau = 10
 
 hyper.pars.list$pind_a = 1
 hyper.pars.list$pind_b = 1
@@ -137,6 +125,7 @@ lines(sim.obj$cell.probs, type = "b", col = "red")
 
 # - - - - -    - - --   - - - - 
 sum(sqrt(etio.info$etio.probs.pL * sim.obj$cell.probs))
+mean(abs(etio.info$etio.probs.pL - sim.obj$cell.probs))
 # sum(sqrt(sim.obj$cell.probs * baker.smax3.probs))
 # sum(sqrt(sim.obj$cell.probs * baker.smax5.probs))
 
