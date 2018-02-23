@@ -179,8 +179,13 @@ FitVBEMnoReg = function(input.obj, hyper.par.list, init.val,
     q.sum = colSums(par.list$qL, TRUE)
     ## silver
     qss.sum = q.sum[ss.avail]
-    if (length(ss.avail) > 0) {
+    if (length(ss.avail) > 1) {
       qMs.sum = colSums(par.list$qL[, ss.avail] * MSS.case[, ss.avail], TRUE)
+      par.list$A_st[ss.avail] = qMs.sum + hyper.par.list$aa[ss.avail]
+      par.list$B_st[ss.avail] = qss.sum - qMs.sum + hyper.par.list$bb[ss.avail]
+    } else {
+      qMs.sum = colSums(cbind(par.list$qL[, ss.avail] * MSS.case[, ss.avail]),
+                        TRUE)
       par.list$A_st[ss.avail] = qMs.sum + hyper.par.list$aa[ss.avail]
       par.list$B_st[ss.avail] = qss.sum - qMs.sum + hyper.par.list$bb[ss.avail]
     }
